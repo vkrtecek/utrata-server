@@ -17,7 +17,7 @@ use DateTime;
 class CheckState extends Model
 {
 
-	protected $table = 'utrata_check_state';
+	protected $table = 'utrata_check_states';
 
 	public $primaryKey = 'CheckStateID';
 
