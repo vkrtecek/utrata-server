@@ -52,9 +52,25 @@ $app->singleton(
 |
 */
 
-$app->app->bind('App\Model\Service\IItemService', 'App\Model\Service\ItemService');
-$app->app->bind('App\Model\Service\IWalletService', 'App\Model\Service\WalletService');
+/*###################  DAO ########################*/
+$app->app->bind('App\Model\Dao\ICheckStateDAO', 'App\Model\Dao\CheckStateDAO');
+$app->app->bind('App\Model\Dao\ICurrencyDAO', 'App\Model\Dao\CurrencyDAO');
+$app->app->bind('App\Model\Dao\IItemDAO', 'App\Model\Dao\ItemDAO');
+$app->app->bind('App\Model\Dao\ILanguageDAO', 'App\Model\Dao\LanguageDAO');
+$app->app->bind('App\Model\Dao\IMemberDAO', 'App\Model\Dao\MemberDAO');
+$app->app->bind('App\Model\Dao\IPurposeDAO', 'App\Model\Dao\PurposeDAO');
+$app->app->bind('App\Model\Dao\ITranslationDAO', 'App\Model\Dao\TranslationDAO');
+$app->app->bind('App\Model\Dao\IWalletDAO', 'App\Model\Dao\WalletDAO');
+
+/*###################  SERVICES ###################*/
 $app->app->bind('App\Model\Service\ICheckStateService', 'App\Model\Service\CheckStateService');
+$app->app->bind('App\Model\Service\ICurrencyService', 'App\Model\Service\CurrencyService');
+$app->app->bind('App\Model\Service\IItemService', 'App\Model\Service\ItemService');
+$app->app->bind('App\Model\Service\ILanguageService', 'App\Model\Service\LanguageService');
 $app->app->bind('App\Model\Service\IMemberService', 'App\Model\Service\MemberService');
+$app->app->bind('App\Model\Service\IPurposeService', 'App\Model\Service\PurposeService');
+$app->app->bind('App\Model\Service\ITranslationService', 'App\Model\Service\TranslationService');
+$app->app->bind('App\Model\Service\IWalletService', 'App\Model\Service\WalletService');
+$app->app->bind('App\Model\Service\IFileService', 'App\Model\Service\CsvService');
 
 return $app;

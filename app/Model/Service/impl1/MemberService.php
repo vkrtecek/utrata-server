@@ -9,6 +9,7 @@
 namespace App\Model\Service;
 
 
+use App\Model\Dao\IMemberDAO;
 use App\Model\Entity\Currency;
 use App\Model\Entity\Language;
 use App\Model\Entity\Member;
@@ -17,6 +18,7 @@ use App\Model\Exception\BadParameterException;
 use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
 use App\Model\Exception\SecurityException;
+use Illuminate\Support\Facades\Hash;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use DateTime;
 
@@ -24,10 +26,26 @@ class MemberService implements IMemberService
 {
 	const defaultPassword = 'Facebook Password';
 
+	/** @var IMemberDAO */
+	protected $memberDao;
+
+	/** @var ILanguageService */
+	protected $languageService;
+
+	/** @var ICurrencyService */
+	protected $currencyService;
+
 	/**
 	 * MemberService constructor.
+	 * @param IMemberDAO $memberDao
+	 * @param ILanguageService $languageService
+	 * @param ICurrencyService $currencyService
 	 */
-	public function __construct() {
+	public function __construct(IMemberDAO $memberDao, ILanguageService $languageService, ICurrencyService $currencyService)
+	{
+		$this->memberDao = $memberDao;
+		$this->languageService = $languageService;
+		$this->currencyService = $currencyService;
 	}
 
 	/**
@@ -35,7 +53,7 @@ class MemberService implements IMemberService
 	 * @throws NotFoundException
 	 */
 	public function getMembers() {
-		$members = 'getMembers';
+		$members = $this->memberDao->findAll();
 		if ($members == NULL)
 			throw new NotFoundException('MemberService: No result.');
 		return $members;
@@ -49,7 +67,7 @@ class MemberService implements IMemberService
 	 * @throws NotFoundException
 	 */
 	public function getMember($login) {
-		$member = 'getMember';
+		$member = $this->memberDao->findOne($login);
 		if ($member == NULL)
 			throw new NotFoundException('Member with this login not found.');
 		return $member;
@@ -61,7 +79,7 @@ class MemberService implements IMemberService
 	 * @throws NotFoundException
 	 */
 	public function getByToken($token) {
-		$member = 'getByToken';
+		$member = $this->memberDao->findOneByColumn('token', $token);
 		if ($member == NULL)
 			throw new NotFoundException('Member with this token not found.');
 		return $member;
@@ -84,7 +102,7 @@ class MemberService implements IMemberService
 			throw new AlreadyExistException('MemberService: Member with this login already exists.');
 		} catch (NotFoundException $ex) {
 			$this->setMember($member, $data);
-			return 'createMember';
+			return $this->memberDao->create($member);
 		}
 	}
 
@@ -102,8 +120,8 @@ class MemberService implements IMemberService
 		} catch (NotFoundException $ex) {
 			throw new NotFoundException('MemberService: No member with this login.', 0, $ex);
 		}
-		$this->setMember($member, $data);
-		return 'updateMember';
+		$this->setMember($member, $data, FALSE);
+		return $this->memberDao->update($member);
 	}
 
 	/**
@@ -117,7 +135,7 @@ class MemberService implements IMemberService
 		try {
 			//test if member exists
 			$member = $this->getMember($login);
-			return $login;
+			return $this->memberDao->delete($member);
 		} catch (NotFoundException $ex) {
 			throw new NotFoundException('MemberService: No member with this login.', 0, $ex);
 		}
@@ -149,8 +167,8 @@ class MemberService implements IMemberService
 		$data['me'] = $fb_data['email'];
 		$data['expiration'] = (new DateTime('+ 14 days'))->format('Y-m-d H:i:s');
 		$data['access'] = (new DateTime())->format('Y-m-d H:i:s');
-		//$data['currencyCode'] = $this->getCurrencyFromLocale($fb_data['locale'])->getCode();
-		//$data['languageCode'] = $this->getLanguageFromLocale($fb_data['locale'])->getLanguageCode();
+		$data['currencyCode'] = $this->getCurrencyFromLocale($fb_data['locale'])->getCode();
+		$data['languageCode'] = $this->getLanguageFromLocale($fb_data['locale'])->getCode();
 		$data['facebook'] = true;
 
 		$member = new Member();
@@ -158,9 +176,9 @@ class MemberService implements IMemberService
 			$this->getMemberByColumn('login', $data['id']);
 			return IMemberService::FACEBOOK_LOGGED;
 		} catch (NotFoundException $ex) {
-			//$member->setId($data['id']);
+			$member->setId($data['id']);
 			$this->setMember($member, $data);
-			//$this->memberDao->create($member);
+			$this->memberDao->create($member);
 			return IMemberService::FACEBOOK_SIGNED;
 		}
 	}
@@ -170,27 +188,27 @@ class MemberService implements IMemberService
 	 * @return Member
 	 */
 	public function logout(Member $member) {
-		//$member->setExpiration(new \DateTime());
-		//$member->setToken('');
-		//return $this->memberDao->update($member);
-		return 'logout';
+		$member->setExpiration(new \DateTime());
+		$member->setToken('');
+		return $this->memberDao->update($member);
 	}
 
 
 	/**
 	 * @param Member $member
 	 * @param array $data
+	 * @param boolean $newEntity
 	 * @throws BadRequestHttpException
 	 * @throws NotFoundException
 	 */
-	protected function setMember(Member $member, array $data) {
+	protected function setMember(Member $member, array $data, $newEntity = TRUE) {
 		$dateFormat = '/^2[0-1][0-9][0-9]-[0-1][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9].[0-9]*$/';
 
-		if (!isset($data['currency']) || $data['currency'] == NULL)
+		if ((!isset($data['currency']) || $data['currency'] == NULL) && $newEntity)
 			throw new BadRequestHttpException('MemberService: Currency must be specified.');
-		else {
+		else  if (isset($data['currency']) && $data['currency']) {
 			if ($data['currency'] instanceof Currency) {
-				//$member->setCurrency($data['currency']);
+				$member->setCurrency($data['currency']);
 			} else {
 				try {
 					//$member->setCurrency($this->currencyService->getCurrency($data['currency']['currencyId']));
@@ -201,11 +219,11 @@ class MemberService implements IMemberService
 		}
 
 
-		if (!isset($data['language']) || $data['language'] == NULL)
+		if ((!isset($data['language']) || $data['language'] == NULL) && $newEntity)
 			throw new BadRequestHttpException('MemberService: Language must be specified.');
-		else {
+		else if (isset($data['language']) && $data['language']) {
 			if ($data['language'] instanceof Language) {
-				//$member->setLanguage($data['language']);
+				$member->setLanguage($data['language']);
 			} else {
 				try {
 					//$member->setLanguage($this->languageService->getLanguage($data['language']['languageCode']));
@@ -216,44 +234,47 @@ class MemberService implements IMemberService
 		}
 
 
-		if (!isset($data['login']) || $data['login'] == NULL)
+		if ((!isset($data['login']) || $data['login'] == NULL) && $newEntity)
 			throw new BadRequestHttpException('MemberService: "login" must be specified.');
-		//else $member->setLogin($data['login']);
+		else if (isset($data['login']) && $data['login'])
+			$member->setLogin($data['login']);
 
 
-		if (!isset($data['passwordHash']) || $data['passwordHash'] == NULL)
+		if ((!isset($data['passwordHash']) || $data['passwordHash'] == NULL) && $newEntity)
 			throw new BadRequestHttpException('MemberService: "passwordHash" must be specified.');
-		//else $member->setPasswordHash($this->getPasswordHash($data['passwordHash']));
+		else if (isset($data['passwordHash']) && $data['passwordHash'])
+			$member->setPassword($this->getPasswordHash($data['passwordHash']));
 
 
-		if (!isset($data['mother']) || $data['mother'] == NULL)
+		if ((!isset($data['mother']) || $data['mother'] == NULL) && $newEntity)
 			throw new BadRequestHttpException('MemberService: "mother" must be specified.');
-		//else $member->setMother($data['mother']);
+		else if (isset($data['mother']) && $data['mother'])
+			$member->setMotherMail($data['mother']);
 
 
-		if (!isset($data['me']) || $data['me'] == NULL)
+		if ((!isset($data['me']) || $data['me'] == NULL) && $newEntity)
 			throw new BadRequestHttpException('MemberService: "me" must be specified.');
-		//else $member->setMe($data['me']);
+		else if (isset($data['me']) && $data['me'])
+			$member->setMyMail($data['me']);
 
 
-		//if (isset($data['sendMonthly'])) $member->setSendMonthly($data['sendMonthly']);
-		//if (isset($data['sendByOne'])) $member->setSendByOne($data['sendByOne']);
-		//if (isset($data['admin'])) $member->setAdmin($data['admin']);
-		//if (isset($data['logged'])) $member->setLogged($data['logged']);
-		//if (isset($data['hash'])) $member->setPasswordHash($data['hash']);
+		if (isset($data['sendMonthly'])) $member->setSendMonthly($data['sendMonthly']);
+		if (isset($data['sendByOne'])) $member->setSendByOne($data['sendByOne']);
+		if (isset($data['admin'])) $member->setAdmin($data['admin']);
+		if (isset($data['logged'])) $member->setLogged($data['logged']);
 		if (isset($data['access'])) {
 			if (!($data['access'] instanceof \DateTime) && !preg_match($dateFormat, $data['access']))
 				throw new BadRequestHttpException('MemberService: field "access" has bad format');
-			//$member->setAccess($data['access']);
+			$member->setAccess(new DateTime($data['access']));
 		}
-		//if (isset($data['facebook'])) $member->setFacebook($data['facebook']);
+		if (isset($data['facebook'])) $member->setFacebook($data['facebook']);
 		if (isset($data['expiration'])) {
 			if (!($data['expiration'] instanceof \DateTime) && !preg_match($dateFormat, $data['expiration']))
 				throw new BadRequestHttpException('MemberService: field "expiration" has bad format');
-			//$member->setExpiration($data['expiration']);
+			$member->setExpiration(new DateTime($data['expiration']));
 		}
-		//if (isset($data['firstName'])) $member->setFirstName($data['firstName']);
-		//if (isset($data['lastName'])) $member->setLastName($data['lastName']);
+		if (isset($data['firstName'])) $member->setFirstName($data['firstName']);
+		if (isset($data['lastName'])) $member->setLastName($data['lastName']);
 
 	}
 
@@ -290,7 +311,7 @@ class MemberService implements IMemberService
 	 * @throws NotFoundException
 	 */
 	public function getMemberByColumn($column, $login) {
-		$member = 'getMemberByColumn';//$this->memberDao->findOneByColumn($column, $login);
+		$member = $this->memberDao->findOneByColumn($column, $login);
 		if ($member == NULL)
 			throw new NotFoundException('Member with this ' . $column . ' not found.');
 		return $member;
@@ -305,13 +326,13 @@ class MemberService implements IMemberService
 	public function login($login, $password) {
 		try {
 			$member = $this->getMemberByColumn('login', $login);
-			//if (!$this->verifyPasswordHash($member->getPasswordHash(), $password))
-			//	throw new SecurityException('Bad password');
+			if (!self::verifyPasswordHash($member->getPassword(), $password))
+				throw new SecurityException('Bad password');
 			$token = $this->createToken();
-			//$member->setToken($token);
-			//$member->setAccess(new DateTime());
-			//$member->setExpiration(new DateTime('+ 14 days'));
-			//$this->memberDao->update($member);
+			$member->setToken($token);
+			$member->setAccess(new DateTime());
+			$member->setExpiration(new DateTime('+ 1 day'));
+			$this->memberDao->update($member);
 			return $member;
 		} catch (NotFoundException $ex) {
 			throw new SecurityException($ex->getMessage());
@@ -325,34 +346,11 @@ class MemberService implements IMemberService
 	public function loginByFacebook($login) {
 		$member = $this->getMemberByColumn('login', $login);
 		$token = $this->createToken();
-		//$member->setToken($token);
-		//$member->setAccess(new DateTime());
-		//$member->setExpiration(new DateTime('+ 14 days'));
-		//$this->memberDao->update($member);
+		$member->setToken($token);
+		$member->setAccess(new DateTime());
+		$member->setExpiration(new DateTime('+ 14 days'));
+		$this->memberDao->update($member);
 		return $member;
-	}
-
-	/**
-	 * @param string $password
-	 * @return string
-	 */
-	public function getPasswordHash($password)
-	{
-		$str = 'password';//Passwords::hash($password, ['cost' => $this->hashingConst]);
-		return $str;
-	}
-
-	/**
-	 * @param string $passwordHash
-	 * @param string $password
-	 * @return bool
-	 */
-	public function verifyPasswordHash($passwordHash, $password)
-	{
-		//if (!Passwords::verify($password, $passwordHash))
-			return FALSE;
-
-		return TRUE;
 	}
 
 	/**
@@ -362,51 +360,21 @@ class MemberService implements IMemberService
 	public static function format(Member $member) {
 		$ret = [];
 
-		//$ret['id'] = $member->getId();
-		//$ret['firstName'] = $member->getFirstName();
-		//$ret['lastName'] = $member->getLastName();
-		//$ret['login'] = $member->getLogin();
-		//$ret['sendMonthly'] = $member->isSendMonthly();
-		//$ret['sendByOne'] = $member->isSendByOne();
-		//$ret['mother'] = $member->getMother();
-		//$ret['me'] = $member->getMe();
-		//$ret['token'] = $member->getToken();
-		//$ret['languageCode'] = $member->getLanguage()->getLanguageCode();
-		//$ret['currencyCode'] = $member->getCurrency()->getCode();
-		//$ret['lastLogged'] = $member->getAccess()->format('Y-m-d H:i:s');
-		//$ret['purposes'] = MemberService::getFormattedPurposes($member);
+		$ret['id'] = $member->getId();
+		$ret['firstName'] = $member->getFirstName();
+		$ret['lastName'] = $member->getLastName();
+		$ret['login'] = $member->getLogin();
+		$ret['sendMonthly'] = $member->shouldSendMonthly();
+		$ret['sendByOne'] = $member->shouldSendByOne();
+		$ret['mother'] = $member->getMotherMail();
+		$ret['me'] = $member->getMyMail();
+		$ret['token'] = $member->getToken();
+		$ret['languageCode'] = $member->getLanguage()->getCode();
+		$ret['currencyCode'] = $member->getCurrency()->getCode();
+		$ret['lastLogged'] = $member->getAccess()->format('Y-m-d H:i:s');
+		$ret['purposes'] = MemberService::getFormattedPurposes($member);
 
 		return $ret;
-	}
-
-	/**
-	 * @param Member[] $members
-	 * @return array
-	 */
-	public static function formatEntites(array $members) {
-		$ret = [];
-		foreach($members as $member)
-			$ret[] = MemberService::format($member);
-		return $ret;
-	}
-
-	/**
-	 * @param Member $member
-	 * @param string $password
-	 * @return bool
-	 */
-	protected function verifyPassword(Member $member, $password) {
-		return true; //$member->getPasswordHash() == $password;
-	}
-
-	/**
-	 * @return string
-	 */
-	private function createToken()
-	{
-		//return base64_encode(openssl_random_pseudo_bytes(32));
-		//return Random::generate(44);
-		return 'some token';
 	}
 
 	/**
@@ -415,12 +383,52 @@ class MemberService implements IMemberService
 	 */
 	public static function getFormattedPurposes(Member $member) {
 		$ret = [];
-		//	if ($member->getMemberPurposes() == NULL)
+		if ($member->getMemberPurposes() == NULL)
 			return $ret;
 
 		foreach ($member->getMemberPurposes() as $memberPurpose) {
-			$ret[] = PurposeService::format($memberPurpose->getPurpose());
+			$ret[] = '';//PurposeService::format($memberPurpose->getPurpose());
 		}
 		return $ret;
+	}
+
+
+
+
+	/**
+	 * @param Member[] $members
+	 * @return array
+	 */
+	public static function formatEntites($members) {
+		$ret = [];
+		foreach($members as $member)
+			$ret[] = MemberService::format($member);
+		return $ret;
+	}
+
+	/**
+	 * @param string $password
+	 * @return string
+	 */
+	protected static function getPasswordHash($password)
+	{
+		return Hash::make($password);
+	}
+
+	/**
+	 * @param string $passworHash
+	 * @param string $password
+	 * @return bool
+	 */
+	protected static function verifyPasswordHash($passworHash, $password) {
+		return Hash::check($password, $passworHash);
+	}
+
+	/**
+	 * @return string
+	 */
+	private function createToken()
+	{
+		return bin2hex(random_bytes(44));
 	}
 }

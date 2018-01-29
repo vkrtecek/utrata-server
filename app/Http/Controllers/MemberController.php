@@ -2,83 +2,73 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\Exception\SecurityException;
+use App\Model\Service\IMemberService;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
-class MemberController extends Controller
+class MemberController extends AbstractController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
+	/**
+	 * @var IMemberService
+	 */
+	protected $memberService;
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+	/**
+	 * MemberController constructor.
+	 * @param IMemberService $memberService
+	 */
+	public function __construct(IMemberService $memberService) {
+		parent::__construct($memberService);
+		$this->memberService = $memberService;
+	}
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+	/**
+	 * @param Request $req
+	 * @return Response
+	 */
+	public function login(Request $req) {
+		$login = $req->get('login');
+		$password = $req->get('password');
+		$facebook = $req->get('facebook');
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+		if (!isset($login))
+			return Response::create(['error' => 'Missing login'], Response::HTTP_BAD_REQUEST);
+		if (!isset($password) && (!isset($facebook) || $facebook == 'true'))
+			return Response::create(['error' => 'Missing password'], Response::HTTP_BAD_REQUEST);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+		try {
+			if (isset($facebook) && $facebook == 'true')
+				$member = $this->memberService->loginByFacebook($login);
+			else
+				$member = $this->memberService->login($login, $password);
+			return Response::create([
+				'token' => $member->getToken(),
+				'currencyCode' => $member->getCurrency()->getValue(),
+				'languageCode' => $member->getLanguage()->getCode(),
+				'firstName' => $member->getFirstName(),
+				'lastName' => $member->getLastName(),
+				'login' => $member->getLogin(),
+				'lastLogin' => $member->getAccess()->format('Y-m-d H:i:s'),
+			], Response::HTTP_OK);
+		} catch (SecurityException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_UNAUTHORIZED);
+		}
+	}
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+	/**
+	 * @param Request $req
+	 * @return Response
+	 */
+	public function logout(Request $req) {
+		$this->assumeLogged($req);
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+		try {
+			$member = $this->loggedUser($req);
+			$this->memberService->logout($member);
+		} catch (\Exception $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+		}
+		return Response::create([], Response::HTTP_OK);
+	}
 }

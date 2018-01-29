@@ -2,83 +2,43 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\Exception\BadParameterException;
+use App\Model\Exception\NotFoundException;
+use App\Model\Service\ITranslationService;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class TranslationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
+	/**
+	 * @var ITranslationService
+	 */
+	protected $translationService;
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+	/**
+	 * TranslationController constructor.
+	 * @param ITranslationService $translationService
+	 */
+	public function __construct(ITranslationService $translationService) {
+		$this->translationService = $translationService;
+	}
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+	/**
+	 * @param Request $request
+	 * @return Response
+	 */
+	public function gets(Request $request) {
+		try {
+			$languageCode = $request->get('language');
+			$translations = $this->translationService->getTranslationsByLanguage($languageCode);
+			$translations = $this->translationService->formatEntites($translations);
+		} catch (NotFoundException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
+		} catch (BadParameterException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
+		}
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+		return Response::create($translations, Response::HTTP_OK);
+	}
 }

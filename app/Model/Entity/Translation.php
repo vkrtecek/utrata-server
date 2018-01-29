@@ -3,7 +3,7 @@
  * Created by PhpStorm.
  * User: vkrte_000
  * Date: 27. 1. 2018
- * Time: 17:57
+ * Time: 22:35
  */
 
 namespace App\Model\Entity;
@@ -11,34 +11,22 @@ namespace App\Model\Entity;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Currency extends Model
+class Translation extends Model
 {
-	protected $table = 'utrata_currencies';
+	protected $table = 'utrata_translations';
 
-	public $primaryKey = 'CurrencyID';
+	public $primaryKey = [ 'TranslationCode', 'LanguageCode' ];
 
 	public $timestamps = false;
 
+	public $incrementing = false;
 
-	/**
-	 * @return int
-	 */
-	public function getId() {
-		return $this->CurrencyID;
-	}
-
-	/**
-	 * @param int $id
-	 */
-	public function setId($id) {
-		$this->CurrencyID = $id;
-	}
 
 	/**
 	 * @return string
 	 */
 	public function getCode() {
-		return $this->code;
+		return $this->TranslationCode;
 	}
 
 	/**
@@ -63,16 +51,17 @@ class Currency extends Model
 	}
 
 	/**
-	 * @return string
+	 * @return Language
 	 */
-	public function getName() {
-		return $this->name;
+	public function getLanguage() {
+		return Language::find($this->LanguageCode);
 	}
 
 	/**
-	 * @param string$name
+	 * @param Language $language
 	 */
-	public function setName($name) {
-		$this->name = $name;
+	public function setLanguage(Language $language) {
+		$this->LanguageCode = $language->getId();
 	}
+
 }

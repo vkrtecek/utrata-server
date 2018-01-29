@@ -2,88 +2,139 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\Exception\AuthenticationException;
+use App\Model\Exception\BadParameterException;
+use App\Model\Exception\IntegrityException;
+use App\Model\Exception\NotFoundException;
 use App\Model\Service\IItemService;
-use App\Model\Service\IWalletService;
+use App\Model\Service\IMemberService;
+use App\Model\Service\ItemService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class ItemController extends Controller
+class ItemController extends AbstractController
 {
-	protected $walletService;
+
+	/**
+	 * @var IItemService
+	 */
 	protected $itemService;
 
-	public function __construct(IWalletService $walletService, IItemService $itemService) {
-		$this->walletService = $walletService;
+
+	/**
+	 * ItemController constructor.
+	 * @param IMemberService $memberService
+	 * @param IItemService $itemService
+	 */
+	public function __construct(IMemberService $memberService, IItemService $itemService) {
+		parent::__construct($memberService);
 		$this->itemService = $itemService;
 	}
 
 	/**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function getWalletItems($id)
-    {
-    	$body = $this->itemService->getWalletItems($id);
-        return Response::create($body, Response::HTTP_OK);
-    }
+	 * @param Request $req
+	 * @param int $walletId
+	 * @return Response
+	 */
+	public function getWalletItems(Request $req, $walletId) {
+		$member = $this->loggedUser($req);
+		$state = $req->get('state');
+		$month = $req->get('month');
+		$notes = $req->get('notes');
+		$year = $req->get('year');
+		$pattern = $req->get('pattern');
+		$orderBy = $req->get('orderBy');
+		$orderHow = $req->get('orderHow');
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function createItem(Request $request)
-    {
-    	$data = json_decode($request->getContent(), true);
-        return Response::create($data, Response::HTTP_OK);
-    }
+		try {
+			$items = $this->itemService->getWalletItems($walletId, $member, $state, $month, $notes, $year, $pattern, $orderBy, $orderHow);
+			$formatted = ItemService::formatEntites($items);
+		} catch (NotFoundException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NO_CONTENT);
+		} catch (BadParameterException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
+		} catch (AuthenticationException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_UNAUTHORIZED);
+		}
+		return Response::create($formatted, Response::HTTP_OK);
+	}
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function delete()
-    {
-    	$body = [
-    		'text' => 'ok'
-		];
-        return Response::create($body, Response::HTTP_OK);
-    }
+
+	/**
+	 * @param Request $req
+	 * @return Response
+	 */
+	public function create(Request $req) {
+		dump(json_decode($req->getContent(), true));
+		return Response::create($req, Response::HTTP_CREATED);
+	}
+
+	/**
+	 * @param Request $req
+	 * @param int $id
+	 * @return Response
+	 */
+	public function check(Request $req, $id) {
+		$this->assumeLogged($req);
+
+		try {
+			$this->itemService->checkItem($id);
+		} catch (NotFoundException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
+		}
+		return Response::create($id, Response::HTTP_OK);
+	}
+
+	/**
+	 * @param Request $req
+	 * @return Response
+	 */
+	public function checkAll(Request $req) {
+		$member = $this->loggedUser($req);
+		$walletId = $req->get('wallet');
+		$month = $req->get('month');
+		$notes = $req->get('notes');
+		$year = $req->get('year');
+		$pattern = $req->get('pattern');
+		$orderBy = $req->get('orderBy');
+		$orderHow = $req->get('orderHow');
+		try {
+			$res = $this->itemService->checkAll($walletId, $member, $month, $notes, $year, $pattern, $orderBy, $orderHow);
+		} catch (\Exception $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+		}
+		return Response::create($res, Response::HTTP_OK);
+	}
+
+
+
+
+
+
+
+
+
+	/**
+	 * @param Request $req
+	 * @param $id
+	 * @return Response
+	 */
+	protected function delete(Request $req, $id) {
+		$this->assumeLogged($req);
+
+		try {
+			$this->itemService->deleteItem($id);
+		} catch (NotFoundException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
+		} catch (BadParameterException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
+		} catch (IntegrityException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_METHOD_NOT_ALLOWED);
+		}
+
+		return Response::create($id, Response::HTTP_OK);
+	}
 }

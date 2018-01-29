@@ -67,5 +67,5 @@ interface ICheckStateService
 	 * @param CheckState[] $checkStates
 	 * @return array
 	 */
-	public function formatEntites(array $checkStates);
+	public function formatEntites($checkStates);
 }

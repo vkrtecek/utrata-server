@@ -2,83 +2,47 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\Exception\NotFoundException;
+use App\Model\Service\IMemberService;
+use App\Model\Service\IPurposeService;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
-class PurposeController extends Controller
+class PurposeController extends AbstractController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
+	/**
+	 * @var IPurposeService
+	 */
+	protected $purposeService;
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+	/**
+	 * PurposeController constructor.
+	 * @param IMemberService $memberService
+	 * @param IPurposeService $purposeService
+	 */
+	public function __construct(IMemberService $memberService, IPurposeService $purposeService) {
+		parent::__construct($memberService);
+		$this->purposeService = $purposeService;
+	}
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+	/**
+	 * @param Request $req
+	 * @return Response
+	 */
+	protected function getUserPurposes(Request $req) {
+		$this->assumeLogged($req);
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+		$login = $req->get('login');
+		try {
+			$purposes = $this->purposeService->getUserPurposes($login);
+			$purposes = $this->purposeService->formatEntites($purposes);
+		} catch (NotFoundException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
+		}
+
+		return Response::create(["purposes" => $purposes], Response::HTTP_OK);
+	}
 }

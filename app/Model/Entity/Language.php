@@ -15,8 +15,39 @@ class Language extends Model
 {
 	protected $table = 'utrata_languages';
 
-	public $primaryKey = 'ItemID';
+	public $primaryKey = 'LanguageCode';
 
 	public $timestamps = false;
+
+	public $incrementing = false;
+
+
+	/**
+	 * @return string
+	 */
+	public function getCode() {
+		return $this->LanguageCode;
+	}
+
+	/**
+	 * @param string $code
+	 */
+	public function setCode($code) {
+		$this->LanguageCode = $code;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getName() {
+		return $this->name;
+	}
+
+	/**
+	 * @param string $name
+	 */
+	public function setName($name) {
+		$this->name = $name;
+	}
 
 }
