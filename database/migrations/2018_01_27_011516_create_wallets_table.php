@@ -58,7 +58,7 @@ class CreateWalletsTable extends Migration
 			$table->integer('WalletID')->autoIncrement();
 			$table->string('name');
 			$table->dateTime('created');
-			$table->dateTime('modified');
+			$table->dateTime('modified')->nullable();
 
 			$table->bigInteger('MemberID');
 			$table->foreign('MemberID')->references('MemberID')->on('utrata_members');

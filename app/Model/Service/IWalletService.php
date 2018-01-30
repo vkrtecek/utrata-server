@@ -39,23 +39,23 @@ interface IWalletService
 	public function getWallet($id, Member $member);
 
 	/**
-	 * @param $data
+	 * @param Member $member
+	 * @param string $name
 	 * @return Wallet
-	 * @throws AlreadyExistException
-	 * @throws BadRequestHttpException
-	 * @throws NotFoundException
 	 */
-	public function createWallet($data);
+	public function createWallet(Member $member, $name);
 
 	/**
+	 * @param Member $member
 	 * @param int $id
-	 * @param $data
+	 * @param string $name
 	 * @return Wallet
 	 * @throws NotFoundException
 	 * @throws BadParameterException
 	 * @throws BadRequestHttpException
+	 * @throws AuthenticationException
 	 */
-	public function updateWallet($id, $data);
+	public function updateWallet(Member $member, $id, $name);
 
 	/**
 	 * @param int $id

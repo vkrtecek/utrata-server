@@ -9,8 +9,10 @@ use App\Model\Exception\NotFoundException;
 use App\Model\Service\IMemberService;
 use App\Model\Service\IWalletService;
 use App\Model\Service\MemberService;
+use App\Model\Service\WalletService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class WalletController extends AbstractController
 {
@@ -65,6 +67,46 @@ class WalletController extends AbstractController
 		}
 
 		return Response::create($formatted, Response::HTTP_OK);
+	}
+
+
+	/**
+	 * @param Request $req
+	 * @return Response
+	 */
+	public function create(Request $req) {
+		$this->assumeLogged($req);
+		$member = $this->loggedUser($req);
+		$name = $req->get('name');
+
+		$wallet = $this->walletService->createWallet($member, $name);
+		return Response::create($wallet->getId(), Response::HTTP_CREATED);
+	}
+
+
+	/**
+	 * @param Request $req
+	 * @param int $id
+	 * @return Response
+	 */
+	public function update(Request $req, $id) {
+		$this->assumeLogged($req);
+		$member = $this->loggedUser($req);
+		$name = $req->get('name');
+
+		try {
+			$wallet = $this->walletService->updateWallet($member, $id, $name);
+			$wallet = $this->walletService->format($wallet);
+		} catch (NotFoundException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
+		} catch (BadParameterException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
+		} catch (BadRequestHttpException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
+		} catch (AuthenticationException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_FORBIDDEN);
+		}
+		return Response::create($wallet, Response::HTTP_OK);
 	}
 
 	/**

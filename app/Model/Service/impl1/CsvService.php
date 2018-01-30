@@ -45,34 +45,34 @@ class CsvService implements IFileService
 	 */
 	public function getBackup(Member $member) {
 		$content = new File();
-		$content->append(self::formatMember($member));
+		$content->appendLine(self::formatMember($member));
 
 		//purposes
 		$memberPurposes = $member->getMemberPurposes();
-		$content->append(count($memberPurposes));
+		$content->appendLine(count($memberPurposes));
 		foreach ($memberPurposes as $memberPurpose) {
 			$purpose = $memberPurpose->getPurpose();
-			$content->append(self::formatPurpose($purpose));
+			$content->appendLine(self::formatPurpose($purpose));
 		}
 
 		//wallets
 		$wallets = $member->getWallets();
-		$content->append(count($wallets));
+		$content->appendLine(count($wallets));
 		foreach ($wallets as $wallet)
-			$content->append(self::formatWallet($wallet));
+			$content->appendLine(self::formatWallet($wallet));
 
 		//items
 		$items = $member->getItems();
-		$content->append(count($items));
+		$content->appendLine(count($items));
 		foreach ($items as $item)
-			$content->append(self::formatItem($item));
+			$content->appendLine(self::formatItem($item));
 
 
 		//checksates
 		$checkStates = $member->getCheckStates();
-		$content->append(count($checkStates));
+		$content->appendLine(count($checkStates));
 		foreach ($checkStates as $checkState)
-			$content->append(self::formatCheckState($checkState));
+			$content->appendLine(self::formatCheckState($checkState));
 
 
 		return $content->getContent();

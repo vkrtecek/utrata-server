@@ -71,23 +71,36 @@ class WalletService implements IWalletService
 	}
 
 	/**
-	 * @param $data
+	 * @param Member $member
+	 * @param string $name
 	 * @return Wallet
-	 * @throws AlreadyExistException
-	 * @throws BadRequestHttpException
-	 * @throws NotFoundException
 	 */
-	public function createWallet($data) {}
+	public function createWallet(Member $member, $name) {
+		$wallet = new Wallet();
+		$wallet->setMember($member);
+		$wallet->setName($name);
+		$this->walletDao->create($wallet);
+		return $wallet;
+	}
 
 	/**
+	 * @param Member $member
 	 * @param int $id
-	 * @param $data
+	 * @param string $name
 	 * @return Wallet
 	 * @throws NotFoundException
 	 * @throws BadParameterException
 	 * @throws BadRequestHttpException
+	 * @throws AuthenticationException
 	 */
-	public function updateWallet($id, $data) {}
+	public function updateWallet(Member $member, $id, $name) {
+		$wallet = $this->walletDao->findOne($id);
+		if ($wallet->getMember()->getId() !== $member->getId())
+			throw new AuthenticationException('WalletService: Member is not owner of this wallet.');
+		$wallet->setName($name);
+		$this->walletDao->update($wallet);
+		return $wallet;
+	}
 
 	/**
 	 * @param int $id

@@ -12,8 +12,7 @@ class Wallet extends Model
 
 	public $primaryKey = 'WalletID';
 
-	const CREATED_AT = 'created';
-	const UPDATED_AT = 'modified';
+	public $timestamps = false;
 
 	/**
 	 * @return int

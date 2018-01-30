@@ -294,4 +294,21 @@ class Member extends Model
 	public function getCheckStates() {
 		return CheckState::where('MemberID', $this->MemberID)->get();
 	}
+
+
+	/**
+	 * @param string $login
+	 * @return boolean
+	 */
+	public static function uniqueLogin($login) {
+		return count(Member::where('login', $login)->get()) == 0;
+	}
+
+	/**
+	 * @param string $mail
+	 * @return boolean
+	 */
+	public static function uniqueMail($mail) {
+		return count(Member::where('myMail', $mail)->get()) == 0;
+	}
 }

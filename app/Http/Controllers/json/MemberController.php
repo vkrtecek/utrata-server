@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\Entity\File;
 use App\Model\Exception\SecurityException;
 use App\Model\Service\IMemberService;
 use Illuminate\Http\Request;

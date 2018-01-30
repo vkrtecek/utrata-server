@@ -81,11 +81,11 @@ Route::get('/translations', 'TranslationController@gets');
 /*##################-  Wallet  -######################*/
 Route::get('/wallets', 'WalletController@getUserWallets');
 Route::get('/wallet', 'WalletController@get');
-//Route::post('/wallet', 'WalletController@create');
-//Route::put('/wallet', 'WalletController@update');
+Route::post('/wallet', 'WalletController@create');
+Route::put('/wallet/{id}', 'WalletController@update');
 Route::delete('/wallet/{id}', 'WalletController@delete');
 
 
 /*###################-  File  -#######################*/
 Route::get('/member/backup', 'FileController@backup');
-//Route::post('/member/backup', 'FileController@store');
+//Route::post('/member/import', 'FileController@store');

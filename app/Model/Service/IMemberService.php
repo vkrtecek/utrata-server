@@ -49,6 +49,7 @@ interface IMemberService
 	 * @throws AlreadyExistException
 	 * @throws BadRequestHttpException
 	 * @throws BadParameterException
+	 * @throws AlreadyExistException
 	 */
 	public function createMember($data);
 
@@ -59,6 +60,7 @@ interface IMemberService
 	 * @throws NotFoundException
 	 * @throws BadRequestHttpException
 	 * @throws BadParameterException
+	 * @throws AlreadyExistException
 	 */
 	public function updateMember($login, $data);
 
@@ -76,6 +78,9 @@ interface IMemberService
 	 * @param $data
 	 * @return int
 	 * @throws BadParameterException
+	 * @throws NotFoundException
+	 * @throws BadRequestHttpException
+	 * @throws AlreadyExistException
 	 */
 	public function interactWithFacebook($data);
 

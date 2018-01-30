@@ -46,6 +46,17 @@ abstract class AbstractController extends Controller
 	}
 
 	/**
+	 * @param Request $req
+	 * @throws AuthenticationException
+	 */
+	protected function assumeAdmin(Request $req) {
+		$this->assumeLogged($req);
+		$member = $this->loggedUser($req);
+		if (!$member->isAdmin())
+			throw new AuthenticationException('Not admin');
+	}
+
+	/**
 	 * @return Member
 	 * @throws NotFoundException
 	 */
