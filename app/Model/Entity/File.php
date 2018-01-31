@@ -18,15 +18,16 @@ class File
 	/** @var int */
 	private $line = 0;
 	/** @var string */
-	private $separator = "\r\n";
+	private $separator = PHP_EOL;
 
 	/**
 	 * File constructor.
 	 * @param string $content
 	 */
 	public function __construct($content = NULL) {
-		if ($content)
+		if ($content) {
 			$this->content = explode($this->separator, $content);
+		}
 	}
 
 	/**
@@ -42,7 +43,7 @@ class File
 	 */
 	public function getLine() {
 		if ($this->line >= count($this->content))
-			throw new EOFException();
+			throw new EOFException('No such line in that file');
 		return $this->content[$this->line++];
 	}
 

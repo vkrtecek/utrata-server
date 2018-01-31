@@ -71,12 +71,13 @@ class ItemService implements IItemService
 	 * @param string $pattern
 	 * @param string $orderBy
 	 * @param string $orderHow
+	 * @param int $limit
 	 * @return Item[]
 	 * @throws NotFoundException
 	 * @throws BadParameterException
 	 * @throws AuthenticationException
 	 */
-	public function getWalletItems($walletId, Member $member, $state, $month, $notes, $year, $pattern, $orderBy, $orderHow){
+	public function getWalletItems($walletId, Member $member, $state, $month, $notes, $year, $pattern, $orderBy, $orderHow, $limit){
 		if ($state == NULL) $state = ItemState::UNCHECKED;
 		if (!$walletId)
 			throw new BadRequestHttpException('ItemService: "walletId" missing');
@@ -84,7 +85,7 @@ class ItemService implements IItemService
 		$notes = explode(',', $notes);
 		$filters = (new ItemFilter())->setWalletId($walletId)->setMonth($month)
 			->setNotes($notes)->setYear($year)->setPattern($pattern)
-			->setOrderBy($orderBy)->setOrderHow($orderHow);
+			->setOrderBy($orderBy)->setOrderHow($orderHow)->setLimit($limit);
 
 		$items = $this->itemDao->findByFilter($filters);
 		if (!count($items))

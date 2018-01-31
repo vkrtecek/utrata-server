@@ -79,7 +79,14 @@ class PurposeService implements IPurposeService
 	 * @throws BadParameterException
 	 * @throws NotFoundException
 	 */
-	public function getPurpose($id) {}
+	public function getPurpose($id) {
+		if ((string)((int)$id) != $id || (int)$id < 1)
+			throw new BadParameterException('Not integer or smaller than 1');
+		$purpose = $this->purposeDao->findOne($id);
+		if (!$purpose)
+			throw new NotFoundException('No Purpose found.');
+		return $purpose;
+	}
 
 	/**
 	 * @param $data

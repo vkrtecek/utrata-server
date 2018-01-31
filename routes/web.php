@@ -87,5 +87,5 @@ Route::delete('/wallet/{id}', 'WalletController@delete');
 
 
 /*###################-  File  -#######################*/
-Route::get('/member/backup', 'FileController@backup');
-//Route::post('/member/import', 'FileController@store');
+Route::get('/file/backup', 'FileController@backup');
+Route::post('/file/import', 'FileController@store');

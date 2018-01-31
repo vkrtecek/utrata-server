@@ -9,6 +9,8 @@
 namespace App\Http\Controllers;
 
 
+use App\Model\Exception\EOFException;
+use App\Model\Exception\FileParseException;
 use App\Model\Service\IFileService;
 use App\Model\Service\IMemberService;
 use Illuminate\Http\Request;
@@ -29,6 +31,11 @@ class FileController extends AbstractController
 		$this->fileService = $fileService;
 	}
 
+
+	/**
+	 * @param Request $req
+	 * @return Response
+	 */
 	public function backup(Request $req) {
 		$this->assumeLogged($req);
 		$member = $this->loggedUser($req);
@@ -40,14 +47,22 @@ class FileController extends AbstractController
 		return Response::create(['content' => $file], Response::HTTP_OK);
 	}
 
+
+
+	/**
+	 * @param Request $req
+	 * @return Response
+	 */
 	public function store(Request $req) {
 		$this->assumeLogged($req);
 		$member = $this->loggedUser($req);
-		$file = $req->get('file');
+		$content = $req->get('data');
 		try {
-			$bool = $this->fileService->storeBackup($member, $file);
-		} catch (\Exception $ex) {
-			return Response::create($ex->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+			$bool = $this->fileService->storeBackup($member, $content);
+		} catch (FileParseException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+		} catch (EOFException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_CONFLICT);
 		}
 		return Response::create(['success' => $bool], Response::HTTP_OK);
 	}

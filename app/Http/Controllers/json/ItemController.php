@@ -45,9 +45,10 @@ class ItemController extends AbstractController
 		$pattern = $req->get('pattern');
 		$orderBy = $req->get('orderBy');
 		$orderHow = $req->get('orderHow');
+		$limit = $req->get('limit');
 
 		try {
-			$items = $this->itemService->getWalletItems($walletId, $member, $state, $month, $notes, $year, $pattern, $orderBy, $orderHow);
+			$items = $this->itemService->getWalletItems($walletId, $member, $state, $month, $notes, $year, $pattern, $orderBy, $orderHow, $limit);
 			$formatted = ItemService::formatEntites($items);
 		} catch (NotFoundException $ex) {
 			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NO_CONTENT);

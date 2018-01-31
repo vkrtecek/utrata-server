@@ -29,13 +29,6 @@ class Member extends Model
 	}
 
 	/**
-	 * @param int $id
-	 */
-	public function setId($id) {
-		$this->MemberID = $id;
-	}
-
-	/**
 	 * @return string
 	 */
 	public function getFirstName() {
@@ -44,9 +37,11 @@ class Member extends Model
 
 	/**
 	 * @param string $firstName
+	 * @return Member
 	 */
 	public function setFirstName($firstName) {
 		$this->firstName = $firstName;
+		return $this;
 	}
 
 	/**
@@ -58,9 +53,11 @@ class Member extends Model
 
 	/**
 	 * @param string $lastName
+	 * @return Member
 	 */
 	public function setLastName($lastName) {
 		$this->lastName = $lastName;
+		return $this;
 	}
 
 	/**
@@ -72,9 +69,11 @@ class Member extends Model
 
 	/**
 	 * @param string $login
+	 * @return Member
 	 */
 	public function setLogin($login) {
 		$this->login = $login;
+		return $this;
 	}
 
 	/**
@@ -86,9 +85,11 @@ class Member extends Model
 
 	/**
 	 * @param string $password
+	 * @return Member
 	 */
 	public function setPassword($password) {
 		$this->passwordHash = $password;
+		return $this;
 	}
 
 	/**
@@ -100,9 +101,11 @@ class Member extends Model
 
 	/**
 	 * @param boolean $sednMonthly
+	 * @return Member
 	 */
 	public function setSendMonthly($sednMonthly) {
 		$this->sendMonthly = $sednMonthly;
+		return $this;
 	}
 
 	/**
@@ -114,9 +117,11 @@ class Member extends Model
 
 	/**
 	 * @param boolean $sendByOne
+	 * @return Member
 	 */
 	public function setSendByOne($sendByOne) {
 		$this->sendByOne = $sendByOne;
+		return $this;
 	}
 
 	/**
@@ -128,9 +133,11 @@ class Member extends Model
 
 	/**
 	 * @param string $mail
+	 * @return Member
 	 */
 	public function setMotherMail($mail) {
 		$this->motherMail = $mail;
+		return $this;
 	}
 
 	/**
@@ -142,9 +149,11 @@ class Member extends Model
 
 	/**
 	 * @param string $mail
+	 * @return Member
 	 */
 	public function setMyMail($mail) {
 		$this->myMail = $mail;
+		return $this;
 	}
 
 	/**
@@ -212,9 +221,11 @@ class Member extends Model
 
 	/**
 	 * @param boolean $facebook
+	 * @return Member
 	 */
 	public function setFacebook($facebook) {
 		$this->facebook = $facebook;
+		return $this;
 	}
 
 	/**
@@ -226,9 +237,11 @@ class Member extends Model
 
 	/**
 	 * @param DateTime $access
+	 * @return Member
 	 */
 	public function setAccess(DateTime $access) {
 		$this->access = $access->format('Y-m-d H:i:s');
+		return $this;
 	}
 
 	/**
@@ -240,9 +253,11 @@ class Member extends Model
 
 	/**
 	 * @param Language $language
+	 * @return Member
 	 */
 	public function setLanguage(Language $language) {
 		$this->LanguageCode = $language->getCode();
+		return $this;
 	}
 
 	/**
@@ -254,9 +269,11 @@ class Member extends Model
 
 	/**
 	 * @param Currency $currency
+	 * @return Member
 	 */
 	public function setCurrency(Currency $currency) {
 		$this->CurrencyID = $currency->getId();
+		return $this;
 	}
 
 

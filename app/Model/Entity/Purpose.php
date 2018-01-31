@@ -29,13 +29,6 @@ class Purpose extends Model
 	}
 
 	/**
-	 * @param int $id
-	 */
-	public function setId($id) {
-		$this->PurposeID = $id;
-	}
-
-	/**
 	 * @return string
 	 */
 	public function getCode() {
@@ -44,9 +37,11 @@ class Purpose extends Model
 
 	/**
 	 * @param string $code
+	 * @return Purpose
 	 */
 	public function setCode($code) {
 		$this->code = $code;
+		return $this;
 	}
 
 	/**
@@ -58,23 +53,27 @@ class Purpose extends Model
 
 	/**
 	 * @param string $value
+	 * @return Purpose
 	 */
 	public function setValue($value) {
 		$this->value = $value;
+		return $this;
 	}
 
 	/**
 	 * @return boolean
 	 */
-	public function getBase() {
+	public function isBase() {
 		return $this->base;
 	}
 
 	/**
 	 * @param boolean $base
+	 * @return Purpose
 	 */
 	public function setBase($base) {
 		$this->base = $base;
+		return $this;
 	}
 
 	/**
@@ -86,9 +85,11 @@ class Purpose extends Model
 
 	/**
 	 * @param Language $language
+	 * @return Purpose
 	 */
 	public function setLanguage(Language $language) {
 		$this->LanguageCode = $language->getCode();
+		return $this;
 	}
 
 	/**
@@ -100,8 +101,10 @@ class Purpose extends Model
 
 	/**
 	 * @param Member $creator
+	 * @return Purpose
 	 */
 	public function setCreator(Member $creator) {
 		$this->CreatorID = $creator->getId();
+		return $this;
 	}
 }

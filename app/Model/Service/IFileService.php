@@ -10,6 +10,8 @@ namespace App\Model\Service;
 
 
 use App\Model\Entity\Member;
+use App\Model\Exception\EOFException;
+use App\Model\Exception\FileParseException;
 
 interface IFileService
 {
@@ -21,8 +23,10 @@ interface IFileService
 
 	/**
 	 * @param Member $member
-	 * @param string $file
+	 * @param string $content
 	 * @return boolean
+	 * @throws FileParseException
+	 * @throws EOFException
 	 */
-	public function storeBackup(Member $member, $file);
+	public function storeBackup(Member $member, $content);
 }

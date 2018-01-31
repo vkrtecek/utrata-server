@@ -46,6 +46,11 @@ class ItemFilter
 	 */
 	private $orderHow = 'desc';
 
+	/**
+	 * @var int
+	 */
+	private $limit;
+
 
 	/**
 	 * ItemFilter constructor.
@@ -194,5 +199,24 @@ class ItemFilter
 		if ($orderHow != "") $this->orderHow = $orderHow;
 		return $this;
 	}
+
+	/**
+	 * @return int
+	 */
+	public function getLimit()
+	{
+		return $this->limit;
+	}
+
+	/**
+	 * @param int $limit
+	 * @return ItemFilter
+	 */
+	public function setLimit($limit)
+	{
+		$this->limit = $limit;
+		return $this;
+	}
+
 
 }

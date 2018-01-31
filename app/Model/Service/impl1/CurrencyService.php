@@ -25,8 +25,7 @@ class CurrencyService implements ICurrencyService
 	 * CurrencyService constructor.
 	 * @param ICurrencyDAO $currencyDAO
 	 */
-	public function __construct(ICurrencyDAO $currencyDAO)
-	{
+	public function __construct(ICurrencyDAO $currencyDAO) {
 		$this->currencyDao = $currencyDAO;
 	}
 
@@ -42,7 +41,15 @@ class CurrencyService implements ICurrencyService
 	 * @throws BadParameterException
 	 * @throws NotFoundException
 	 */
-	public function getCurrency($id) {}
+	public function getCurrency($id) {
+		if ((string)((int)$id) != $id || (int)$id < 1)
+			throw new BadParameterException('Not integer or smaller than 1');
+		$currency = $this->currencyDao->findOne($id);
+		if (!$currency)
+			throw new NotFoundException('No Currency found');
+
+		return $currency;
+	}
 
 	/**
 	 * @param $data

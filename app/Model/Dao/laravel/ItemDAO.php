@@ -55,6 +55,7 @@ class ItemDAO implements IItemDAO
 			$items->where('mainName', 'LIKE', '%' . $filters->getPattern() . '%' )
 			->orWhere('description', 'LIKE', $filters->getPattern());
 		$items->orderBy($filters->getOrderBy(), $filters->getOrderHow());
+		if ($filters->getLimit()) $items->limit($filters->getLimit());
 
 		return $items->get();
 	}

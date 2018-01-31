@@ -30,12 +30,13 @@ interface IItemService
 	 * @param string $pattern
 	 * @param string $orderBy
 	 * @param string $orderHow
+	 * @param int $limit
 	 * @return Item[]
 	 * @throws NotFoundException
 	 * @throws BadParameterException
 	 * @throws AuthenticationException
 	 */
-	public function getWalletItems($walletId, Member $member, $state, $month, $notes, $year, $pattern, $orderBy, $orderHow);
+	public function getWalletItems($walletId, Member $member, $state, $month, $notes, $year, $pattern, $orderBy, $orderHow, $limit);
 
 	/**
 	 * @param int $id
