@@ -60,7 +60,7 @@ class FileController extends AbstractController
 		try {
 			$bool = $this->fileService->storeBackup($member, $content);
 		} catch (FileParseException $ex) {
-			return Response::create(['error' => $ex->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_EXPECTATION_FAILED);
 		} catch (EOFException $ex) {
 			return Response::create(['error' => $ex->getMessage()], Response::HTTP_CONFLICT);
 		}

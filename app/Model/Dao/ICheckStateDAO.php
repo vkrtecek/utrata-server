@@ -32,10 +32,16 @@ interface ICheckStateDAO
 	 */
 	public function findLastByColumn($key, $val);
 
-    /**
-     * @param CheckState $checkState
-     * @return CheckState
-     */
-    public function create(CheckState $checkState);
+	/**
+	 * @param CheckState $checkState
+	 * @return CheckState
+	 */
+	public function create(CheckState $checkState);
+
+	/**
+	 * @param CheckState $checkState
+	 * @return CheckState
+	 */
+	public function update(CheckState $checkState);
 
 }

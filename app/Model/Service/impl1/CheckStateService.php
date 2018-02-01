@@ -46,7 +46,14 @@ class CheckStateService implements ICheckStateService
 	 * @throws NotFoundException
 	 * @throws BadParameterException
 	 */
-	public function getCheckState($id) {}
+	public function getCheckState($id) {
+		if (!ctype_digit($id) || $id < 1)
+			throw new BadParameterException('Not INTEGER or smaller that 1');
+		$checkState = $this->checkSateDao->findOne($id);
+		if (!$checkState)
+			throw new NotFoundException('No CheckState found');
+		return $checkState;
+	}
 
 	/**
 	 * @param $data

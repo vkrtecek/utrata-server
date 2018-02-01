@@ -20,21 +20,13 @@ class Item extends Model
 
 	public $primaryKey = 'ItemID';
 
-	const CREATED_AT = 'created';
-	const UPDATED_AT = 'modified';
+	public $timestamps = false;
 
 	/**
 	 * @return int
 	 */
 	public function getId() {
 		return $this->ItemID;
-	}
-
-	/**
-	 * @param int $id
-	 */
-	public function setId($id) {
-		$this->ItemID = $id;
 	}
 
 	/**
@@ -46,9 +38,11 @@ class Item extends Model
 
 	/**
 	 * @param string $name
+	 * @return Item
 	 */
 	public function setName($name) {
 		$this->mainName = $name;
+		return $this;
 	}
 
 	/**
@@ -60,9 +54,11 @@ class Item extends Model
 
 	/**
 	 * @param string
+	 * @return Item
 	 */
 	public function setDescription($desc) {
 		$this->description = $desc;
+		return $this;
 	}
 
 	/**
@@ -74,9 +70,11 @@ class Item extends Model
 
 	/**
 	 * @param double $price
+	 * @return Item
 	 */
 	public function setPrice($price) {
 		$this->price = $price;
+		return $this;
 	}
 
 	/**
@@ -88,9 +86,11 @@ class Item extends Model
 
 	/**
 	 * @param double $course
+	 * @return Item
 	 */
 	public function setCourse($course) {
 		$this->course = $course;
+		return $this;
 	}
 
 	/**
@@ -102,9 +102,11 @@ class Item extends Model
 
 	/**
 	 * @param DateTime $date
+	 * @return Item
 	 */
 	public function setDate(DateTime $date) {
 		$this->date = $date->format('Y-m-d H:i:s');
+		return $this;
 	}
 
 	/**
@@ -144,12 +146,14 @@ class Item extends Model
 
 	/**
 	 * @param string $type
+	 * @return Item
 	 * @throws BadParameterException
 	 */
 	public function setType($type) {
 		if (!ItemType::isType($type))
 			throw new BadParameterException('Item: Unexpected type value');
 		$this->type = $type;
+		return $this;
 	}
 
 	/**
@@ -161,9 +165,11 @@ class Item extends Model
 
 	/**
 	 * @param boolean $active
+	 * @return Item
 	 */
 	public function setActive($active) {
 		$this->active = $active;
+		return $this;
 	}
 
 	/**
@@ -175,9 +181,11 @@ class Item extends Model
 
 	/**
 	 * @param boolean $income
+	 * @return Item
 	 */
 	public function setIncome($income) {
 		$this->income = $income;
+		return $this;
 	}
 
 	/**
@@ -189,9 +197,11 @@ class Item extends Model
 
 	/**
 	 * @param boolean $vyber
+	 * @return Item
 	 */
 	public function setVyber($vyber) {
 		$this->vyber = $vyber;
+		return $this;
 	}
 
 	/**
@@ -203,9 +213,11 @@ class Item extends Model
 
 	/**
 	 * @param boolean $odepsat
+	 * @return Item
 	 */
 	public function setOdepsat($odepsat) {
 		$this->odepsat = $odepsat;
+		return $this;
 	}
 
 	/**
@@ -217,9 +229,11 @@ class Item extends Model
 
 	/**
 	 * @param Purpose $purpose
+	 * @return Item
 	 */
 	public function setNote(Purpose $purpose) {
 		$this->PurposeID = $purpose->getId();
+		return $this;
 	}
 
 	/**
@@ -231,9 +245,11 @@ class Item extends Model
 
 	/**
 	 * @param Currency $currency
+	 * @return Item
 	 */
 	public function setCurrency(Currency $currency) {
 		$this->CurrencyID = $currency->getId();
+		return $this;
 	}
 
 	/**
@@ -245,9 +261,11 @@ class Item extends Model
 
 	/**
 	 * @param Wallet $wallet
+	 * @return Item
 	 */
 	public function setWallet(Wallet $wallet) {
 		$this->WalletID = $wallet->getId();
+		return $this;
 	}
 
 	/**
@@ -259,8 +277,10 @@ class Item extends Model
 
 	/**
 	 * @param Member $member
+	 * @return Item
 	 */
 	public function setMember(Member $member) {
 		$this->MemberID = $member->getId();
+		return $this;
 	}
 }

@@ -14,6 +14,9 @@ class ItemType
 	const CARD = 'karta';
 	const CASH = 'hotovost';
 
+	//number of types
+	const TYPES = 2;
+
 	/**
 	 * @param string $type
 	 * @return boolean

@@ -48,4 +48,14 @@ class CheckStateDAO implements ICheckStateDAO
 		$checkState->save();
         return $checkState;
     }
+
+	/**
+	 * @param CheckState $checkState
+	 * @return CheckState
+	 */
+	public function update(CheckState $checkState) {
+		$checkState->setChecked(new \DateTime());
+		$checkState->save();
+		return $checkState;
+	}
 }

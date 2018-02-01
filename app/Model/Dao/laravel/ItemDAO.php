@@ -100,4 +100,19 @@ class ItemDAO implements IItemDAO
 			throw new IntegrityException($ex->getMessage(), 0, $ex);
 		}
     }
+
+	/**
+	 * @param Item $item
+	 * @return Item|NULL
+	 */
+	public function checkExistence(Item $item) {
+		$item = Item::where('mainName', $item->getName())
+			->where('description', $item->getDescription())
+			->where('price', $item->getPrice())
+			->where('course', $item->getCourse())
+			->where('date', $item->getDate()->format('Y-m-d H:i:s'))
+			->where('WalletID', $item->getWallet()->getId())
+			->first();
+		return !$item ? NULL : $item;
+	}
 }

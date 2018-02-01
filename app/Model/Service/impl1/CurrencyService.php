@@ -52,6 +52,19 @@ class CurrencyService implements ICurrencyService
 	}
 
 	/**
+	 * @param string $column column in database
+	 * @param mixed $value
+	 * @return Currency
+	 * @throws NotFoundException
+	 */
+	public function getCurrencyByColumn($column, $value) {
+		$currency = $this->currencyDao->findOneByColumn($column, $value);
+		if (!$currency)
+			throw new NotFoundException('No Currency found');
+		return $currency;
+	}
+
+	/**
 	 * @param $data
 	 * @return Currency
 	 * @throws BadRequestHttpException
@@ -76,13 +89,6 @@ class CurrencyService implements ICurrencyService
 	 * @throws IntegrityException
 	 */
 	public function deleteCurrency($id) {}
-
-	/**
-	 * @param string $column column in database
-	 * @param mixed $value
-	 * @return Currency
-	 */
-	public function getCurrencyByColumn($column, $value) {}
 
 	/**
 	 * @param Currency $currency

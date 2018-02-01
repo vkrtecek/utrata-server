@@ -63,4 +63,10 @@ interface IItemDAO
      * @throws IntegrityException
      */
     public function delete(Item $item);
+
+	/**
+	 * @param Item $item
+	 * @return Item|NULL
+	 */
+	public function checkExistence(Item $item);
 }

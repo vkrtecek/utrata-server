@@ -9,6 +9,7 @@
 namespace App\Model\Entity;
 
 
+use App\Model\Enum\ItemType;
 use DateTime;
 use Illuminate\Database\Eloquent\Model;
 
@@ -310,6 +311,23 @@ class Member extends Model
 	 */
 	public function getCheckStates() {
 		return CheckState::where('MemberID', $this->MemberID)->get();
+	}
+
+
+	/**
+	 * @return CheckState[]
+	 */
+	public function getLastCheckStates() {
+		$ret = [];
+		$ret[] = CheckState::where('MemberID', $this->MemberID)
+			->where('type', ItemType::CARD)
+			->orderBy('checked', 'DESC')
+			->first();
+		$ret[] = CheckState::where('MemberID', $this->MemberID)
+			->where('type', ItemType::CASH)
+			->orderBy('checked', 'DESC')
+			->first();
+		return $ret;
 	}
 
 

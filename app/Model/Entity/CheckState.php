@@ -46,12 +46,14 @@ class CheckState extends Model
 
 	/**
 	 * @param string $type
+	 * @return CheckState
 	 * @throws BadParameterException
 	 */
 	public function setType($type) {
 		if (!ItemType::isType($type))
 			throw new BadParameterException('CheckState: Unexpected type value');
 		$this->type = $type;
+		return $this;
 	}
 
 	/**
@@ -63,9 +65,11 @@ class CheckState extends Model
 
 	/**
 	 * @param DateTime $checked
+	 * @return CheckState
 	 */
 	public function setChecked(DateTime $checked) {
 		$this->checked = $checked->format('Y-m-d H:i:s');
+		return $this;
 	}
 
 	/**
@@ -77,9 +81,11 @@ class CheckState extends Model
 
 	/**
 	 * @param double $value
+	 * @return CheckState
 	 */
 	public function setValue($value) {
 		$this->value = $value;
+		return $this;
 	}
 
 	/**

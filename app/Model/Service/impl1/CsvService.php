@@ -9,6 +9,8 @@
 namespace App\Model\Service;
 
 
+use App\Model\Dao\ICheckStateDAO;
+use App\Model\Dao\IItemDAO;
 use App\Model\Dao\IPurposeDAO;
 use App\Model\Dao\IWalletDAO;
 use App\Model\Entity\CheckState;
@@ -17,6 +19,8 @@ use App\Model\Entity\Item;
 use App\Model\Entity\Member;
 use App\Model\Entity\Purpose;
 use App\Model\Entity\Wallet;
+use App\Model\Enum\ItemType;
+use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\BadParameterException;
 use App\Model\Exception\EOFException;
 use App\Model\Exception\FileParseException;
@@ -38,17 +42,26 @@ use App\Model\Exception\NotFoundException;
  */
 class CsvService implements IFileService
 {
+	//avoid to have only one field
+	// couse it could be confused with line describing number of following rows
+	// in bad format of CSV file
 	const MEMBER_FIELDS = 12;
 	const PURPOSE_FIELDS = 6;
-	const WALLET_FIELDS = 3;
-	const ITEM_FIELDS = 14;
-	const CHECK_STATE_FIELDS = 3;
+	const WALLET_FIELDS = 2;
+	const ITEM_FIELDS = 15;
+	const CHECK_STATE_FIELDS = 4;
 
 	/** @var IPurposeDAO */
 	protected $purposeDao;
 
 	/** @var IWalletDAO */
 	protected $walletDao;
+
+	/** @var IItemDAO */
+	protected $itemDao;
+
+	/** @var ICheckStateDAO */
+	protected $checkStateDao;
 
 	/** @var IWalletService */
 	protected $walletService;
@@ -75,6 +88,8 @@ class CsvService implements IFileService
 	 * CsvService constructor.
 	 * @param IPurposeDAO $purposeDAO
 	 * @param IWalletDAO $walletDAO
+	 * @param IItemDAO $itemDAO
+	 * @param ICheckStateDAO $checkStateDAO
 	 * @param IWalletService $walletService
 	 * @param ICheckStateService $checkStateService
 	 * @param IPurposeService $purposeService
@@ -86,6 +101,8 @@ class CsvService implements IFileService
 	public function __construct(
 		IPurposeDAO $purposeDAO,
 		IWalletDAO $walletDAO,
+		IItemDAO $itemDAO,
+		ICheckStateDAO $checkStateDAO,
 		IWalletService $walletService,
 		ICheckStateService $checkStateService,
 		IPurposeService $purposeService,
@@ -96,6 +113,8 @@ class CsvService implements IFileService
 	) {
 		$this->purposeDao = $purposeDAO;
 		$this->walletDao = $walletDAO;
+		$this->itemDao = $itemDAO;
+		$this->checkStateDao = $checkStateDAO;
 		$this->walletService = $walletService;
 		$this->checkStateService = $checkStateService;
 		$this->purposeService = $purposeService;
@@ -104,6 +123,21 @@ class CsvService implements IFileService
 		$this->memberService = $memberService;
 		$this->itemService = $itemService;
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	/**
 	 * @param Member $member
@@ -135,7 +169,7 @@ class CsvService implements IFileService
 
 
 		//checksates
-		$checkStates = $member->getCheckStates();
+		$checkStates = $member->getLastCheckStates();
 		$content->appendLine(count($checkStates));
 		foreach ($checkStates as $checkState)
 			$content->appendLine(self::formatCheckState($checkState));
@@ -158,7 +192,7 @@ class CsvService implements IFileService
 		//purposes
 		$purposes = [];
 		$purposeCnt = $file->getLine();
-		if ((string)((int)$purposeCnt) != $purposeCnt)
+		if (!ctype_digit($purposeCnt))
 			throw new FileParseException('Parse: Purpose count number not integer');
 		for ($i = 0; $i < $purposeCnt; $i++) {
 			try {
@@ -171,13 +205,42 @@ class CsvService implements IFileService
 		//wallets
 		$wallets = [];
 		$walletsCnt = $file->getLine();
-		if ((string)((int)$walletsCnt) != $walletsCnt)
+		if (!ctype_digit($walletsCnt))
 			throw new FileParseException('Parse: Wallet count number not integer');
 		for ($i = 0; $i < $walletsCnt; $i++) {
 			try {
 				$wallets[] = $this->getWallet($file->getLine(), $member);
 			} catch (FileParseException $ex) {
 				throw new FileParseException(($i+1) . 'nt Wallet: ' . $ex->getMessage(), 0, $ex);
+			}
+		}
+
+		//items
+		$items = [];
+		$itemsCnt = $file->getLine();
+		if (!ctype_digit($walletsCnt))
+			throw new FileParseException('Parse: Item count number not integer');
+		for ($i = 0; $i < $itemsCnt; $i++) {
+			try {
+				$items[] = $this->getItem($file->getLine(), $member);
+			} catch (FileParseException $ex) {
+				throw new FileParseException(($i+1) . 'nt Item: ' . $ex->getMessage(), 0, $ex);
+			}
+		}
+
+
+		//checkstates
+		$checkStates = [];
+		$checkStatesCnt = $file->getLine();
+		if (!ctype_digit($checkStatesCnt))
+			throw new FileParseException('Parse: CheckState count number not integer');
+		if ($checkStatesCnt != ItemType::TYPES)
+			throw new FileParseException('Parse: CheckState count expected: ' . ItemType::TYPES . ', got ' . $checkStatesCnt);
+		for ($i = 0; $i < $checkStatesCnt; $i++) {
+			try {
+				$checkStates[] = $this->getCheckState($file->getLine(), $member);
+			} catch (FileParseException $ex) {
+				throw new FileParseException(($i+1) . 'nt CheckState: ' . $ex->getMessage(), 0, $ex);
 			}
 		}
 
@@ -194,8 +257,13 @@ class CsvService implements IFileService
 
 
 
+
+
+
+
+
 	/**
-	 * converted Member into csv
+	 * convert Member into csv
 	 * @param Member $member
 	 * @return string
 	 */
@@ -215,7 +283,7 @@ class CsvService implements IFileService
 	}
 
 	/**
-	 * converted Purpose into csv
+	 * convert Purpose into csv
 	 * @param Purpose $purpose
 	 * @return string
 	 */
@@ -229,23 +297,23 @@ class CsvService implements IFileService
 	}
 
 	/**
-	 * converted Wallet into csv
+	 * convert Wallet into csv
 	 * @param Wallet $wallet
 	 * @return string
 	 */
 	private static function formatWallet(Wallet $wallet) {
 		return $wallet->getId() . ';' .
-			$wallet->getName() . ';' .
-			$wallet->getCreated()->format('Y-m-d H:i:s');
+			$wallet->getName();
 	}
 
 	/**
-	 * converted Item into csv
+	 * convert Item into csv
 	 * @param Item $item
 	 * @return string
 	 */
 	private static function formatItem(Item $item) {
-		return $item->getName() . ';' .
+		return $item->getId() . ';' .
+			$item->getName() . ';' .
 			$item->getDescription() . ';' .
 			$item->getPrice() . ';' .
 			$item->getCourse() . ';' .
@@ -262,12 +330,13 @@ class CsvService implements IFileService
 	}
 
 	/**
-	 * converted CheckSate into csv
+	 * convert CheckSate into csv
 	 * @param CheckState $checkState
 	 * @return string
 	 */
 	private static function formatCheckState(CheckState $checkState) {
-		return $checkState->getType() . ';' .
+		return $checkState->getId() . ';' .
+			$checkState->getType() . ';' .
 			$checkState->getChecked()->format('Y-m-d H:i:s') . ';' .
 			$checkState->getValue();
 	}
@@ -294,7 +363,7 @@ class CsvService implements IFileService
 
 
 	/**
-	 * converted csv into Member
+	 * convert csv into Member
 	 * @param string $string
 	 * @return Member
 	 * @throws FileParseException
@@ -356,7 +425,7 @@ class CsvService implements IFileService
 
 
 	/**
-	 * converted csv into Purpose
+	 * convert csv into Purpose
 	 * @param string $string
 	 * @return Purpose
 	 * @throws FileParseException
@@ -392,7 +461,7 @@ class CsvService implements IFileService
 
 
 	/**
-	 * converted csv into Wallet
+	 * convert csv into Wallet
 	 * @param string $string
 	 * @param Member $member
 	 * @return Wallet
@@ -401,9 +470,13 @@ class CsvService implements IFileService
 	private function getWallet($string, Member $member) {
 		if (count(explode(';', $string)) != self::WALLET_FIELDS)
 			throw new FileParseException(self::WALLET_FIELDS . ' fields expected, ' . count(explode(';', $string)) . ' given.');
-		list($id, $name, $created) = explode(';', $string);
+		list($id, $name) = explode(';', $string);
 		try {
 			$wallet = $this->walletService->getWallet($id, $member);
+			if ($wallet->getName() != $name) {
+				$wallet->setName($name);
+				$wallet = $this->walletDao->update($wallet);
+			}
 		} catch (BadParameterException $e) {
 			throw new FileParseException('WalletID not INTEGER or smaller than 1.');
 		} catch (\Exception $e) {
@@ -417,4 +490,197 @@ class CsvService implements IFileService
 		}
 		return $wallet;
 	}
+
+
+	/**
+	 * convert csv into Item
+	 * @param string $string
+	 * @param Member $member
+	 * @return Item
+	 * @throws FileParseException
+	 */
+	private function getItem($string, Member $member) {
+		if (count(explode(';', $string)) != self::ITEM_FIELDS)
+			throw new FileParseException(self::ITEM_FIELDS . ' fields expected, ' . count(explode(';', $string)) . ' given.');
+		list($id,
+			$name,
+			$desc,
+			$price,
+			$course,
+			$date,
+			$created,
+			$type,
+			$active,
+			$income,
+			$vyber,
+			$odepsat,
+			$_note,
+			$_currency,
+			$_wallet
+			) = explode(';', $string);
+		try {
+			$item = $this->itemService->getItem($id);
+			self::checkBeforeSettingItem($id, $name, $price, $course, $date, $created, $type, $active, $income, $vyber, $odepsat, $_note, $_currency, $_wallet);
+			if ($item->getName() != $name
+				|| $item->getDescription() != $desc
+				|| $item->getPrice() != $price
+				|| $item->getCourse() != $course
+				|| $item->getDate()->format('Y-m-d H:i:s') != $date
+				|| $item->getType() != $type
+				|| $item->isActive() != $active
+				|| $item->isIncome() != $income
+				|| $item->isVyber() != $vyber
+				|| $item->isOdepsat() != $odepsat
+				|| $item->getNote()->getId() != $_note
+				|| $item->getCurrency()->getId() != $_currency
+				|| $item->getWallet()->getId() != $_wallet
+			) {
+				$this->setItem($item, $member, $name, $desc, $price, $course, $date, $type, $active, $income, $vyber, $odepsat, $_note, $_currency, $_wallet);
+				$item = $this->itemDao->update($item);
+			}
+		} catch (BadParameterException $e) {
+			throw new FileParseException('ItemID not INTEGER or smaller than 1.' . $e->getMessage());
+		} catch (FileParseException $e) {
+			throw new FileParseException($e->getMessage());
+		} catch (NotFoundException $e) {
+			if ($name == "")
+				throw new FileParseException('Empty name');
+
+			//create new Item
+			self::checkBeforeSettingItem($id, $name, $price, $course, $date, $created, $type, $active, $income, $vyber, $odepsat, $_note, $_currency, $_wallet);
+			$item = new Item();
+			$this->setItem($item, $member, $name, $desc, $price, $course, $date, $type, $active, $income, $vyber, $odepsat, $_note, $_currency, $_wallet);
+			$item->setMember($member);
+
+			$res = $this->itemDao->checkExistence($item);
+			if (!$res) {
+				$item = $this->itemDao->create($item);
+			} else {
+				//item exists with other ItemID (has same data and FKs) so cannot create new one
+			}
+		} catch (\Exception $e) {
+			throw new FileParseException($e->getMessage());
+		}
+		return $item;
+	}
+
+
+	/**
+	 * @param string $string
+	 * @param Member $member
+	 * @return CheckState
+	 * @throws FileParseException
+	 */
+	private function getCheckState($string, Member $member) {
+		if (count(explode(';', $string)) != self::CHECK_STATE_FIELDS)
+			throw new FileParseException(self::CHECK_STATE_FIELDS . ' fields expected, ' . count(explode(';', $string)) . ' given.');
+		list($id, $type, $checked, $value) = explode(';', $string);
+		if (!ctype_digit($id)
+			|| !ItemType::isType($type)
+			|| (new \DateTime($checked))->format('Y-m-d H:i:s') != $checked
+			|| !is_numeric($value)
+		) throw new FileParseException('Some field is in bad format.');
+
+		try {
+			$checkState = $this->checkStateService->getCheckState($id);
+			if ($checkState->getMember()->getId() != $member->getId())
+				throw new FileParseException("CheckState's ID refers to other owner");
+
+			$checkState->setType($type)->setChecked(new \DateTime($checked))->setValue($value);
+			$this->checkStateDao->update($checkState);
+		} catch (\Exception $e) {
+			throw new FileParseException($e->getMessage());
+		}
+
+		return $checkState;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	/**
+	 * check if all properties are in good form
+	 * @param int $id
+	 * @param string $name
+	 * @param double $price
+	 * @param double $course
+	 * @param string $date
+	 * @param string $created
+	 * @param string $type
+	 * @param boolean $active
+	 * @param boolean $income
+	 * @param boolean $vyber
+	 * @param boolean $odepsat
+	 * @param int $_note
+	 * @param int $_currency
+	 * @param int $_wallet
+	 * @throws FileParseException
+	 */
+	private static function checkBeforeSettingItem($id, $name, $price, $course, $date, $created, $type, $active, $income, $vyber, $odepsat, $_note, $_currency, $_wallet) {
+		if (!ctype_digit($id)
+			|| $name == ""
+			|| !is_numeric($price)
+			|| !is_numeric($course)
+			|| $date != (new \DateTime($date))->format('Y-m-d H:i:s')
+			|| ($created != "" && $created != (new \DateTime($created))->format('Y-m-d H:i:s'))
+			|| !ItemType::isType($type)
+			|| !ctype_digit($active) || ($active != '1' && $active != '0')
+			|| !ctype_digit($income) || ($income != '1' && $income != '0')
+			|| !ctype_digit($vyber) || ($vyber != '1' && $vyber != '0')
+			|| !ctype_digit($odepsat) || ($odepsat != '1' && $odepsat != '0')
+			|| !ctype_digit($_note)
+			|| $_currency == ""
+			|| !ctype_digit($_wallet)
+		) throw new FileParseException('Some field has bad format');
+	}
+
+
+	/**
+	 * @param Item $item
+	 * @param Member $member for authentication of ownership of wallet
+	 * @param string $name
+	 * @param string $desc
+	 * @param double $price
+	 * @param double $course
+	 * @param string $date
+	 * @param string $type
+	 * @param boolean $active
+	 * @param boolean $income
+	 * @param boolean $vyber
+	 * @param boolean $odepsat
+	 * @param int $_note
+	 * @param int $_currency
+	 * @param int $_wallet
+	 * @throws FileParseException
+	 */
+	private function setItem(Item $item, Member $member, $name, $desc, $price, $course, $date, $type, $active, $income, $vyber, $odepsat, $_note, $_currency, $_wallet) {
+		try {
+			$note = $this->purposeService->getPurpose($_note);
+			$currency = $this->currencyService->getCurrencyByColumn('code', $_currency);
+			$wallet = $this->walletService->getWallet($_wallet, $member);
+		} catch (NotFoundException $e) {
+			throw new FileParseException("Note, Currency or Wallet with given ID doesn't exist");
+		} catch (AuthenticationException $e) {
+			throw new FileParseException($e->getMessage());
+		}
+
+		$item->setName($name)->setDescription($desc)->setPrice($price)->setCourse($course)
+			->setDate(new \DateTime($date))->setType($type)->setActive($active)->setIncome($income)
+			->setVyber($vyber)->setOdepsat($odepsat)->setNote($note)->setCurrency($currency)->setWallet($wallet);
+	}
+
 }
