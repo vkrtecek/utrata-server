@@ -33,7 +33,12 @@ class CurrencyService implements ICurrencyService
 	 * @return Currency[]
 	 * @throws NotFoundException
 	 */
-	public function getCurrencies() {}
+	public function getCurrencies() {
+		$currencies = $this->currencyDao->findAll();
+		if (count($currencies) == 0)
+			throw new NotFoundException('No Currency found');
+		return $currencies;
+	}
 
 	/**
 	 * @param int $id
@@ -94,11 +99,26 @@ class CurrencyService implements ICurrencyService
 	 * @param Currency $currency
 	 * @return array
 	 */
-	public static function format(Currency $currency) {}
+	public static function format(Currency $currency) {
+		$ret = [];
+
+		$ret['id'] = $currency->getId();
+		$ret['code'] = $currency->getCode();
+		$ret['value'] = $currency->getValue();
+		$ret['name'] = $currency->getName();
+
+		return $ret;
+
+	}
 
 	/**
 	 * @param Currency[] $currencies
 	 * @return array
 	 */
-	public static function formatEntites($currencies) {}
+	public static function formatEntites($currencies) {
+		$ret = [];
+		foreach ($currencies as $currency)
+			$ret[] = self::format($currency);
+		return $ret;
+	}
 }

@@ -54,8 +54,8 @@ class PurposeService implements IPurposeService
 	 */
 	public function getLanguagePurposes($code) {
 		$language = $this->languageService->getLanguage($code);
-		$purposes = $this->purposeDao->findByColumn('language', $language);
-		if ($purposes == NULL)
+		$purposes = $this->purposeDao->findByColumn('LanguageCode', $language->getCode());
+		if ($purposes == NULL || count($purposes) == 0)
 			throw new NotFoundException('PurposeService: No purpose found.');
 		return $purposes;
 	}

@@ -36,7 +36,7 @@ Route::post('/member/logout', 'MemberController@logout');
 
 
 /*##################-  Currency  -######################*/
-//Route::get('/currencies', 'CurrencyController@gets');
+Route::get('/currencies', 'CurrencyController@gets');
 //Route::get('/currency', 'CurrencyController@get');
 //Route::post('/currency', 'CurrencyController@create');
 //Route::put('/currency', 'CurrencyController@update');
@@ -48,7 +48,7 @@ Route::post('/member/logout', 'MemberController@logout');
 Route::get('/items/wallet/{walletId}', 'ItemController@getWalletItems');
 Route::get('/item', 'ItemController@get');
 Route::post('/item', 'ItemController@create');
-//Route::put('/item', 'ItemController@delete');
+Route::put('/item', 'ItemController@update');
 Route::put('/item/check/{id}', 'ItemController@check');
 Route::put('/items/check', 'ItemController@checkAll');
 Route::delete('/item/{id}', 'ItemController@delete');
@@ -64,6 +64,7 @@ Route::delete('/item/{id}', 'ItemController@delete');
 
 /*##################-  Note  -######################*/
 Route::get('/purposes', 'PurposeController@getUserPurposes');
+Route::get('/purposes/language/{code}', 'PurposeController@getLanguagePurposes');
 //Route::get('/purpose', 'PurposeController@get');
 //Route::post('/purpose', 'PurposeController@create');
 //Route::put('/purpose', 'PurposeController@update');

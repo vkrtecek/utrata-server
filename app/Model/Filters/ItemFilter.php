@@ -47,6 +47,21 @@ class ItemFilter
 	private $orderHow = 'desc';
 
 	/**
+	 * @var bool
+	 */
+	private $vyber = NULL;
+
+	/**
+	 * @var bool
+	 */
+	private $active = NULL;
+
+	/**
+	 * @var bool
+	 */
+	private $income = NULL;
+
+	/**
 	 * @var int
 	 */
 	private $limit;
@@ -217,6 +232,61 @@ class ItemFilter
 		$this->limit = $limit;
 		return $this;
 	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isVyber()
+	{
+		return $this->vyber;
+	}
+
+	/**
+	 * @param boolean $vyber
+	 * @return ItemFilter
+	 */
+	public function setVyber($vyber)
+	{
+		$this->vyber = $vyber;
+		return $this;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isActive()
+	{
+		return $this->active;
+	}
+
+	/**
+	 * @param boolean $active
+	 * @return ItemFilter
+	 */
+	public function setActive($active)
+	{
+		$this->active = $active;
+		return $this;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isIncome()
+	{
+		return $this->income;
+	}
+
+	/**
+	 * @param boolean $income
+	 * @return ItemFilter
+	 */
+	public function setIncome($income)
+	{
+		$this->income = $income;
+		return $this;
+	}
+
 
 
 }

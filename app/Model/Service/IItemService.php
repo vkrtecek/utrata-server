@@ -47,19 +47,22 @@ interface IItemService
 	public function getItem($id);
 
 	/**
+	 * @param Member $member
 	 * @param $data
 	 * @return Item
 	 * @throws BadRequestHttpException
 	 */
-	public function createItem($data);
+	public function createItem(Member $member, $data);
 
 	/**
+	 * @param Member $member
 	 * @param int $id
 	 * @return int
 	 * @throws NotFoundException
 	 * @throws BadParameterException
+	 * @throws AuthenticationException
 	 */
-	public function checkItem($id);
+	public function checkItem(Member $member, $id);
 
 	/**
 	 * @param int $walletId
@@ -70,15 +73,17 @@ interface IItemService
 	 * @param string $pattern
 	 * @param string $orderBy
 	 * @param string $orderHow
+	 * @param int $limit
 	 * @return int
 	 * @throws NotFoundException
 	 * @throws BadParameterException
 	 * @throws AuthenticationException
 	 */
-	public function checkAll($walletId, Member $member, $month, $notes, $year, $pattern, $orderBy, $orderHow);
+	public function checkAll($walletId, Member $member, $month, $notes, $year, $pattern, $orderBy, $orderHow, $limit);
 
 
 	/**
+	 * @param Member $member
 	 * @param int $id
 	 * @param $data
 	 * @return Item
@@ -86,16 +91,17 @@ interface IItemService
 	 * @throws BadParameterException
 	 * @throws BadRequestHttpException
 	 */
-	public function updateItem($id, $data);
+	public function updateItem(Member $member, $id, $data);
 
 	/**
-	 * @param int $id
+	 * @param Member $member
+	 * @param int $id id of item
 	 * @return int
 	 * @throws NotFoundException
 	 * @throws BadParameterException
 	 * @throws IntegrityException
 	 */
-	public function deleteItem($id);
+	public function deleteItem(Member $member, $id);
 
 	/**
 	 * @param Item $item

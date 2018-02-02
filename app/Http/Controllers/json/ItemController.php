@@ -11,6 +11,7 @@ use App\Model\Service\IMemberService;
 use App\Model\Service\ItemService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ItemController extends AbstractController
 {
@@ -80,11 +81,14 @@ class ItemController extends AbstractController
 	 */
 	public function check(Request $req, $id) {
 		$this->assumeLogged($req);
+		$member = $this->loggedUser($req);
 
 		try {
-			$this->itemService->checkItem($id);
+			$this->itemService->checkItem($member, $id);
 		} catch (NotFoundException $ex) {
 			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
+		} catch (AuthenticationException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_UNAUTHORIZED);
 		}
 		return Response::create($id, Response::HTTP_OK);
 	}
@@ -102,20 +106,44 @@ class ItemController extends AbstractController
 		$pattern = $req->get('pattern');
 		$orderBy = $req->get('orderBy');
 		$orderHow = $req->get('orderHow');
+		$limit = $req->get('limit');
 		try {
-			$res = $this->itemService->checkAll($walletId, $member, $month, $notes, $year, $pattern, $orderBy, $orderHow);
-		} catch (\Exception $ex) {
-			return Response::create(['error' => $ex->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+			$res = $this->itemService->checkAll($walletId, $member, $month, $notes, $year, $pattern, $orderBy, $orderHow, $limit);
+		} catch (NotFoundException $e) {
+			return Response::create(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+		} catch (BadParameterException $e) {
+			return Response::create(['error' => $e->getMessage()], Response::HTTP_NOT_ACCEPTABLE);
+		} catch (AuthenticationException $e) {
+			return Response::create(['error' => $e->getMessage()], Response::HTTP_UNAUTHORIZED);
 		}
 		return Response::create($res, Response::HTTP_OK);
 	}
 
 
+	/**
+	 * @param Request $req
+	 * @return Response
+	 */
+	public function update(Request $req) {
+		$this->assumeLogged($req);
+		$member = $this->loggedUser($req);
+		$data = $req->get('item');
+		if (!$data || !isset($data['id']))
+			return Response::create(['error' => 'Item missing'], Response::HTTP_BAD_REQUEST);
 
+		try {
+			$item = $this->itemService->updateItem($member, $data['id'], $data);
+			$formatted = ItemService::format($item);
+		} catch (NotFoundException $e) {
+			return Response::create(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+		} catch (BadParameterException $e) {
+			return Response::create(['error' => $e->getMessage()], Response::HTTP_NOT_ACCEPTABLE);
+		} catch (BadRequestHttpException $e) {
+			return Response::create(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+		}
 
-
-
-
+		return Response::create($formatted, Response::HTTP_ACCEPTED);
+	}
 
 
 	/**
@@ -125,9 +153,10 @@ class ItemController extends AbstractController
 	 */
 	protected function delete(Request $req, $id) {
 		$this->assumeLogged($req);
+		$member = $this->loggedUser($req);
 
 		try {
-			$this->itemService->deleteItem($id);
+			$this->itemService->deleteItem($member, $id);
 		} catch (NotFoundException $ex) {
 			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
 		} catch (BadParameterException $ex) {
