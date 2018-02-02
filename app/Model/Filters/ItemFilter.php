@@ -49,17 +49,17 @@ class ItemFilter
 	/**
 	 * @var bool
 	 */
-	private $vyber = NULL;
+	private $vyber = FALSE;
 
 	/**
 	 * @var bool
 	 */
-	private $active = NULL;
+	private $active = TRUE;
 
 	/**
 	 * @var bool
 	 */
-	private $income = NULL;
+	private $income = FALSE;
 
 	/**
 	 * @var int

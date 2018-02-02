@@ -52,11 +52,10 @@ class ItemDAO implements IItemDAO
 			$items->where('PurposeID', $filters->getNotes());
 		}
 		if ($filters->getPattern() != "")
-			$items->where('mainName', 'LIKE', '%' . $filters->getPattern() . '%' )
-			->orWhere('description', 'LIKE', $filters->getPattern());
-		if ($filters->isVyber() != NULL) $items->where('vyber', $filters->isVyber());
-		if ($filters->isActive() != NULL) $items->where('active', $filters->isActive());
-		if ($filters->isIncome() != NULL) $items->where('income', $filters->isIncome());
+			$items->whereRaw("( mainName LIKE '%" . $filters->getPattern() . "%' OR description LIKE '%" . $filters->getPattern() . "%' )");
+		$items->where('vyber', $filters->isVyber());
+		$items->where('active', $filters->isActive());
+		$items->where('income', $filters->isIncome());
 		$items->orderBy($filters->getOrderBy(), $filters->getOrderHow());
 
 		if ($filters->getLimit()) $items->limit($filters->getLimit());
