@@ -18,17 +18,17 @@
 
 /*##################-  Member  -######################*/
 //Route::get('/members', 'MemberController@gets');
-//Route::get('/member/{id}', 'MemberController@get');
+Route::get('/member', 'MemberController@get');
 //Route::post('/member', 'MemberController@create');
 Route::post('/member/login', 'MemberController@login');
 Route::post('/member/logout', 'MemberController@logout');
 //Route::post('/member/facebook', 'MemberController@interactWithFacebook');
-//Route::put('/member', 'MemberController@update');
+Route::put('/member', 'MemberController@update');
 //Route::delete('/member', 'MemberController@delete');
 
 
 /*##################-  Language  -######################*/
-//Route::get('/languages', 'LanguageController@gets');
+Route::get('/languages', 'LanguageController@gets');
 //Route::get('/language', 'LanguageController@get');
 //Route::post('/language', 'LanguageController@create');
 //Route::put('/language', 'LanguageController@update');
@@ -66,7 +66,7 @@ Route::delete('/item/{id}', 'ItemController@delete');
 Route::get('/purposes', 'PurposeController@getUserPurposes');
 Route::get('/purposes/language/{code}', 'PurposeController@getLanguagePurposes');
 //Route::get('/purpose', 'PurposeController@get');
-//Route::post('/purpose', 'PurposeController@create');
+Route::post('/purpose', 'PurposeController@create');
 //Route::put('/purpose', 'PurposeController@update');
 //Route::delete('/purpose', 'PurposeController@delete');
 

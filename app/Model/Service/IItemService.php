@@ -10,6 +10,7 @@ namespace App\Model\Service;
 
 use App\Model\Entity\Item;
 use App\Model\Entity\Member;
+use App\Model\Entity\Purpose;
 use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\BadParameterException;
@@ -30,7 +31,6 @@ interface IItemService
 	 * @param string $pattern
 	 * @param string $orderBy
 	 * @param string $orderHow
-	 * @param int $limit
 	 * @return Item[]
 	 * @throws NotFoundException
 	 * @throws BadParameterException
@@ -115,5 +115,5 @@ interface IItemService
 	 * @param Item[] $items
 	 * @return array
 	 */
-	public static function formatEntites($items);
+	public static function formatEntities($items);
 }

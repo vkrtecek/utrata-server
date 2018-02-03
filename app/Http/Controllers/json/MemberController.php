@@ -2,11 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Model\Entity\File;
+use App\Model\Exception\AlreadyExistException;
+use App\Model\Exception\AuthenticationException;
+use App\Model\Exception\BadParameterException;
+use App\Model\Exception\NotFoundException;
 use App\Model\Exception\SecurityException;
 use App\Model\Service\IMemberService;
+use App\Model\Service\MemberService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class MemberController extends AbstractController
 {
@@ -23,6 +28,20 @@ class MemberController extends AbstractController
 		parent::__construct($memberService);
 		$this->memberService = $memberService;
 	}
+
+
+	/**
+	 * @param Request $req
+	 * @return Response
+	 */
+	public function get(Request $req) {
+		$this->assumeLogged($req);
+		$member = $this->loggedUser($req);
+		$formatted = MemberService::format($member);
+		return Response::create($formatted, Response::HTTP_OK);
+	}
+
+
 
 	/**
 	 * @param Request $req
@@ -71,5 +90,36 @@ class MemberController extends AbstractController
 			return Response::create(['error' => $ex->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
 		}
 		return Response::create([], Response::HTTP_OK);
+	}
+
+
+	/**
+	 * @param Request $req
+	 * @return Response
+	 */
+	public function update(Request $req) {
+		$this->assumeLogged($req);
+		$member = $this->loggedUser($req);
+		$updated = $req->get('member');
+		if (!$updated)
+			return Response::create(['error' => 'No member specified'], Response::HTTP_BAD_REQUEST);
+		if ($member->getId() != $updated['id'])
+			return Response::create(['error' => 'Can modify olny yourself'], Response::HTTP_FORBIDDEN);
+
+		try {
+			$mem = $this->memberService->updateMember($member->getLogin(), $updated);
+			$formatted = MemberService::format($mem);
+		} catch (NotFoundException $e) {
+			return Response::create(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+		} catch (BadRequestHttpException $e) {
+			return Response::create(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+		} catch (BadParameterException $e) {
+			return Response::create(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+		} catch (AlreadyExistException $e) {
+			return Response::create(['error' => $e->getMessage()], Response::HTTP_CONFLICT);
+		} catch (AuthenticationException $e) {
+			return Response::create(['error' => $e->getMessage()], Response::HTTP_UNAUTHORIZED);
+		}
+		return Response::create($formatted, Response::HTTP_ACCEPTED);
 	}
 }

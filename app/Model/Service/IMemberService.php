@@ -11,6 +11,7 @@ namespace App\Model\Service;
 
 use App\Model\Entity\Member;
 use App\Model\Exception\AlreadyExistException;
+use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\BadParameterException;
 use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
@@ -60,7 +61,8 @@ interface IMemberService
 	 * @throws NotFoundException
 	 * @throws BadRequestHttpException
 	 * @throws BadParameterException
-	 * @throws AlreadyExistException
+	 * @throws AlreadyExistException for e-mails
+	 * @throws AuthenticationException
 	 */
 	public function updateMember($login, $data);
 

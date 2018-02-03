@@ -9,6 +9,7 @@
 namespace App\Model\Service;
 
 
+use App\Model\Entity\Member;
 use App\Model\Entity\Purpose;
 use App\Model\Exception\BadParameterException;
 use App\Model\Exception\IntegrityException;
@@ -46,11 +47,13 @@ interface IPurposeService
     public function getPurpose($id);
 
     /**
+	 * @param Member $member
      * @param $data
      * @return Purpose
      * @throws BadRequestHttpException
+	 * @throws AlreadyExistException
      */
-    public function createPurpose($data);
+    public function createPurpose(Member $member, $data);
 
     /**
      * @param int $id

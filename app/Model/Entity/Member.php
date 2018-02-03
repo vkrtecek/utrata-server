@@ -293,6 +293,16 @@ class Member extends Model
 	}
 
 	/**
+	 * @return Purpose[]
+	 */
+	public function getPurposes() {
+		$purposes = [];
+		foreach ($this->getMemberPurposes() as $memberPurpose)
+			$purposes[] = $memberPurpose->getPurpose();
+		return $purposes;
+	}
+
+	/**
 	 * @return Item[]
 	 */
 	public function getItems() {

@@ -13,7 +13,9 @@ use App\Model\Dao\IMemberDAO;
 use App\Model\Entity\Currency;
 use App\Model\Entity\Language;
 use App\Model\Entity\Member;
+use App\Model\Entity\Purpose;
 use App\Model\Exception\AlreadyExistException;
+use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\BadParameterException;
 use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
@@ -35,17 +37,22 @@ class MemberService implements IMemberService
 	/** @var ICurrencyService */
 	protected $currencyService;
 
+	/** @var IMemberPurposeService */
+	protected $memberPurposeService;
+
 	/**
 	 * MemberService constructor.
 	 * @param IMemberDAO $memberDao
 	 * @param ILanguageService $languageService
 	 * @param ICurrencyService $currencyService
+	 * @param IMemberPurposeService $memberPurposeService
 	 */
-	public function __construct(IMemberDAO $memberDao, ILanguageService $languageService, ICurrencyService $currencyService)
+	public function __construct(IMemberDAO $memberDao, ILanguageService $languageService, ICurrencyService $currencyService, IMemberPurposeService $memberPurposeService)
 	{
 		$this->memberDao = $memberDao;
 		$this->languageService = $languageService;
 		$this->currencyService = $currencyService;
+		$this->memberPurposeService = $memberPurposeService;
 	}
 
 	/**
@@ -114,7 +121,8 @@ class MemberService implements IMemberService
 	 * @throws NotFoundException
 	 * @throws BadRequestHttpException
 	 * @throws BadParameterException
-	 * @throws AlreadyExistException
+	 * @throws AlreadyExistException for e-mails
+	 * @throws AuthenticationException
 	 */
 	public function updateMember($login, $data) {
 		try {
@@ -181,7 +189,6 @@ class MemberService implements IMemberService
 			$this->getMemberByColumn('login', $data['id']);
 			return IMemberService::FACEBOOK_LOGGED;
 		} catch (NotFoundException $ex) {
-			$member->setId($data['id']);
 			$this->setMember($member, $data);
 			$this->memberDao->create($member);
 			return IMemberService::FACEBOOK_SIGNED;
@@ -207,6 +214,7 @@ class MemberService implements IMemberService
 	 * @throws NotFoundException
 	 * @throws BadRequestHttpException
 	 * @throws AlreadyExistException
+	 * @throws AuthenticationException
 	 */
 	protected function setMember(Member $member, array $data, $newEntity = TRUE) {
 		$dateFormat = '/^2[0-1][0-9][0-9]-[0-1][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9].[0-9]*$/';
@@ -247,13 +255,16 @@ class MemberService implements IMemberService
 			}
 		}
 		if (isset($data['login']) && $data['login']) {
-			if (!Member::uniqueLogin($data['login']))
+			if ($member->getLogin() != $data['login'] && !Member::uniqueLogin($data['login']))
 				throw new AlreadyExistException('MemberService: This login already exists');
 			$member->setLogin($data['login']);
 		}
 		if (isset($data['password']) && $data['password']) {
-			if (!$newEntity && (!isset($data['oldPassword']) || $data['oldPassword'] == "" || !self::verifyPasswordHash(self::getPasswordHash($data['oldPassword']), $data['password']))) {
-				throw new BadRequestHttpException('MemberService: "oldPassword" expected');
+			if (!$newEntity) {
+				if (!isset($data['oldPassword']) || $data['oldPassword'] == "")
+					throw new BadRequestHttpException('MemberService: "oldPassword" expected');
+				else if (!self::verifyPasswordHash($member->getPassword(), $data['oldPassword']))
+					throw new AuthenticationException('Given oldPassword is incorrect');
 			}
 			$member->setPassword(self::getPasswordHash($data['password']));
 		}
@@ -265,10 +276,15 @@ class MemberService implements IMemberService
 		if (isset($data['me']) && $data['me']) {
 			if (!preg_match($emialFormat, $data['me']))
 				throw new BadParameterException('MemberService: your mail in bad format');
-			if (!Member::uniqueMail($data['me']))
+			if ($member->getMyMail() != $data['me'] && !Member::uniqueMail($data['me']))
 				throw new AlreadyExistException('MemberService: This mail already exists');
 			$member->setMyMail($data['me']);
 		}
+		if (isset($data['notes']) && $data['notes']) {
+			//deletes less and adds more
+			$this->setNotes($member, $data['notes']);
+		}
+
 		if (isset($data['sendMonthly'])) $member->setSendMonthly($data['sendMonthly']);
 		if (isset($data['sendByOne'])) $member->setSendByOne($data['sendByOne']);
 		if (isset($data['admin'])) $member->setAdmin($data['admin']);
@@ -380,10 +396,11 @@ class MemberService implements IMemberService
 		$ret['mother'] = $member->getMotherMail();
 		$ret['me'] = $member->getMyMail();
 		$ret['token'] = $member->getToken();
+		$ret['facebook'] = $member->isFacebook();
 		$ret['languageCode'] = $member->getLanguage()->getCode();
 		$ret['currencyCode'] = $member->getCurrency()->getCode();
 		$ret['lastLogged'] = $member->getAccess()->format('Y-m-d H:i:s');
-		$ret['purposes'] = MemberService::getFormattedPurposes($member);
+		$ret['notes'] = MemberService::getFormattedPurposes($member);
 
 		return $ret;
 	}
@@ -441,5 +458,46 @@ class MemberService implements IMemberService
 	private function createToken()
 	{
 		return bin2hex(random_bytes(44));
+	}
+
+
+	/**
+	 * @param Member $member
+	 * @param array $notes
+	 * @return void
+	 */
+	private function setNotes(Member $member, $notes) {
+
+		$originNoteIds = [];
+		foreach ($member->getPurposes() as $purpose) {
+			$originNoteIds[] = $purpose->getId();
+		}
+
+		$noteIds = [];
+		$tmp = [];
+		foreach ($notes as $note) {
+			if (!isset($note['id']))
+				throw new BadRequestHttpException("MemberService: Note hasn't id");
+			$noteIds[] = $note['id'];
+			$tmp[] = $this->memberPurposeService->getPurpose($note['id']);
+		}
+
+		$more = array_diff($noteIds, $originNoteIds);
+		$moreNotes = [];
+		foreach ($more as $id)
+			$moreNotes[] = $this->memberPurposeService->getPurpose($id);
+
+		$less = array_diff($originNoteIds, $noteIds);
+		$lessNotes = [];
+		foreach ($less as $id)
+			$lessNotes[] = $this->memberPurposeService->getPurpose($id);
+
+		foreach ($moreNotes as $note) {
+			$this->memberPurposeService->create($member, $note);
+		}
+
+		foreach ($lessNotes as $note) {
+			$this->memberPurposeService->delete($member, $note);
+		}
 	}
 }

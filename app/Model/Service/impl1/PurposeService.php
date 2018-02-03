@@ -10,7 +10,9 @@ namespace App\Model\Service;
 
 
 use App\Model\Dao\IPurposeDAO;
+use App\Model\Entity\Member;
 use App\Model\Entity\Purpose;
+use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\BadParameterException;
 use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
@@ -28,17 +30,22 @@ class PurposeService implements IPurposeService
 	/** @var ILanguageService */
 	protected $languageService;
 
+	/** @var IMemberPurposeService */
+	protected $memberPurposeService;
+
 
 	/**
 	 * PurposeService constructor.
 	 * @param IPurposeDAO $purposeDAO
 	 * @param IMemberService $memberService
 	 * @param ILanguageService $languageService
+	 * @param IMemberPurposeService $memberPurposeService
 	 */
-	public function __construct(IPurposeDAO $purposeDAO, IMemberService $memberService, ILanguageService $languageService) {
+	public function __construct(IPurposeDAO $purposeDAO, IMemberService $memberService, ILanguageService $languageService, IMemberPurposeService $memberPurposeService) {
 		$this->purposeDao = $purposeDAO;
 		$this->memberService = $memberService;
 		$this->languageService = $languageService;
+		$this->memberPurposeService = $memberPurposeService;
 	}
 
 	/**
@@ -89,11 +96,35 @@ class PurposeService implements IPurposeService
 	}
 
 	/**
+	 * @param Member $member
 	 * @param $data
 	 * @return Purpose
 	 * @throws BadRequestHttpException
+	 * @throws AlreadyExistException
 	 */
-	public function createPurpose($data) {}
+	public function createPurpose(Member $member, $data) {
+		if (!isset($data['name']))
+			throw new BadRequestHttpException('Name of note missing');
+		$code = $this->codeFromValue($data['name']);
+
+		$withSameCode = $this->purposeDao->findByColumn('code', $code);
+		foreach ($withSameCode as $note) {
+			if ($note->isBase() || ($note->getCreator() && $note->getCreator()->getId() == $member->getId())) {
+				throw new AlreadyExistException('Note with this code already exists');
+			}
+		}
+
+		$purpose = new Purpose();
+		$purpose->setBase(FALSE);
+		$purpose->setCreator($member);
+		$purpose->setLanguage($member->getLanguage());
+		$purpose->setValue($data['name']);
+		$purpose->setCode($code);
+		$purpose = $this->purposeDao->create($purpose);
+
+		$this->memberPurposeService->create($member, $purpose);
+		return $purpose;
+	}
 
 	/**
 	 * @param int $id
@@ -137,5 +168,25 @@ class PurposeService implements IPurposeService
 		foreach($purposes as $purpose)
 			$ret[] = self::format($purpose);
 		return $ret;
+	}
+
+
+	/**
+	 * @param string $val
+	 * @return string
+	 */
+	private function codeFromValue($val) {
+		$table = array(
+			'À'=>'A', 'Á'=>'A', 'Â'=>'A', 'Ã'=>'A', 'Ä'=>'A', 'Å'=>'A', 'Æ'=>'A', 'Ç'=>'C', 'È'=>'E', 'É'=>'E',
+			'Ê'=>'E', 'Ë'=>'E', 'Ì'=>'I', 'Í'=>'I', 'Î'=>'I', 'Ï'=>'I', 'Ñ'=>'N', 'Ò'=>'O', 'Ó'=>'O', 'Ô'=>'O',
+			'Õ'=>'O', 'Ö'=>'O', 'Ø'=>'O', 'Ù'=>'U', 'Ú'=>'U', 'Û'=>'U', 'Ü'=>'U', 'Ý'=>'Y', 'Þ'=>'B', 'ß'=>'Ss',
+			'Š'=>'S', 'Ž'=>'Z', 'C'=>'C', 'Ě'=>'E', 'Č'=>'C', 'Ř'=>'R', 'Ů'=>'U', 'Ň'=>'N', 'Ď'=>'D', 'Ť'=>'T',
+			'à'=>'a', 'á'=>'a', 'â'=>'a', 'ã'=>'a', 'ä'=>'a', 'å'=>'a', 'æ'=>'a', 'ç'=>'c', 'è'=>'e', 'é'=>'e',
+			'ê'=>'e', 'ë'=>'e', 'ì'=>'i', 'í'=>'i', 'î'=>'i', 'ï'=>'i', 'ð'=>'o', 'ñ'=>'n', 'ò'=>'o', 'ó'=>'o',
+			'ô'=>'o', 'õ'=>'o', 'ö'=>'o', 'ø'=>'o', 'ù'=>'u', 'ú'=>'u', 'û'=>'u', 'ý'=>'y', 'þ'=>'b', 'ů'=>'u',
+			'ÿ'=>'y', 'R'=>'R', 'r'=>'r', "'"=>'-', '"'=>'-', ' '=>'-', 'š'=>'s', 'ž'=>'z', 'č'=>'c', 'ě'=>'e',
+			'ř'=>'r', 'ň'=>'n', 'ď'=>'d', 'ť'=>'t'
+		);
+		return strtolower(strtr($val, $table));
 	}
 }

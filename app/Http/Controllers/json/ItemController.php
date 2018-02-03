@@ -51,7 +51,7 @@ class ItemController extends AbstractController
 
 		try {
 			$items = $this->itemService->getWalletItems($walletId, $member, $state, $month, $notes, $year, $pattern, $orderBy, $orderHow, $limit);
-			$formatted = ItemService::formatEntites($items);
+			$formatted = ItemService::formatEntities($items);
 		} catch (NotFoundException $ex) {
 			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NO_CONTENT);
 		} catch (BadParameterException $ex) {

@@ -9,6 +9,8 @@
 
 namespace App\Model\Filter;
 
+use App\Model\Entity\Member;
+
 class ItemFilter
 {
 	/**
@@ -20,6 +22,11 @@ class ItemFilter
 	 * @var string[]
 	 */
 	private $notes;
+
+	/**
+	 * @var Member
+	 */
+	private $member = NULL;
 
 	/**
 	 * @var int
@@ -287,6 +294,23 @@ class ItemFilter
 		return $this;
 	}
 
+	/**
+	 * @return Member
+	 */
+	public function getMember()
+	{
+		return $this->member;
+	}
+
+	/**
+	 * @param Member $member
+	 * @return ItemFilter
+	 */
+	public function setMember($member)
+	{
+		$this->member = $member;
+		return $this;
+	}
 
 
 }

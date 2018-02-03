@@ -40,6 +40,12 @@ interface IItemDAO
 	 */
 	public function findByFilter(ItemFilter $filters);
 
+	/**
+	 * @param ItemFilter $filter
+	 * @return Item[]
+	 */
+	public function findUsersItemsByNotes(ItemFilter $filter);
+
     /**
      * @param Member $member
      * @return Item[]|NULL

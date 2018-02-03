@@ -63,6 +63,16 @@ class ItemDAO implements IItemDAO
 		return $items->get();
 	}
 
+	/**
+	 * @param ItemFilter $filter
+	 * @return Item[]
+	 */
+	public function findUsersItemsByNotes(ItemFilter $filter) {
+		$items = Item::where('MemberID', $filter->getMember()->getId());
+		$items->where('PurposeID', $filter->getNotes());
+		return $items->get();
+	}
+
     /**
      * @param Member $member
      * @return Item[]|NULL

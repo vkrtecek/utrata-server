@@ -12,6 +12,7 @@ namespace App\Model\Service;
 use App\Model\Dao\IItemDAO;
 use App\Model\Entity\Item;
 use App\Model\Entity\Member;
+use App\Model\Entity\Purpose;
 use App\Model\Enum\ItemState;
 use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\AuthenticationException;
@@ -275,7 +276,7 @@ class ItemService implements IItemService
 	 * @param Item[] $items
 	 * @return array
 	 */
-	public static function formatEntites($items) {
+	public static function formatEntities($items) {
 		$ret = [];
 		foreach ($items as $item) {
 			$ret[] = self::format($item);

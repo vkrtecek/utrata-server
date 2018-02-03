@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\NotFoundException;
 use App\Model\Service\IMemberService;
 use App\Model\Service\IPurposeService;
 use App\Model\Service\PurposeService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class PurposeController extends AbstractController
 {
@@ -60,5 +62,28 @@ class PurposeController extends AbstractController
 			return Response::create(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
 		}
 		return Response::create(['purposes' => $formatted], Response::HTTP_OK);
+	}
+
+
+	/**
+	 * @param Request $req
+	 * @return Response
+	 */
+	public function create(Request$req) {
+		$this->assumeLogged($req);
+		$note = $req->get('note');
+		if (!$note)
+			return Response::create(['error' => 'Note missing'], Response::HTTP_BAD_REQUEST);
+
+		$member = $this->loggedUser($req);
+		try {
+			$purpose = $this->purposeService->createPurpose($member, $note);
+			$formatted = PurposeService::format($purpose);
+		} catch (BadRequestHttpException $e) {
+			return Response::create(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+		} catch (AlreadyExistException $e) {
+			return Response::create(['error' => $e->getMessage()], Response::HTTP_CONFLICT);
+		}
+		return Response::create($formatted, Response::HTTP_CREATED);
 	}
 }

@@ -61,6 +61,7 @@ $app->app->bind('App\Model\Dao\IMemberDAO', 'App\Model\Dao\MemberDAO');
 $app->app->bind('App\Model\Dao\IPurposeDAO', 'App\Model\Dao\PurposeDAO');
 $app->app->bind('App\Model\Dao\ITranslationDAO', 'App\Model\Dao\TranslationDAO');
 $app->app->bind('App\Model\Dao\IWalletDAO', 'App\Model\Dao\WalletDAO');
+$app->app->bind('App\Model\Dao\IMemberPurposeDAO', 'App\Model\Dao\MemberPurposeDAO');
 
 /*###################  SERVICES ###################*/
 $app->app->bind('App\Model\Service\ICheckStateService', 'App\Model\Service\CheckStateService');
@@ -71,6 +72,7 @@ $app->app->bind('App\Model\Service\IMemberService', 'App\Model\Service\MemberSer
 $app->app->bind('App\Model\Service\IPurposeService', 'App\Model\Service\PurposeService');
 $app->app->bind('App\Model\Service\ITranslationService', 'App\Model\Service\TranslationService');
 $app->app->bind('App\Model\Service\IWalletService', 'App\Model\Service\WalletService');
+$app->app->bind('App\Model\Service\IMemberPurposeService', 'App\Model\Service\MemberPurposeService');
 $app->app->bind('App\Model\Service\IFileService', 'App\Model\Service\CsvService');
 
 return $app;
