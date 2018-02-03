@@ -52,7 +52,7 @@ class ItemDAO implements IItemDAO
 			$items->where('PurposeID', $filters->getNotes());
 		}
 		if ($filters->getPattern() != "")
-			$items->whereRaw("( mainName LIKE '%" . $filters->getPattern() . "%' OR description LIKE '%" . $filters->getPattern() . "%' )");
+			$items->whereRaw("( mainName LIKE '%" . $filters->getPattern() . "%' OR description LIKE '%" . $filters->getPattern() . "%' OR type = '" . $filters->getPattern() . "' )");
 		$items->where('vyber', $filters->isVyber());
 		$items->where('active', $filters->isActive());
 		$items->where('income', $filters->isIncome());
@@ -70,6 +70,15 @@ class ItemDAO implements IItemDAO
     public function findUserItems(Member $member) {
 		return Item::where('MemberID', $member->getId())->get();
     }
+
+	/**
+	 * @param Member $member
+	 * @return Item
+	 */
+	public function findUserLastItem(Member $member) {
+		return Item::where('MemberID', $member->getId())
+			->orderBy('date', 'desc')->first();
+	}
 
     /**
      * @param Item $item

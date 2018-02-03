@@ -13,6 +13,7 @@ use App\Model\Dao\IItemDAO;
 use App\Model\Entity\Item;
 use App\Model\Entity\Member;
 use App\Model\Enum\ItemState;
+use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\BadParameterException;
 use App\Model\Exception\IntegrityException;
@@ -23,6 +24,9 @@ use DateTime;
 
 class ItemService implements IItemService
 {
+	//tolerance to identify same items received to create from client
+	const SECONDS = 10;
+
 	/** @var IItemDAO */
 	protected $itemDao;
 
@@ -38,6 +42,9 @@ class ItemService implements IItemService
 	/**	@var ICurrencyService */
 	protected $currencyService;
 
+	/** @var ITranslationService */
+	protected $translationService;
+
 	/**
 	 * ItemService constructor.
 	 * @param IItemDAO $itemDAO
@@ -45,19 +52,22 @@ class ItemService implements IItemService
 	 * @param IMemberService $memberService
 	 * @param IPurposeService $purposeService
 	 * @param ICurrencyService $currencyService
+	 * @param ITranslationService $translationService
 	 */
 	public function __construct(
 		IItemDAO $itemDAO,
 		IWalletService $walletService,
 		IMemberService $memberService,
 		IPurposeService $purposeService,
-		ICurrencyService $currencyService
+		ICurrencyService $currencyService,
+		ITranslationService $translationService
 	) {
 		$this->itemDao = $itemDAO;
 		$this->walletService = $walletService;
 		$this->memberService = $memberService;
 		$this->purposeService = $purposeService;
 		$this->currencyService = $currencyService;
+		$this->translationService = $translationService;
 	}
 
 
@@ -130,8 +140,16 @@ class ItemService implements IItemService
 	 * @param $data
 	 * @return Item
 	 * @throws BadRequestHttpException
+	 * @throws AlreadyExistException
+	 * @throws NotFoundException
 	 */
-	public function createItem(Member $member, $data) {}
+	public function createItem(Member $member, $data) {
+		$item = new Item();
+		$this->setItem($item, $data);
+		$this->checkForItemExistence($item);
+		$item = $this->itemDao->create($item);
+		return $item;
+	}
 
 	/**
 	 * @param Member $member
@@ -244,6 +262,7 @@ class ItemService implements IItemService
 		$ret['active'] = $item->isActive();
 		$ret['type'] = $item->getType();
 		$ret['odepsat'] = $item->isOdepsat();
+		$ret['income'] = $item->isIncome();
 		$ret['note'] = $item->getNote() ? PurposeService::format($item->getNote()) : NULL ;
 		$ret['currency'] = CurrencyService::format($item->getCurrency());
 		$ret['member'] = $item->getMember()->getLogin();
@@ -306,7 +325,8 @@ class ItemService implements IItemService
 		if (isset($data['price'])) $entity->setPrice($data['price']);
 		if (isset($data['date'])) $entity->setDate(new DateTime($data['date']));
 		if (isset($data['course'])) $entity->setCourse($data['course']);
-		$entity->setDescription($data['description']);
+		if (isset($data['description'])) $entity->setDescription($data['description']);
+		else $entity->setDescription('');
 		if (isset($data['active'])) $entity->setActive($data['active']);
 		if (isset($data['type'])) $entity->setType($data['type']);
 		if (isset($data['vyber'])) $entity->setVyber($data['vyber']);
@@ -341,6 +361,33 @@ class ItemService implements IItemService
 			} catch (NotFoundException $ex) {
 				throw new NotFoundException('ItemService: No Wallet with given id.', 0, $ex);
 			}
+		}
+	}
+
+
+
+	/**
+	 * @param Item $item
+	 * @throws AlreadyExistException
+	 */
+	protected function checkForItemExistence(Item $item) {
+		$member = $item->getMember();
+		$i = $this->itemDao->findUserLastItem($member);
+
+		$message = $this->translationService->getTranslation('AddItem.Form.Duplicity', $member->getLanguage()->getCode())->getValue();
+		$message = $message == "" ? 'Item already exists' : $message;
+		if ($i->getName() == $item->getName()
+			&& $i->getDescription() == $item->getDescription()
+			&& $i->getPrice() == $item->getPrice()
+			&& $i->getCourse() == $item->getCourse()
+			&& $i->getType() == $item->getType()
+			&& $i->isVyber() == $item->isVyber()
+			&& $i->isOdepsat() == $item->isOdepsat()
+			&& $i->getWallet()->getId() == $item->getWallet()->getId()
+			&& abs($item->getDate()->getTimestamp() - $i->getDate()->getTimestamp()) < self::SECONDS
+		) {
+
+			throw new AlreadyExistException($message);
 		}
 	}
 }

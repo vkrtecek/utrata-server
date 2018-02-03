@@ -46,6 +46,12 @@ interface IItemDAO
      */
     public function findUserItems(Member $member);
 
+	/**
+	 * @param Member $member
+	 * @return Item
+	 */
+	public function findUserLastItem(Member $member);
+
     /**
      * @param Item $item
      * @return Item

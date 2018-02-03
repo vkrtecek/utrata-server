@@ -51,6 +51,8 @@ interface IItemService
 	 * @param $data
 	 * @return Item
 	 * @throws BadRequestHttpException
+	 * @throws AlreadyExistException
+	 * @throws NotFoundException
 	 */
 	public function createItem(Member $member, $data);
 

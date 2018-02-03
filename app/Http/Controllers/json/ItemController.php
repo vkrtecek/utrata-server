@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\BadParameterException;
 use App\Model\Exception\IntegrityException;
@@ -70,8 +71,26 @@ class ItemController extends AbstractController
 	 * @return Response
 	 */
 	public function create(Request $req) {
-		dump(json_decode($req->getContent(), true));
-		return Response::create($req, Response::HTTP_CREATED);
+		$this->assumeLogged($req);
+		$member = $this->loggedUser($req);
+		$data = $req->get('item');
+
+		try {
+			$item = $this->itemService->createItem($member, $data);
+			$formatted = ItemService::format($item);
+		} catch (AlreadyExistException $e) {
+			return Response::create(['error' => $e->getMessage()], Response::HTTP_CONFLICT);
+		} catch (NotFoundException $e) {
+			return Response::create(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+		} catch (BadRequestHttpException $e) {
+			return Response::create(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+		}
+
+		return Response::create(['success' => $formatted], Response::HTTP_CREATED);
+	}
+
+	public function tmp() {
+		return Response::create('auth: ');
 	}
 
 	/**

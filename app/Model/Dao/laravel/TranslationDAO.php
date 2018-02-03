@@ -29,8 +29,8 @@ class TranslationDAO implements ITranslationDAO
      * @return Translation|NULL
      */
     public function findOne($code, Language $language) {
-    	return Translation::where('code', $code)
-			->andWhere('LanguageCode', $language->getCode())
+    	return Translation::where('TranslationCode', $code)
+			->where('LanguageCode', $language->getCode())
 			->first();
     }
 
