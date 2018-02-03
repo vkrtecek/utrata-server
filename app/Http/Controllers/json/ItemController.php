@@ -89,10 +89,6 @@ class ItemController extends AbstractController
 		return Response::create(['success' => $formatted], Response::HTTP_CREATED);
 	}
 
-	public function tmp() {
-		return Response::create('auth: ');
-	}
-
 	/**
 	 * @param Request $req
 	 * @param int $id

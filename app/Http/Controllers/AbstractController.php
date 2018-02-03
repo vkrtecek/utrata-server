@@ -71,18 +71,13 @@ abstract class AbstractController extends Controller
 	 * @throws NotFoundException
 	 */
 	private function getToken(Request $req) {
-		/*
-		$exploded = explode('; ', $req->header('cookie'));
-		$headers = [];
-		foreach ($exploded as $header) {
-			list($key, $value) = explode('=', $header);
-			$headers[$key] = $value;
-		}
-		$token = $headers['token'];
-		*/
-		$token = $req->get('token');
+		$token = $req->header('Authorization');
+
+		/* testing section */
 		if (!$token || $token == "")
-			$token = json_decode($req->getContent(), true)['token'];
+			$token = $req->get('token');
+		/* end of testing section */
+
 		if (!$token || $token == "")
 			throw new NotFoundException('Token not found');
 
