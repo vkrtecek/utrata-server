@@ -36,4 +36,12 @@ interface IMemberPurposeService
 	 * @throws NotFoundException
 	 */
 	public function getPurpose($id);
+
+	/**
+	 * @param string $languageCode
+	 * @return Purpose[]
+	 * @throws NotFoundException
+	 * @throws BadParameterException
+	 */
+	public function getLanguageBasePurposes($languageCode);
 }

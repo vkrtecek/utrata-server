@@ -20,9 +20,6 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 interface IMemberService
 {
-	const FACEBOOK_LOGGED = 1;
-	const FACEBOOK_SIGNED = 2;
-	const FACEBOOK_ERROR = 0;
 	/**
 	 * @return Member[]
 	 * @throws NotFoundException
@@ -78,7 +75,7 @@ interface IMemberService
 	/**
 	 * logs in or creates new account to user
 	 * @param $data
-	 * @return int
+	 * @return Member
 	 * @throws BadParameterException
 	 * @throws NotFoundException
 	 * @throws BadRequestHttpException

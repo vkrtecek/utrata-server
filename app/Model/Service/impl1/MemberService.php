@@ -13,7 +13,6 @@ use App\Model\Dao\IMemberDAO;
 use App\Model\Entity\Currency;
 use App\Model\Entity\Language;
 use App\Model\Entity\Member;
-use App\Model\Entity\Purpose;
 use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\BadParameterException;
@@ -153,46 +152,43 @@ class MemberService implements IMemberService
 
 	/**
 	 * logs in or creates new account to user
-	 * @param $fb_data = {name, fname, lname, id, email, locale}
-	 * @return int
+	 * @param $fb_data = {name, fname, lname, login, email, locale}
+	 * @return Member
 	 * @throws BadParameterException
 	 * @throws NotFoundException
 	 * @throws BadRequestHttpException
 	 * @throws AlreadyExistException
 	 */
 	public function interactWithFacebook($fb_data) {
-		$inputsKeys = [ 'fname', 'lname', 'id', 'email', 'locale' ];
+		if ($member = $this->memberDao->findOne($fb_data['login'])) {
+			return $this->loginByFacebook($fb_data['login']);
+		}
+
+		$inputsKeys = [ 'fname', 'lname', 'login', 'email', 'locale' ];
 		foreach ($inputsKeys as $key) {
 			if (!isset($fb_data[$key]) || $fb_data[$key] == '')
 				throw new BadParameterException('MemberService: "' . $key . '" must be specified.');
 		}
 
-		if (!preg_match('/[1-9][0-9]*/', $fb_data['id']))
+		if (!preg_match('/[1-9][0-9]* /', $fb_data['login']))
 			throw new BadParameterException('MemberService: ID is not INTEGER or smaller than 1.');
 
 		$data = [];
-		$data['id'] = $fb_data['id'];
 		$data['firstName'] = $fb_data['fname'];
 		$data['lastName'] = $fb_data['lname'];
-		$data['login'] = $fb_data['id'];
-		$data['passwordHash'] = self::defaultPassword;
+		$data['login'] = $fb_data['login'];
+		$data['password'] = self::defaultPassword;
 		$data['mother'] = $fb_data['email'];
 		$data['me'] = $fb_data['email'];
 		$data['expiration'] = (new DateTime('+ 14 days'))->format('Y-m-d H:i:s');
 		$data['access'] = (new DateTime())->format('Y-m-d H:i:s');
 		$data['currencyCode'] = $this->getCurrencyFromLocale($fb_data['locale'])->getCode();
 		$data['languageCode'] = $this->getLanguageFromLocale($fb_data['locale'])->getCode();
-		$data['facebook'] = true;
+		$data['facebook'] = TRUE;
 
 		$member = new Member();
-		try {
-			$this->getMemberByColumn('login', $data['id']);
-			return IMemberService::FACEBOOK_LOGGED;
-		} catch (NotFoundException $ex) {
-			$this->setMember($member, $data);
-			$this->memberDao->create($member);
-			return IMemberService::FACEBOOK_SIGNED;
-		}
+		$this->setMember($member, $data, TRUE);
+		return $this->memberDao->create($member);
 	}
 
 	/**
@@ -218,17 +214,17 @@ class MemberService implements IMemberService
 	 */
 	protected function setMember(Member $member, array $data, $newEntity = TRUE) {
 		$dateFormat = '/^2[0-1][0-9][0-9]-[0-1][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9].[0-9]*$/';
-		$emialFormat = '/^[a-zA-Z0-9,.,_,-][a-zA-Z0-9,.,_,-]*@[a-zA-Z0-9,.,_,-][a-zA-Z0-9,.,_,-]*\.[a-z]{2,5}$/';
+		$emailFormat = '/^[a-zA-Z0-9,.,_,-][a-zA-Z0-9,.,_,-]*@[a-zA-Z0-9,.,_,-][a-zA-Z0-9,.,_,-]*\.[a-z]{2,5}$/';
 
 		//povinné položky
 		if ($newEntity) {
-			if (!isset($data['currency']) || $data['currency'] == NULL)
+			if (!isset($data['currencyCode']) || $data['currencyCode'] == NULL)
 				throw new BadRequestHttpException('MemberService: Currency must be specified.');
-			if (!isset($data['language']) || $data['language'] == NULL)
+			if (!isset($data['languageCode']) || $data['languageCode'] == NULL)
 				throw new BadRequestHttpException('MemberService: Language must be specified.');
 			if (!isset($data['login']) || $data['login'] == NULL)
 				throw new BadRequestHttpException('MemberService: "login" must be specified.');
-			if (!isset($data['passwordHash']) || $data['passwordHash'] == NULL)
+			if (!isset($data['password']) || $data['password'] == NULL)
 				throw new BadRequestHttpException('MemberService: "passwordHash" must be specified.');
 			if (!isset($data['mother']) || $data['mother'] == NULL)
 				throw new BadRequestHttpException('MemberService: "mother" must be specified.');
@@ -240,16 +236,27 @@ class MemberService implements IMemberService
 
 
 
-		if (isset($data['currency']) && $data['currency']) {
+		if (isset($data['currencyCode']) && $data['currencyCode']) {
 			try {
-				$member->setCurrency($this->currencyService->getCurrency($data['currency']['currencyId']));
+				$member->setCurrency($this->currencyService->getCurrencyByColumn('code', $data['currencyCode']));
 			} catch (NotFoundException $ex) {
 				throw new NotFoundException('MemberService: No Currency found with given id.', 0, $ex);
 			}
 		}
-		if (isset($data['language']) && $data['language']) {
+		if (isset($data['languageCode']) && $data['languageCode'] != '') {
 			try {
-				$member->setLanguage($this->languageService->getLanguage($data['language']['languageCode']));
+				/*
+				 * delete all purposes which user don't use and old language
+				 * add all purposes with new language and base=true
+				 */
+				foreach ($member->getPurposes() as $purpose)
+					$this->memberPurposeService->delete($member, $purpose);
+
+				$newLanguageCode = $data['languageCode'];
+				$languagePurposes = $this->memberPurposeService->getLanguageBasePurposes($newLanguageCode);
+				foreach ($languagePurposes as $purpose)
+					$this->memberPurposeService->create($member, $purpose);
+				$member->setLanguage($this->languageService->getLanguage($data['languageCode']));
 			} catch (NotFoundException $ex) {
 				throw new NotFoundException('MemberService: No language found with given code.', 0, $ex);
 			}
@@ -269,12 +276,12 @@ class MemberService implements IMemberService
 			$member->setPassword(self::getPasswordHash($data['password']));
 		}
 		if (isset($data['mother']) && $data['mother']) {
-			if (!preg_match($emialFormat, $data['mother']))
+			if (!preg_match($emailFormat, $data['mother']))
 				throw new BadParameterException('MemberService: mother mail in bad format');
 			$member->setMotherMail($data['mother']);
 		}
 		if (isset($data['me']) && $data['me']) {
-			if (!preg_match($emialFormat, $data['me']))
+			if (!preg_match($emailFormat, $data['me']))
 				throw new BadParameterException('MemberService: your mail in bad format');
 			if ($member->getMyMail() != $data['me'] && !Member::uniqueMail($data['me']))
 				throw new AlreadyExistException('MemberService: This mail already exists');
@@ -376,8 +383,7 @@ class MemberService implements IMemberService
 		$member->setToken($token);
 		$member->setAccess(new DateTime());
 		$member->setExpiration(new DateTime('+ 14 days'));
-		$this->memberDao->update($member);
-		return $member;
+		return $this->memberDao->update($member);
 	}
 
 	/**

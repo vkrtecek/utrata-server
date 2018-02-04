@@ -22,7 +22,7 @@ Route::get('/member', 'MemberController@get');
 //Route::post('/member', 'MemberController@create');
 Route::post('/member/login', 'MemberController@login');
 Route::post('/member/logout', 'MemberController@logout');
-//Route::post('/member/facebook', 'MemberController@interactWithFacebook');
+Route::post('/member/facebook', 'MemberController@interactWithFacebook');
 Route::put('/member', 'MemberController@update');
 //Route::delete('/member', 'MemberController@delete');
 

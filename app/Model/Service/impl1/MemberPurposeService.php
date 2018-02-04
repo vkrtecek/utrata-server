@@ -16,30 +16,37 @@ use App\Model\Entity\Item;
 use App\Model\Entity\Member;
 use App\Model\Entity\MemberPurpose;
 use App\Model\Entity\Purpose;
+use App\Model\Exception\BadParameterException;
 use App\Model\Exception\NotFoundException;
 use App\Model\Filter\ItemFilter;
 
 class MemberPurposeService implements IMemberPurposeService
 {
-	/** @var IMemberPurposeDAO */
-	private $memberPurposeDao;
+
+	/** @var IItemDAO */
+	private $itemDao;
 
 	/** @var IPurposeDAO */
 	private $purposeDao;
 
-	/** @var IItemDAO */
-	private $itemDao;
+	/** @var IMemberPurposeDAO */
+	private $memberPurposeDao;
+
+	/** @var ILanguageService */
+	private $languageService;
 
 	/**
 	 * MemberPurposeService constructor.
 	 * @param IMemberPurposeDAO $memberPurposeDAO
 	 * @param IPurposeDAO $purposeDAO
 	 * @param IItemDAO $itemDAO
+	 * @param ILanguageService $languageService
 	 */
-	public function __construct(IMemberPurposeDAO $memberPurposeDAO, IPurposeDAO $purposeDAO, IItemDAO $itemDAO) {
-		$this->memberPurposeDao = $memberPurposeDAO;
-		$this->purposeDao = $purposeDAO;
+	public function __construct(IMemberPurposeDAO $memberPurposeDAO, IPurposeDAO $purposeDAO, IItemDAO $itemDAO, ILanguageService $languageService) {
 		$this->itemDao = $itemDAO;
+		$this->purposeDao = $purposeDAO;
+		$this->memberPurposeDao = $memberPurposeDAO;
+		$this->languageService = $languageService;
 	}
 
 	/**
@@ -72,6 +79,26 @@ class MemberPurposeService implements IMemberPurposeService
 			throw new NotFoundException('No Purpose found.');
 		return $purpose;
 	}
+
+	/**
+	 * @param string $languageCode
+	 * @return Purpose[]
+	 * @throws NotFoundException
+	 * @throws BadParameterException
+	 */
+	public function getLanguageBasePurposes($languageCode) {
+		//only for test existence of language
+		$this->languageService->getLanguage($languageCode);
+		$purposes = $this->purposeDao->findByColumn('LanguageCode', $languageCode);
+		$ret = [];
+		foreach ($purposes as $purpose)
+			if ($purpose->isBase())
+				$ret[] = $purpose;
+		return $ret;
+	}
+
+
+
 
 	/**
 	 * @param Member $member

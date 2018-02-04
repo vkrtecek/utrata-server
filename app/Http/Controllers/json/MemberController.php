@@ -97,6 +97,25 @@ class MemberController extends AbstractController
 	 * @param Request $req
 	 * @return Response
 	 */
+	public function interactWithFacebook(Request $req) {
+		$data = $req->get('data');
+
+		if (!isset($data['login']) || !$data['login'])
+			return Response::create(['error' => 'login id missing'], Response::HTTP_BAD_REQUEST);
+		try {
+			$result = $this->memberService->interactWithFacebook($data);
+			$formatted = MemberService::format($result);
+		} catch (BadParameterException $e) {
+			return Response::create(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+		}
+		return Response::create($formatted, Response::HTTP_OK);
+	}
+
+
+	/**
+	 * @param Request $req
+	 * @return Response
+	 */
 	public function update(Request $req) {
 		$this->assumeLogged($req);
 		$member = $this->loggedUser($req);
