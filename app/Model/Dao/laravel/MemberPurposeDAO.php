@@ -15,6 +15,17 @@ use App\Model\Entity\Purpose;
 
 class MemberPurposeDAO implements IMemberPurposeDAO
 {
+
+	/**
+	 * @param Member $member
+	 * @param Purpose $purpose
+	 * @return MemberPurpose|NULL
+	 */
+	public function find(Member $member, Purpose $purpose) {
+		return MemberPurpose::where('MemberID', $member->getId())
+			->where('PurposeID', $purpose->getId())->first();
+	}
+
 	/**
 	 * @param Member $member
 	 * @param Purpose $purpose

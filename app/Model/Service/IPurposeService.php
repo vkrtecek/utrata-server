@@ -11,6 +11,7 @@ namespace App\Model\Service;
 
 use App\Model\Entity\Member;
 use App\Model\Entity\Purpose;
+use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\BadParameterException;
 use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
@@ -32,11 +33,19 @@ interface IPurposeService
 	public function getLanguagePurposes($code);
 
 	/**
-	 * @param string $login
+	 * @param string $languageCode
+	 * @return Purpose[]
+	 * @throws NotFoundException
+	 * @throws BadParameterException
+	 */
+	public function getLanguageBasePurposes($languageCode);
+
+	/**
+	 * @param Member $member
 	 * @return Purpose[]
 	 * @throws NotFoundException
 	 */
-	public function getUserPurposes($login);
+	public function getUserPurposes(Member $member);
 
     /**
      * @param int $id

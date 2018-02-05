@@ -15,6 +15,14 @@ use App\Model\Entity\Purpose;
 
 interface IMemberPurposeDAO
 {
+
+	/**
+	 * @param Member $member
+	 * @param Purpose $purpose
+	 * @return MemberPurpose|NULL
+	 */
+	public function find(Member $member, Purpose $purpose);
+
 	/**
 	 * @param Member $member
 	 * @param Purpose $purpose

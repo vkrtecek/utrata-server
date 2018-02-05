@@ -14,6 +14,7 @@ use App\Model\Entity\Item;
 use App\Model\Entity\Member;
 use App\Model\Entity\Purpose;
 use App\Model\Enum\ItemState;
+use App\Model\Enum\ItemType;
 use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\BadParameterException;
@@ -148,6 +149,10 @@ class ItemService implements IItemService
 		$item = new Item();
 		$this->setItem($item, $data);
 		$this->checkForItemExistence($item);
+
+		if ($item->isVyber()) {
+			$item->setOdepsat(FALSE)->setNote(NULL)->setIncome(TRUE)->setType(ItemType::CASH);
+		}
 		$item = $this->itemDao->create($item);
 		return $item;
 	}
@@ -326,7 +331,7 @@ class ItemService implements IItemService
 		if (isset($data['price'])) $entity->setPrice($data['price']);
 		if (isset($data['date'])) $entity->setDate(new DateTime($data['date']));
 		if (isset($data['course'])) $entity->setCourse($data['course']);
-		if (isset($data['description'])) $entity->setDescription($data['description']);
+		if (isset($data['description'])) $entity->setDescription(str_replace("\n", ' ', $data['description']));
 		else $entity->setDescription('');
 		if (isset($data['active'])) $entity->setActive($data['active']);
 		if (isset($data['type'])) $entity->setType($data['type']);
@@ -345,7 +350,6 @@ class ItemService implements IItemService
 			try {
 				$entity->setCurrency($this->currencyService->getCurrencyByColumn('code', $data['currency']['code']));
 			} catch (NotFoundException $ex) {
-				dump($data['currency']);
 				throw new NotFoundException('ItemService: No Currency with given currencyId.', 0, $ex);
 			}
 		}

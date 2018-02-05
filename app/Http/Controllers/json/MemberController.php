@@ -103,12 +103,25 @@ class MemberController extends AbstractController
 		if (!isset($data['login']) || !$data['login'])
 			return Response::create(['error' => 'login id missing'], Response::HTTP_BAD_REQUEST);
 		try {
-			$result = $this->memberService->interactWithFacebook($data);
-			$formatted = MemberService::format($result);
+			$member = $this->memberService->interactWithFacebook($data);
+			return Response::create([
+				'token' => $member->getToken(),
+				'currencyCode' => $member->getCurrency()->getValue(),
+				'languageCode' => $member->getLanguage()->getCode(),
+				'firstName' => $member->getFirstName(),
+				'lastName' => $member->getLastName(),
+				'login' => $member->getLogin(),
+				'lastLogin' => $member->getAccess()->format('Y-m-d H:i:s'),
+			], Response::HTTP_OK);
 		} catch (BadParameterException $e) {
 			return Response::create(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+		} catch (NotFoundException $e) {
+			return Response::create(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+		} catch (BadRequestHttpException $e) {
+			return Response::create(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+		} catch (AlreadyExistException $e) {
+			return Response::create(['error' => $e->getMessage()], Response::HTTP_CONFLICT);
 		}
-		return Response::create($formatted, Response::HTTP_OK);
 	}
 
 

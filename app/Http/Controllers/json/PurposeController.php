@@ -37,10 +37,10 @@ class PurposeController extends AbstractController
 	 */
 	protected function getUserPurposes(Request $req) {
 		$this->assumeLogged($req);
+		$member = $this->loggedUser($req);
 
-		$login = $req->get('login');
 		try {
-			$purposes = $this->purposeService->getUserPurposes($login);
+			$purposes = $this->purposeService->getUserPurposes($member);
 			$purposes = $this->purposeService->formatEntites($purposes);
 		} catch (NotFoundException $ex) {
 			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NOT_FOUND);

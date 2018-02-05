@@ -13,6 +13,7 @@ use App\Model\Dao\IMemberDAO;
 use App\Model\Entity\Currency;
 use App\Model\Entity\Language;
 use App\Model\Entity\Member;
+use App\Model\Enum\ItemType;
 use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\BadParameterException;
@@ -36,8 +37,14 @@ class MemberService implements IMemberService
 	/** @var ICurrencyService */
 	protected $currencyService;
 
+	/** @var IPurposeService */
+	protected $purposeService;
+
 	/** @var IMemberPurposeService */
 	protected $memberPurposeService;
+
+	/** @var ICheckStateService */
+	protected $checkStateService;
 
 	/**
 	 * MemberService constructor.
@@ -46,12 +53,20 @@ class MemberService implements IMemberService
 	 * @param ICurrencyService $currencyService
 	 * @param IMemberPurposeService $memberPurposeService
 	 */
-	public function __construct(IMemberDAO $memberDao, ILanguageService $languageService, ICurrencyService $currencyService, IMemberPurposeService $memberPurposeService)
-	{
+	public function __construct(
+		IMemberDAO $memberDao,
+		ILanguageService $languageService,
+		ICurrencyService $currencyService,
+		IPurposeService $purposeService,
+		IMemberPurposeService $memberPurposeService,
+		ICheckStateService $checkStateService
+	) {
 		$this->memberDao = $memberDao;
 		$this->languageService = $languageService;
 		$this->currencyService = $currencyService;
+		$this->purposeService = $purposeService;
 		$this->memberPurposeService = $memberPurposeService;
+		$this->checkStateService = $checkStateService;
 	}
 
 	/**
@@ -109,7 +124,9 @@ class MemberService implements IMemberService
 			throw new AlreadyExistException('MemberService: Member with this login already exists.');
 		} catch (NotFoundException $ex) {
 			$this->setMember($member, $data);
-			return $this->memberDao->create($member);
+			$member = $this->memberDao->create($member);
+			$this->createStartingCheckstates($member);
+			return $member;
 		}
 	}
 
@@ -170,8 +187,8 @@ class MemberService implements IMemberService
 				throw new BadParameterException('MemberService: "' . $key . '" must be specified.');
 		}
 
-		if (!preg_match('/[1-9][0-9]* /', $fb_data['login']))
-			throw new BadParameterException('MemberService: ID is not INTEGER or smaller than 1.');
+		if (!preg_match('/[1-9][0-9]*/', $fb_data['login']))
+			throw new BadParameterException('MemberService: Login is not INTEGER or smaller than 1.');
 
 		$data = [];
 		$data['firstName'] = $fb_data['fname'];
@@ -188,7 +205,10 @@ class MemberService implements IMemberService
 
 		$member = new Member();
 		$this->setMember($member, $data, TRUE);
-		return $this->memberDao->create($member);
+		$member->setToken($this->createToken());
+		$member = $this->memberDao->create($member);
+		$this->createStartingCheckstates($member);
+		return $member;
 	}
 
 	/**
@@ -213,7 +233,7 @@ class MemberService implements IMemberService
 	 * @throws AuthenticationException
 	 */
 	protected function setMember(Member $member, array $data, $newEntity = TRUE) {
-		$dateFormat = '/^2[0-1][0-9][0-9]-[0-1][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9].[0-9]*$/';
+		$dateFormat = '/^2[0-1][0-9][0-9]-[0-1][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9].{0,1}[0-9]*$/';
 		$emailFormat = '/^[a-zA-Z0-9,.,_,-][a-zA-Z0-9,.,_,-]*@[a-zA-Z0-9,.,_,-][a-zA-Z0-9,.,_,-]*\.[a-z]{2,5}$/';
 
 		//povinné položky
@@ -245,17 +265,20 @@ class MemberService implements IMemberService
 		}
 		if (isset($data['languageCode']) && $data['languageCode'] != '') {
 			try {
-				/*
-				 * delete all purposes which user don't use and old language
-				 * add all purposes with new language and base=true
-				 */
-				foreach ($member->getPurposes() as $purpose)
-					$this->memberPurposeService->delete($member, $purpose);
+				if (!$newEntity) {
+					/*
+					 * delete all purposes which user don't use and old language
+					 * add all purposes with new language and base=true
+					 */
+					foreach ($member->getPurposes() as $purpose)
+						$this->memberPurposeService->delete($member, $purpose);
 
-				$newLanguageCode = $data['languageCode'];
-				$languagePurposes = $this->memberPurposeService->getLanguageBasePurposes($newLanguageCode);
-				foreach ($languagePurposes as $purpose)
-					$this->memberPurposeService->create($member, $purpose);
+					$newLanguageCode = $data['languageCode'];
+					$languagePurposes = $this->purposeService->getLanguageBasePurposes($newLanguageCode);
+					foreach ($languagePurposes as $purpose)
+						$this->memberPurposeService->create($member, $purpose);
+				}
+
 				$member->setLanguage($this->languageService->getLanguage($data['languageCode']));
 			} catch (NotFoundException $ex) {
 				throw new NotFoundException('MemberService: No language found with given code.', 0, $ex);
@@ -297,8 +320,8 @@ class MemberService implements IMemberService
 		if (isset($data['admin'])) $member->setAdmin($data['admin']);
 		if (isset($data['logged'])) $member->setLogged($data['logged']);
 		if (isset($data['access'])) {
-			if (!($data['access'] instanceof \DateTime) && !preg_match($dateFormat, $data['access']))
-				throw new BadRequestHttpException('MemberService: field "access" has bad format');
+			if (!preg_match($dateFormat, $data['access']))
+				throw new BadRequestHttpException('MemberService: field "access" has bad format >' . $data['access'] . '<');
 			$member->setAccess(new DateTime($data['access']));
 		}
 		if (isset($data['facebook'])) $member->setFacebook($data['facebook']);
@@ -485,18 +508,18 @@ class MemberService implements IMemberService
 			if (!isset($note['id']))
 				throw new BadRequestHttpException("MemberService: Note hasn't id");
 			$noteIds[] = $note['id'];
-			$tmp[] = $this->memberPurposeService->getPurpose($note['id']);
+			$tmp[] = $this->purposeService->getPurpose($note['id']);
 		}
 
 		$more = array_diff($noteIds, $originNoteIds);
 		$moreNotes = [];
 		foreach ($more as $id)
-			$moreNotes[] = $this->memberPurposeService->getPurpose($id);
+			$moreNotes[] = $this->purposeService->getPurpose($id);
 
 		$less = array_diff($originNoteIds, $noteIds);
 		$lessNotes = [];
 		foreach ($less as $id)
-			$lessNotes[] = $this->memberPurposeService->getPurpose($id);
+			$lessNotes[] = $this->purposeService->getPurpose($id);
 
 		foreach ($moreNotes as $note) {
 			$this->memberPurposeService->create($member, $note);
@@ -505,5 +528,16 @@ class MemberService implements IMemberService
 		foreach ($lessNotes as $note) {
 			$this->memberPurposeService->delete($member, $note);
 		}
+	}
+
+
+
+	/**
+	 * creates 2 beggining CheckStates. For card and cash with value of 0
+	 * @param Member $member
+	 */
+	private function createStartingCheckstates(Member $member) {
+		$this->checkStateService->createCheckState($member, ItemType::CARD);
+		$this->checkStateService->createCheckState($member, ItemType::CASH);
 	}
 }

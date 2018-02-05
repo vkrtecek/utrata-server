@@ -262,6 +262,11 @@ class CsvService implements IFileService
 
 
 
+
+
+
+
+
 	/**
 	 * convert Member into csv
 	 * @param Member $member
@@ -340,6 +345,11 @@ class CsvService implements IFileService
 			$checkState->getChecked()->format('Y-m-d H:i:s') . ';' .
 			$checkState->getValue();
 	}
+
+
+
+
+
 
 
 
@@ -521,6 +531,7 @@ class CsvService implements IFileService
 		try {
 			$item = $this->itemService->getItem($id);
 			self::checkBeforeSettingItem($id, $name, $price, $course, $date, $created, $type, $active, $income, $vyber, $odepsat, $_note, $_currency, $_wallet);
+			//needs the item to be updated?
 			if ($item->getName() != $name
 				|| $item->getDescription() != $desc
 				|| $item->getPrice() != $price
@@ -531,7 +542,8 @@ class CsvService implements IFileService
 				|| $item->isIncome() != $income
 				|| $item->isVyber() != $vyber
 				|| $item->isOdepsat() != $odepsat
-				|| $item->getNote()->getId() != $_note
+				|| (!$item->getNote() && $_note)
+				|| ($item->getNote() && $item->getNote()->getId() != $_note)
 				|| $item->getCurrency()->getId() != $_currency
 				|| $item->getWallet()->getId() != $_wallet
 			) {
@@ -642,7 +654,7 @@ class CsvService implements IFileService
 			|| !ctype_digit($income) || ($income != '1' && $income != '0')
 			|| !ctype_digit($vyber) || ($vyber != '1' && $vyber != '0')
 			|| !ctype_digit($odepsat) || ($odepsat != '1' && $odepsat != '0')
-			|| !ctype_digit($_note)
+			|| (!ctype_digit($_note) && !$vyber)
 			|| $_currency == ""
 			|| !ctype_digit($_wallet)
 		) throw new FileParseException('Some field has bad format');
@@ -669,7 +681,7 @@ class CsvService implements IFileService
 	 */
 	private function setItem(Item $item, Member $member, $name, $desc, $price, $course, $date, $type, $active, $income, $vyber, $odepsat, $_note, $_currency, $_wallet) {
 		try {
-			$note = $this->purposeService->getPurpose($_note);
+			$note = $_note ? $this->purposeService->getPurpose($_note) : NULL;
 			$currency = $this->currencyService->getCurrencyByColumn('code', $_currency);
 			$wallet = $this->walletService->getWallet($_wallet, $member);
 		} catch (NotFoundException $e) {

@@ -10,6 +10,8 @@ namespace App\Model\Service;
 
 
 use App\Model\Entity\CheckState;
+use App\Model\Entity\Member;
+use App\Model\Enum\ItemType;
 use App\Model\Exception\BadParameterException;
 use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
@@ -32,11 +34,12 @@ interface ICheckStateService
 	public function getCheckState($id);
 
 	/**
-	 * @param $data
+	 * @param Member $member
+	 * @param string $type
 	 * @return CheckState
 	 * @throws BadRequestHttpException
 	 */
-	public function createCheckState($data);
+	public function createCheckState(Member $member, $type = ItemType::CARD);
 
 	/**
 	 * @param int $id

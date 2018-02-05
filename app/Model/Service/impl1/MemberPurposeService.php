@@ -55,7 +55,8 @@ class MemberPurposeService implements IMemberPurposeService
 	 * @return MemberPurpose
 	 */
 	public function create(Member $member, Purpose $purpose) {
-		return $this->memberPurposeDao->create($member, $purpose);
+		$already = $this->memberPurposeDao->find($member, $purpose);
+		return $already ? $already : $this->memberPurposeDao->create($member, $purpose);
 	}
 
 	/**
@@ -66,35 +67,6 @@ class MemberPurposeService implements IMemberPurposeService
 	public function delete(Member $member, Purpose $purpose) {
 		if (count($this->userItemsWithPurpose($member, $purpose)) == 0)
 			$this->memberPurposeDao->delete($member, $purpose);
-	}
-
-	/**
-	 * @param int $id
-	 * @return Purpose
-	 * @throws NotFoundException
-	 */
-	public function getPurpose($id) {
-		$purpose = $this->purposeDao->findOne($id);
-		if (!$purpose)
-			throw new NotFoundException('No Purpose found.');
-		return $purpose;
-	}
-
-	/**
-	 * @param string $languageCode
-	 * @return Purpose[]
-	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 */
-	public function getLanguageBasePurposes($languageCode) {
-		//only for test existence of language
-		$this->languageService->getLanguage($languageCode);
-		$purposes = $this->purposeDao->findByColumn('LanguageCode', $languageCode);
-		$ret = [];
-		foreach ($purposes as $purpose)
-			if ($purpose->isBase())
-				$ret[] = $purpose;
-		return $ret;
 	}
 
 

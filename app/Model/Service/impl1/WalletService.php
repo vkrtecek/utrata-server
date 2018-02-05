@@ -164,13 +164,16 @@ class WalletService implements IWalletService
 	private function countRest(Wallet $wallet, $type = ItemType::CARD) {
 		$minus = $plus = 0;
 		foreach ($wallet->getItems() as $item) {
-			if ($item->getType() == $type) {
-				$amount = ($item->getPrice() * $item->getCourse());
-				if ($item->isIncome())
-					$plus += $amount;
-				else
-					$minus += $amount;
-			}
+			$amount = ($item->getPrice() * $item->getCourse());
+
+			if ($item->getType() == $type && $item->isIncome() && !$item->isVyber())
+				$plus += $amount;
+			elseif ($item->getType() == $type && !$item->isIncome() && !$item->isVyber())
+				$minus += $amount;
+			elseif ($type == ItemType::CASH && $item->isVyber())
+				$plus += $amount;
+			elseif ($type == ItemType::CARD && $item->isVyber())
+				$minus += $amount;
 		}
 		return $plus - $minus;
 	}
@@ -183,9 +186,9 @@ class WalletService implements IWalletService
 		$expense = 0;
 		foreach ($wallet->getItems() as $item) {
 			if ($item->getDate()->format('Y-m') == (new DateTime())->format('Y-m')) {
-				if ($item->isIncome())
+				if ($item->isIncome() && !$item->isVyber())
 					$expense += ($item->getPrice() * $item->getCourse());
-				else
+				else if (!$item->isIncome())
 					$expense -= ($item->getPrice() * $item->getCourse());
 			}
 		}
@@ -221,7 +224,7 @@ class WalletService implements IWalletService
 				break;
 			case ItemState::INCOMES:
 				foreach ($items as $item) {
-					if ($item->isIncome() && !$item->isVyber())
+					if ($item->isIncome() && !$item->isVyber()) //ATM pick is not an income
 						$cnt++;
 				}
 				break;

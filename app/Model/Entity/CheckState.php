@@ -31,13 +31,6 @@ class CheckState extends Model
 	}
 
 	/**
-	 * @param int $id
-	 */
-	public function setId($id) {
-		$this->CheckStateID = $id;
-	}
-
-	/**
 	 * @return string
 	 */
 	public function getType() {

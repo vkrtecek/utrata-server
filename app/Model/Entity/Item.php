@@ -228,11 +228,11 @@ class Item extends Model
 	}
 
 	/**
-	 * @param Purpose $purpose
+	 * @param Purpose|NULL $purpose
 	 * @return Item
 	 */
-	public function setNote(Purpose $purpose) {
-		$this->PurposeID = $purpose->getId();
+	public function setNote($purpose) {
+		$this->PurposeID = $purpose ? $purpose->getId() : NULL;
 		return $this;
 	}
 

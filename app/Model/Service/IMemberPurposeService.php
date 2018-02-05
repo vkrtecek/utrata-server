@@ -12,6 +12,7 @@ namespace App\Model\Service;
 use App\Model\Entity\Member;
 use App\Model\Entity\MemberPurpose;
 use App\Model\Entity\Purpose;
+use App\Model\Exception\BadParameterException;
 use App\Model\Exception\NotFoundException;
 
 interface IMemberPurposeService
@@ -30,18 +31,4 @@ interface IMemberPurposeService
 	 */
 	public function delete(Member $member, Purpose $purpose);
 
-	/**
-	 * @param int $id
-	 * @return Purpose
-	 * @throws NotFoundException
-	 */
-	public function getPurpose($id);
-
-	/**
-	 * @param string $languageCode
-	 * @return Purpose[]
-	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 */
-	public function getLanguageBasePurposes($languageCode);
 }

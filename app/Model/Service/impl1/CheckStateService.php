@@ -11,6 +11,8 @@ namespace App\Model\Service;
 
 use App\Model\Dao\ICheckStateDAO;
 use App\Model\Entity\CheckState;
+use App\Model\Entity\Member;
+use App\Model\Enum\ItemType;
 use App\Model\Exception\BadParameterException;
 use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
@@ -21,17 +23,12 @@ class CheckStateService implements ICheckStateService
 	/** @var ICheckStateDAO */
 	protected $checkSateDao;
 
-	/** @var IMemberService */
-	protected $memberService;
-
 	/**
 	 * CheckStateService constructor.
 	 * @param ICheckStateDAO $checkStateDAO
-	 * @param IMemberService $memberService
 	 */
-	public function __construct(ICheckStateDAO  $checkStateDAO, IMemberService $memberService) {
+	public function __construct(ICheckStateDAO  $checkStateDAO) {
 		$this->checkSateDao = $checkStateDAO;
-		$this->memberService = $memberService;
 	}
 
 	/**
@@ -56,11 +53,18 @@ class CheckStateService implements ICheckStateService
 	}
 
 	/**
-	 * @param $data
+	 * @param Member $member
+	 * @param string $type
 	 * @return CheckState
 	 * @throws BadRequestHttpException
 	 */
-	public function createCheckState($data) {}
+	public function createCheckState(Member $member, $type = ItemType::CARD) {
+		$cs = new CheckState();
+		$cs->setType($type);
+		$cs->setValue(0);
+		$cs->setMember($member);
+		return $this->checkSateDao->create($cs);
+	}
 
 	/**
 	 * @param int $id

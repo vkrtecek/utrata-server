@@ -24,9 +24,6 @@ class PurposeService implements IPurposeService
 	/** @var IPurposeDAO */
 	protected $purposeDao;
 
-	/** @var IMemberService */
-	protected $memberService;
-
 	/** @var ILanguageService */
 	protected $languageService;
 
@@ -37,13 +34,11 @@ class PurposeService implements IPurposeService
 	/**
 	 * PurposeService constructor.
 	 * @param IPurposeDAO $purposeDAO
-	 * @param IMemberService $memberService
 	 * @param ILanguageService $languageService
 	 * @param IMemberPurposeService $memberPurposeService
 	 */
-	public function __construct(IPurposeDAO $purposeDAO, IMemberService $memberService, ILanguageService $languageService, IMemberPurposeService $memberPurposeService) {
+	public function __construct(IPurposeDAO $purposeDAO, ILanguageService $languageService, IMemberPurposeService $memberPurposeService) {
 		$this->purposeDao = $purposeDAO;
-		$this->memberService = $memberService;
 		$this->languageService = $languageService;
 		$this->memberPurposeService = $memberPurposeService;
 	}
@@ -68,16 +63,29 @@ class PurposeService implements IPurposeService
 	}
 
 	/**
-	 * @param string $login
+	 * @param string $languageCode
+	 * @return Purpose[]
+	 * @throws NotFoundException
+	 * @throws BadParameterException
+	 */
+	public function getLanguageBasePurposes($languageCode) {
+		//only for test existence of language
+		$this->languageService->getLanguage($languageCode);
+		$purposes = $this->purposeDao->findByColumn('LanguageCode', $languageCode);
+		$ret = [];
+		foreach ($purposes as $purpose)
+			if ($purpose->isBase())
+				$ret[] = $purpose;
+		return $ret;
+	}
+
+	/**
+	 * @param Member $member
 	 * @return Purpose[]
 	 * @throws NotFoundException
 	 */
-	public function getUserPurposes($login) {
-		$member = $this->memberService->getMember($login);
-		$purposes = [];
-		foreach ($member->getMemberPurposes() as $memberPurpose)
-			$purposes[] = $memberPurpose->getPurpose();
-		return $purposes;
+	public function getUserPurposes(Member $member) {
+		return $member->getPurposes();
 	}
 
 	/**
@@ -87,11 +95,11 @@ class PurposeService implements IPurposeService
 	 * @throws NotFoundException
 	 */
 	public function getPurpose($id) {
-		if ((string)((int)$id) != $id || (int)$id < 1)
-			throw new BadParameterException('Not integer or smaller than 1');
+		if (!ctype_digit(trim($id)) || (int)$id < 1)
+			throw new BadParameterException('PurposeService: Not integer or smaller than 1');
 		$purpose = $this->purposeDao->findOne($id);
 		if (!$purpose)
-			throw new NotFoundException('No Purpose found.');
+			throw new NotFoundException('PurposeService: No Purpose found.');
 		return $purpose;
 	}
 

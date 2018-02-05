@@ -34,8 +34,10 @@ class MemberDAO implements IMemberDAO
      * @return null|Member
      */
     public function create(Member $member) {
-		$member->save();
-        return $member;
+		if ($member->save())
+        	return $this->findOne($member->getLogin());
+		else
+			return NULL;
     }
 
     /**
