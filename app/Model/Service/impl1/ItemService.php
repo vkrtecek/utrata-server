@@ -310,8 +310,10 @@ class ItemService implements IItemService
 			if (!isset($data['currency']) || $data['currency'] == NULL || !isset($data['currency']['code']) || $data['currency']['code'] == "")
 				throw new BadRequestHttpException('ItemService: Currency("currencyCode") must be specified.');
 
-			if (!isset($data['note']) || $data['note'] == NULL || !isset($data['note']['id']) || $data['note']['id'] == "")
-				throw new BadRequestHttpException('ItemService: Note("id") must be specified.');
+			if (
+				(!isset($data['note']) || $data['note'] == NULL || !isset($data['note']['id']) || $data['note']['id'] == "")
+				&& (!isset($data['income']) || !$data['income'])
+			) throw new BadRequestHttpException('ItemService: Note("id") must be specified.');
 
 			if (!isset($data['wallet']) || $data['wallet'] == NULL)
 				throw new BadRequestHttpException('ItemService: Wallet("id") must be specified.');
@@ -333,6 +335,7 @@ class ItemService implements IItemService
 		if (isset($data['course'])) $entity->setCourse($data['course']);
 		if (isset($data['description'])) $entity->setDescription(str_replace("\n", ' ', $data['description']));
 		else $entity->setDescription('');
+		if (isset($data['income'])) $entity->setIncome($data['income']);
 		if (isset($data['active'])) $entity->setActive($data['active']);
 		if (isset($data['type'])) $entity->setType($data['type']);
 		if (isset($data['vyber'])) $entity->setVyber($data['vyber']);
