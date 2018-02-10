@@ -46,6 +46,7 @@ Route::get('/currencies', 'CurrencyController@gets');
 
 /*##################-  Item  -######################*/
 Route::get('/items/wallet/{walletId}', 'ItemController@getWalletItems');
+Route::get('/items/statistics', 'ItemController@statistics');
 Route::get('/item', 'ItemController@get');
 Route::post('/item', 'ItemController@create');
 Route::put('/item', 'ItemController@update');

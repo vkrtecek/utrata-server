@@ -13,6 +13,8 @@ use App\Model\Entity\Member;
 
 class ItemFilter
 {
+
+	const WORD_SEPARATOR = '  ';
 	/**
 	 * @var string
 	 */

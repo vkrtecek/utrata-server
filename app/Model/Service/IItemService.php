@@ -38,6 +38,18 @@ interface IItemService
 	 */
 	public function getWalletItems($walletId, Member $member, $state, $month, $notes, $year, $pattern, $orderBy, $orderHow, $offset);
 
+
+	/**
+	 * @param Member $member
+	 * @param int $walletId
+	 * @param string $purposes expected in form like "1,3,5,7"
+	 * @return array
+	 * @throws NotFoundException
+	 * @throws BadParameterException
+	 * @throws AuthenticationException
+	 */
+	public function getMonthStatistics(Member $member, $walletId, $purposes = NULL);
+
 	/**
 	 * @param int $id
 	 * @return Item

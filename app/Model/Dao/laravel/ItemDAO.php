@@ -51,10 +51,24 @@ class ItemDAO implements IItemDAO
 		if (count($filters->getNotes())) {
 			$items->where('PurposeID', $filters->getNotes());
 		}
-		if ($filters->getPattern() != "")
-			$items->whereRaw("( mainName LIKE '%" . $filters->getPattern() . "%' OR description LIKE '%" . $filters->getPattern() . "%' OR type = '" . $filters->getPattern() . "' )");
+		if ($filters->getPattern() != "") {
+			$patterns = explode(ItemFilter::WORD_SEPARATOR, $filters->getPattern());
+			foreach ($patterns as $pattern) {
+				if ($pattern[0] == '!') {
+					$pattern = substr($pattern, 1);
+					$pattern = str_replace('\\ \\ ', '  ', $pattern);
+					$pattern = str_replace('\\!', '!', $pattern);
+					$items->whereRaw("( mainName NOT LIKE '%" . $pattern . "%' AND description NOT LIKE '%" . $pattern . "%' AND type != '" . $pattern . "' )");
+				}
+				else {
+					$pattern = str_replace('\\ \\ ', '  ', $pattern);
+					$pattern = str_replace('\\!', '!', $pattern);
+					$items->whereRaw("( mainName LIKE '%" . $pattern . "%' OR description LIKE '%" . $pattern . "%' OR type = '" . $pattern . "' )");
+				}
+			}
+		}
 		$items->where('vyber', $filters->isVyber());
-		$items->where('active', $filters->isActive());
+		if ($filters->isActive() !== NULL) $items->where('active', $filters->isActive());
 		$items->where('income', $filters->isIncome());
 		$items->orderBy($filters->getOrderBy(), $filters->getOrderHow());
 

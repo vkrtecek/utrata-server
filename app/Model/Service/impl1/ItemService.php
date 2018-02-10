@@ -122,6 +122,82 @@ class ItemService implements IItemService
 		return $items;
 	}
 
+
+	/**
+	 * @param Member $member
+	 * @param int $walletId
+	 * @param string $purposes expected in form like "1,3,5,7"
+	 * @return array
+	 * @throws NotFoundException
+	 * @throws BadParameterException
+	 * @throws AuthenticationException
+	 */
+	public function getMonthStatistics(Member $member, $walletId, $purposes = NULL) {
+		$wallet = $this->walletService->getWallet($walletId, $member);
+		$startYear = $member->getCreated()->format('Y');
+		$startMonth = $member->getCreated()->format('m');
+		$thisYear = (new DateTime())->format('Y');
+		$thisMonth = (new DateTime())->format('m');
+
+		$_monthStat = null;
+		//get values for previous months
+		$monthStats = [];
+		for ($_year = $startYear; $_year <= $thisYear; $_year++) {
+			for ($_month = $_year == $startYear ? $startMonth : '01'; $_month <= '12'; $_month++) {
+				if (strlen($_month) == 1) $_month = '0' . $_month;
+
+				$filters = new ItemFilter();
+				$filters->setWalletId($walletId)->setYear($_year)->setMonth($_month)->setActive(NULL);
+				if ($purposes) $filters->setNotes(explode(',', $purposes));
+				$expenses = $this->itemDao->findByFilter($filters);
+				$filters->setIncome(TRUE);
+				$incomes = $this->itemDao->findByFilter($filters);
+
+				$incomesValue = 0.0;
+				foreach ($incomes as $income)
+					$incomesValue += $income->getPrice() * $income->getCourse();
+				$expensesValue = 0.0;
+				foreach ($expenses as $expense)
+					$expensesValue += $expense->getPrice() * $expense->getCourse();
+
+				$_monthStat = [
+					"month" => $_month,
+					"year" => $_year,
+					"income" => $incomesValue,
+					"incomesCnt" => count($incomes),
+					"expense" => $expensesValue,
+					"expensesCnt" => count($expenses),
+				];
+				if ($_year == $thisYear && $_month == $thisMonth) { break; }
+				$monthStats[] = $_monthStat;
+			}
+		}
+
+		//get min, max and average
+		$minEx = $maxEx = $acc = 0;
+		foreach ($monthStats as $monthStat) {
+			$minEx = $minEx < $monthStat['expense'] ? $minEx : $monthStat['expense'];
+			$maxEx = $maxEx > $monthStat['expense'] ? $maxEx : $monthStat['expense'];
+			$acc += $monthStat['expense'];
+		}
+		$averageEx = count($monthStats) ? $acc / count($monthStats) : 0;
+
+
+
+		return [
+			//TODO note
+			"months" => $monthStats,
+			"thisMonth" => $_monthStat,
+			"average" => $averageEx,
+			"min" => $minEx,
+			"max" => $maxEx,
+			"items" => count($monthStats),
+			"totalExpense" => $acc,
+		];
+	}
+
+
+
 	/**
 	 * @param int $id
 	 * @return Item

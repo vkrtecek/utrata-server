@@ -63,6 +63,28 @@ class ItemController extends AbstractController
 	}
 
 
+	/**
+	 * @param Request $req
+	 * @return Response
+	 */
+	public function statistics(Request $req) {
+		$this->assumeLogged($req);
+		$member = $this->loggedUser($req);
+		$walletId = $req->get('id');
+		$purposes = $req->get('notes');
+		try {
+			$statistics = $this->itemService->getMonthStatistics($member, $walletId, $purposes);
+		} catch (NotFoundException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NO_CONTENT);
+		} catch (BadParameterException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
+		} catch (AuthenticationException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_UNAUTHORIZED);
+		}
+		return Response::create($statistics, Response::HTTP_OK);
+	}
+
+
 
 
 

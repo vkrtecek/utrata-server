@@ -42,7 +42,7 @@ class CreateWalletsTable extends Migration
 			$table->string('motherMail');
 			$table->string('myMail');
 			$table->boolean('admin')->default(false);
-			$table->boolean('logged')->default(false);
+			$table->integer('logged')->default(0);
 			$table->string('token')->nullable();
 			$table->dateTime('expiration')->nullable();
 			$table->boolean('facebook')->default(false);
@@ -75,7 +75,7 @@ class CreateWalletsTable extends Migration
 			$table->bigInteger('CreatorID')->nullable();
 			$table->foreign('CreatorID')->references('MemberID')->on('utrata_members');
 		});
-		Schema::create('utrata_memberPurposes', function(Blueprint $table) {
+		Schema::create('utrata_memberpurposes', function(Blueprint $table) {
 			$table->integer('MemberPurposeID')->autoIncrement();
 
 			$table->integer('PurposeID');

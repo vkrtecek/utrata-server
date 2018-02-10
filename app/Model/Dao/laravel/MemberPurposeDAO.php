@@ -47,7 +47,6 @@ class MemberPurposeDAO implements IMemberPurposeDAO
 	public function delete(Member $member, Purpose $purpose) {
 		$mps = MemberPurpose::where('MemberID', $member->getId())
 			->where('PurposeID', $purpose->getId())->get();
-
 		if ($mps) {
 			foreach ($mps as $mp) {
 				$mp->delete();

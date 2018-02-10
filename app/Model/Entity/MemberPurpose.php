@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class MemberPurpose extends Model
 {
-	protected $table = 'utrata_memberPurposes';
+	protected $table = 'utrata_memberpurposes';
 
 	public $primaryKey = 'MemberPurposeID';
 
@@ -25,13 +25,6 @@ class MemberPurpose extends Model
 	 */
 	public function getId() {
 		return $this->MemberPurposeID;
-	}
-
-	/**
-	 * @param int $id
-	 */
-	public function setId($id) {
-		$this->MemberPurposeID = $id;
 	}
 
 	/**
@@ -59,7 +52,7 @@ class MemberPurpose extends Model
 	 * @param Member $member
 	 */
 	public function setMember(Member $member) {
-		$this->MemberiD = $member->getID();
+		$this->MemberID = $member->getId();
 	}
 
 }

@@ -160,7 +160,7 @@ class Item extends Model
 	 * @return boolean
 	 */
 	public function isActive() {
-		return $this->active;
+		return $this->active == 1;
 	}
 
 	/**
@@ -176,7 +176,7 @@ class Item extends Model
 	 * @return boolean
 	 */
 	public function isIncome() {
-		return $this->income;
+		return $this->income == 1;
 	}
 
 	/**
@@ -192,7 +192,7 @@ class Item extends Model
 	 * @return boolean
 	 */
 	public function isVyber() {
-		return $this->vyber;
+		return $this->vyber == 1;
 	}
 
 	/**
@@ -208,7 +208,7 @@ class Item extends Model
 	 * @return boolean
 	 */
 	public function isOdepsat() {
-		return $this->odepsat;
+		return $this->odepsat == 1;
 	}
 
 	/**

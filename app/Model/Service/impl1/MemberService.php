@@ -51,7 +51,9 @@ class MemberService implements IMemberService
 	 * @param IMemberDAO $memberDao
 	 * @param ILanguageService $languageService
 	 * @param ICurrencyService $currencyService
+	 * @param IPurposeService $purposeService
 	 * @param IMemberPurposeService $memberPurposeService
+	 * @param ICheckStateService $checkStateService
 	 */
 	public function __construct(
 		IMemberDAO $memberDao,
@@ -126,6 +128,7 @@ class MemberService implements IMemberService
 			$this->setMember($member, $data);
 			$member = $this->memberDao->create($member);
 			$this->createStartingCheckstates($member);
+			$this->createStartingPurposes($member);
 			return $member;
 		}
 	}
@@ -203,11 +206,14 @@ class MemberService implements IMemberService
 		$data['languageCode'] = $this->getLanguageFromLocale($fb_data['locale'])->getCode();
 		$data['facebook'] = TRUE;
 
+		//create new member
 		$member = new Member();
 		$this->setMember($member, $data, TRUE);
 		$member->setToken($this->createToken());
+		$member->setLogged(1);
 		$member = $this->memberDao->create($member);
 		$this->createStartingCheckstates($member);
+		$this->createStartingPurposes($member);
 		return $member;
 	}
 
@@ -216,8 +222,12 @@ class MemberService implements IMemberService
 	 * @return Member
 	 */
 	public function logout(Member $member) {
-		$member->setExpiration(new \DateTime());
-		$member->setToken('');
+		$logged = $member->getLogged();
+		if (!--$logged) {
+			$member->setExpiration(new \DateTime());
+			$member->setToken('');
+		}
+		$member->setLogged($logged);
 		return $this->memberDao->update($member);
 	}
 
@@ -235,6 +245,7 @@ class MemberService implements IMemberService
 	protected function setMember(Member $member, array $data, $newEntity = TRUE) {
 		$dateFormat = '/^2[0-1][0-9][0-9]-[0-1][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9].{0,1}[0-9]*$/';
 		$emailFormat = '/^[a-zA-Z0-9,.,_,-][a-zA-Z0-9,.,_,-]*@[a-zA-Z0-9,.,_,-][a-zA-Z0-9,.,_,-]*\.[a-z]{2,5}$/';
+		$changedLanguage = FALSE;
 
 		//povinné položky
 		if ($newEntity) {
@@ -265,9 +276,9 @@ class MemberService implements IMemberService
 		}
 		if (isset($data['languageCode']) && $data['languageCode'] != '') {
 			try {
-				if (!$newEntity) {
+				if (!$newEntity && $data['languageCode'] != $member->getLanguage()->getCode()) {
 					/*
-					 * delete all purposes which user don't use and old language
+					 * delete all purposes of old language which user don't use
 					 * add all purposes with new language and base=true
 					 */
 					foreach ($member->getPurposes() as $purpose)
@@ -275,8 +286,11 @@ class MemberService implements IMemberService
 
 					$newLanguageCode = $data['languageCode'];
 					$languagePurposes = $this->purposeService->getLanguageBasePurposes($newLanguageCode);
-					foreach ($languagePurposes as $purpose)
+					foreach ($languagePurposes as $purpose) {
 						$this->memberPurposeService->create($member, $purpose);
+					}
+					$changedLanguage = TRUE;
+					dump('měníme lazyk na ' . $data['languageCode']);
 				}
 
 				$member->setLanguage($this->languageService->getLanguage($data['languageCode']));
@@ -310,9 +324,9 @@ class MemberService implements IMemberService
 				throw new AlreadyExistException('MemberService: This mail already exists');
 			$member->setMyMail($data['me']);
 		}
-		if (isset($data['notes']) && $data['notes']) {
+		if (isset($data['notes']) && $data['notes'] && !$changedLanguage) {
 			//deletes less and adds more
-			$this->setNotes($member, $data['notes']);
+			$this->setNotes($member, $data['notes'], $data['languageCode']);
 		}
 
 		if (isset($data['sendMonthly'])) $member->setSendMonthly($data['sendMonthly']);
@@ -385,8 +399,14 @@ class MemberService implements IMemberService
 			$member = $this->getMemberByColumn('login', $login);
 			if (!self::verifyPasswordHash($member->getPassword(), $password))
 				throw new SecurityException('Bad password');
-			$token = $this->createToken();
-			$member->setToken($token);
+			$logged = $member->getLogged();
+			if (!$logged || $member->getExpiration() < new DateTime()) {
+				$token = $this->createToken();
+				$member->setToken($token);
+				$member->setLogged(1);
+			} else {
+				$member->setLogged($logged + 1);
+			}
 			$member->setAccess(new DateTime());
 			$member->setExpiration(new DateTime('+ 1 day'));
 			$this->memberDao->update($member);
@@ -402,8 +422,14 @@ class MemberService implements IMemberService
 	 */
 	public function loginByFacebook($login) {
 		$member = $this->getMemberByColumn('login', $login);
-		$token = $this->createToken();
-		$member->setToken($token);
+		$logged = $member->getLogged();
+		if (!$logged || $member->getExpiration() < new DateTime()) {
+			$token = $this->createToken();
+			$member->setToken($token);
+			$member->setLogged(1);
+		} else {
+			$member->setLogged($logged + 1);
+		}
 		$member->setAccess(new DateTime());
 		$member->setExpiration(new DateTime('+ 14 days'));
 		return $this->memberDao->update($member);
@@ -495,7 +521,8 @@ class MemberService implements IMemberService
 	 * @param array $notes
 	 * @return void
 	 */
-	private function setNotes(Member $member, $notes) {
+	private function setNotes(Member $member, $notes, $languageCode) {
+		dump('tool to setNotes');
 
 		$originNoteIds = [];
 		foreach ($member->getPurposes() as $purpose) {
@@ -510,6 +537,7 @@ class MemberService implements IMemberService
 			$noteIds[] = $note['id'];
 			$tmp[] = $this->purposeService->getPurpose($note['id']);
 		}
+
 
 		$more = array_diff($noteIds, $originNoteIds);
 		$moreNotes = [];
@@ -539,5 +567,16 @@ class MemberService implements IMemberService
 	private function createStartingCheckstates(Member $member) {
 		$this->checkStateService->createCheckState($member, ItemType::CARD);
 		$this->checkStateService->createCheckState($member, ItemType::CASH);
+	}
+
+	/**
+	 * creates basic purposes in member's language
+	 * @param Member $member
+	 */
+	private function createStartingPurposes(Member $member) {
+		$basicPurposes = $this->purposeService->getLanguagePurposes($member->getLanguage()->getCode());
+		foreach ($basicPurposes as $purpose) {
+			$this->memberPurposeService->create($member, $purpose);
+		}
 	}
 }

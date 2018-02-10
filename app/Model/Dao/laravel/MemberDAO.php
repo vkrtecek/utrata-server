@@ -34,6 +34,7 @@ class MemberDAO implements IMemberDAO
      * @return null|Member
      */
     public function create(Member $member) {
+		$member->setCreated(new \DateTime());
 		if ($member->save())
         	return $this->findOne($member->getLogin());
 		else

@@ -172,14 +172,14 @@ class Member extends Model
 	}
 
 	/**
-	 * @return boolean
+	 * @return int
 	 */
-	public function isLogged() {
+	public function getLogged() {
 		return $this->logged;
 	}
 
 	/**
-	 * @param boolean $logged
+	 * @param int $logged
 	 */
 	public function setLogged($logged) {
 		$this->logged = $logged;
@@ -211,6 +211,20 @@ class Member extends Model
 	 */
 	public function setExpiration(DateTime $expiration) {
 		$this->expiration = $expiration->format('Y-m-d H:i:s');
+	}
+
+	/**
+	 * @return DateTime
+	 */
+	public function getCreated() {
+		return new DateTime($this->created);
+	}
+
+	/**
+	 * @param DateTime $created
+	 */
+	public function setCreated(DateTime $created) {
+		$this->created = $created->format('Y-m-d H:i:s');
 	}
 
 	/**
