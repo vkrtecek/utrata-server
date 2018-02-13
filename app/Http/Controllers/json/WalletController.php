@@ -147,7 +147,7 @@ class WalletController extends AbstractController
 		$walletId = $req->get('id');
 		$type = $req->get('type');
 		$value = $req->get('value');
-		if (!$walletId || !$type || !$value)
+		if (!strlen($walletId) || !strlen($type) || !strlen($value))
 			return Response::create(['error' => 'missing id, type or value'], Response::HTTP_BAD_REQUEST);
 
 		try {

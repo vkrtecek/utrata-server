@@ -71,7 +71,7 @@ class ItemDAO implements IItemDAO
 				}
 			}
 		}
-		$items->where('vyber', $filters->isVyber());
+		if ($filters->isVyber() !== NULL) $items->where('vyber', $filters->isVyber());
 		if ($filters->isActive() !== NULL) $items->where('active', $filters->isActive());
 		$items->where('income', $filters->isIncome());
 		$items->orderBy($filters->getOrderBy(), $filters->getOrderHow());

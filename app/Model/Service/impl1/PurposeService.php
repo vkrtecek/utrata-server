@@ -121,11 +121,16 @@ class PurposeService implements IPurposeService
 				throw new AlreadyExistException('Note with this code already exists');
 			}
 		}
+		if (isset($data['language']) && $data['language']) {
+			$language = $this->languageService->getLanguage($data['language']);
+		} else {
+			$language = $member->getLanguage();
+		}
 
 		$purpose = new Purpose();
 		$purpose->setBase(FALSE);
 		$purpose->setCreator($member);
-		$purpose->setLanguage($member->getLanguage());
+		$purpose->setLanguage($language);
 		$purpose->setValue($data['name']);
 		$purpose->setCode($code);
 		$purpose = $this->purposeDao->create($purpose);

@@ -104,7 +104,7 @@ class ItemService implements IItemService
 				$filters->setActive(FALSE)->setVyber(FALSE)->setIncome(FALSE);
 				break;
 			case ItemState::INCOMES:
-				$filters->setVyber(FALSE)->setIncome(TRUE);
+				$filters->setIncome(TRUE);//->setVyber(FALSE);
 				break;
 			case ItemState::ALL:
 				$filters->setVyber(FALSE);
@@ -198,7 +198,7 @@ class ItemService implements IItemService
 		$this->checkForItemExistence($item);
 
 		if ($item->isVyber()) {
-			$item->setOdepsat(FALSE)->setNote(NULL)->setIncome(TRUE)->setType(ItemType::CASH);
+			$item->setOdepsat(FALSE)->setNote(NULL)->setIncome(TRUE)->setType(ItemType::CASH)->setName('Výběr');
 		}
 		$item = $this->itemDao->create($item);
 		return $item;
@@ -315,6 +315,7 @@ class ItemService implements IItemService
 		$ret['active'] = $item->isActive();
 		$ret['type'] = $item->getType();
 		$ret['odepsat'] = $item->isOdepsat();
+		$ret['vyber'] = $item->isVyber();
 		$ret['income'] = $item->isIncome();
 		$ret['note'] = $item->getNote() ? $this->purposeService->format($item->getNote()) : NULL ;
 		$ret['currency'] = $this->currencyService->format($item->getCurrency());
@@ -374,13 +375,16 @@ class ItemService implements IItemService
 			if (!isset($data['date']) || $data['date'] == NULL)
 				throw new BadRequestHttpException('ItemService: "date" must be specified.');
 		}
-		
 
-		if (isset($data['name'])) $entity->setName($data['name']);
-		if (isset($data['price'])) $entity->setPrice($data['price']);
-		if (isset($data['date'])) $entity->setDate(new DateTime($data['date']));
+
+		$entity->setName(str_replace(';', '', str_replace("\n", ' ', $data['name'])));
+		$entity->setPrice($data['price']);
+		$entity->setDate(new DateTime($data['date']));
 		if (isset($data['course'])) $entity->setCourse($data['course']);
-		if (isset($data['description'])) $entity->setDescription(str_replace("\n", ' ', $data['description']));
+		if (isset($data['description'])) {
+			$description = str_replace(';', '', str_replace("\n", ' ', $data['description']));
+			$entity->setDescription($description);
+		}
 		else $entity->setDescription('');
 		if (isset($data['income'])) $entity->setIncome($data['income']);
 		if (isset($data['active'])) $entity->setActive($data['active']);

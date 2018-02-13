@@ -58,7 +58,7 @@ class ItemFilter
 	/**
 	 * @var bool
 	 */
-	private $vyber = FALSE;
+	private $vyber = NULL;
 
 	/**
 	 * @var bool
