@@ -116,11 +116,11 @@ interface IMemberService
 	 * @param Member $member
 	 * @return array
 	 */
-	public static function format(Member $member);
+	public function format(Member $member);
 
 	/**
 	 * @param Member[] $members
 	 * @return array
 	 */
-	public static function formatEntites($members);
+	public function formatEntities($members);
 }

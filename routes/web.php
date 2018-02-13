@@ -84,6 +84,7 @@ Route::get('/translations', 'TranslationController@gets');
 Route::get('/wallets', 'WalletController@getUserWallets');
 Route::get('/wallet', 'WalletController@get');
 Route::post('/wallet', 'WalletController@create');
+Route::put('/wallet/checkState', 'WalletController@updateCheckState');
 Route::put('/wallet/{id}', 'WalletController@update');
 Route::delete('/wallet/{id}', 'WalletController@delete');
 

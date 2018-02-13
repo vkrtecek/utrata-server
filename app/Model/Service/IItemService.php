@@ -121,11 +121,11 @@ interface IItemService
 	 * @param Item $item
 	 * @return array
 	 */
-	public static function format(Item $item);
+	public function format(Item $item);
 
 	/**
 	 * @param Item[] $items
 	 * @return array
 	 */
-	public static function formatEntities($items);
+	public function formatEntities($items);
 }

@@ -33,6 +33,15 @@ class CheckStateDAO implements ICheckStateDAO
 	 * @param mixed $val
 	 * @return CheckState|NULL
 	 */
+	public function findByColumn($key, $val) {
+		return CheckState::where($key, $val)->get();
+	}
+
+	/**
+	 * @param string $key
+	 * @param mixed $val
+	 * @return CheckState|NULL
+	 */
 	public function findLastByColumn($key, $val) {
 		return CheckState::where($key, $val)
 			->orderBy('CheckStateID', 'DESC')
@@ -57,5 +66,14 @@ class CheckStateDAO implements ICheckStateDAO
 		$checkState->setChecked(new \DateTime());
 		$checkState->save();
 		return $checkState;
+	}
+
+	/**
+	 * @param int $id
+	 * @return void
+	 */
+	public function delete($id) {
+		$cs = $this->findOne($id);
+		$cs->delete();
 	}
 }

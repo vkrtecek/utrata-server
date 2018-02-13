@@ -49,7 +49,11 @@ class ItemDAO implements IItemDAO
 		if ($filters->getMonth() != "") $items->where('date', 'LIKE', '%-'.$filters->getMonth().'-%');
 		if ($filters->getYear() != "") $items->where('date', 'LIKE', $filters->getYear().'-%');
 		if (count($filters->getNotes())) {
-			$items->where('PurposeID', $filters->getNotes());
+			$statement = '(PurposeID = ' . $filters->getNotes()[0];
+			for ($i = 1; $i < count($filters->getNotes()); $i++)
+				$statement .= ' OR PurposeID = ' . $filters->getNotes()[$i];
+			$statement .= ')';
+			$items->whereRaw($statement);
 		}
 		if ($filters->getPattern() != "") {
 			$patterns = explode(ItemFilter::WORD_SEPARATOR, $filters->getPattern());

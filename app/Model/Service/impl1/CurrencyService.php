@@ -99,7 +99,7 @@ class CurrencyService implements ICurrencyService
 	 * @param Currency $currency
 	 * @return array
 	 */
-	public static function format(Currency $currency) {
+	public function format(Currency $currency) {
 		$ret = [];
 
 		$ret['id'] = $currency->getId();
@@ -115,7 +115,7 @@ class CurrencyService implements ICurrencyService
 	 * @param Currency[] $currencies
 	 * @return array
 	 */
-	public static function formatEntites($currencies) {
+	public function formatEntities($currencies) {
 		$ret = [];
 		foreach ($currencies as $currency)
 			$ret[] = self::format($currency);

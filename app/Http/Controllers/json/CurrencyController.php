@@ -26,7 +26,7 @@ class CurrencyController extends AbstractController
 	public function gets() {
 		try {
 			$currencies = $this->currencyService->getCurrencies();
-			$formatted = CurrencyService::formatEntites($currencies);
+			$formatted = $this->currencyService->formatEntities($currencies);
 		} catch (NotFoundException $e) {
 			return Response::create(['error' => $e->getMessage()], Response::HTTP_NO_CONTENT);
 		}

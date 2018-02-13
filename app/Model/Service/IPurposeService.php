@@ -87,11 +87,11 @@ interface IPurposeService
 	 * @param Purpose $purpose
 	 * @return array
 	 */
-	public static function format(Purpose $purpose);
+	public function format(Purpose $purpose);
 
 	/**
 	 * @param Purpose[] $purposes
 	 * @return array
 	 */
-	public static function formatEntites($purposes);
+	public function formatEntities($purposes);
 }

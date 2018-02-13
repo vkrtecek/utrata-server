@@ -11,6 +11,7 @@ namespace App\Model\Service;
 
 use App\Model\Entity\CheckState;
 use App\Model\Entity\Member;
+use App\Model\Entity\Wallet;
 use App\Model\Enum\ItemType;
 use App\Model\Exception\BadParameterException;
 use App\Model\Exception\IntegrityException;
@@ -20,10 +21,19 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 interface ICheckStateService
 {
 	/**
+	 * @param Wallet $wallet
 	 * @return CheckState[]
 	 * @throws NotFoundException
 	 */
-	public function getCheckStates();
+	public function getWalletCheckStates(Wallet $wallet);
+
+	/**
+	 * @param Wallet $wallet
+	 * @param string $type
+	 * @return CheckState
+	 * @throws NotFoundException
+	 */
+	public function getWalletCheckState(Wallet $wallet, $type = ItemType::CARD);
 
 	/**
 	 * @param int $id
@@ -34,22 +44,21 @@ interface ICheckStateService
 	public function getCheckState($id);
 
 	/**
-	 * @param Member $member
+	 * @param Wallet $wallet
 	 * @param string $type
 	 * @return CheckState
 	 * @throws BadRequestHttpException
 	 */
-	public function createCheckState(Member $member, $type = ItemType::CARD);
+	public function createCheckState(Wallet $wallet, $type = ItemType::CARD);
 
 	/**
-	 * @param int $id
-	 * @param $data
+	 * @param Wallet $wallet
+	 * @param string $type
+	 * @param double $value
 	 * @return CheckState
 	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 * @throws BadRequestHttpException
 	 */
-	public function updateCheckState($id, $data);
+	public function updateCheckState(Wallet $wallet, $type, $value);
 
 	/**
 	 * @param int $id
@@ -70,5 +79,5 @@ interface ICheckStateService
 	 * @param CheckState[] $checkStates
 	 * @return array
 	 */
-	public function formatEntites($checkStates);
+	public function formatEntities($checkStates);
 }

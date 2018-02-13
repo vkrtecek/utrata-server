@@ -161,7 +161,7 @@ class Member extends Model
 	 * @return boolean
 	 */
 	public function isAdmin() {
-		return $this->admin;
+		return $this->admin == 1;
 	}
 
 	/**
@@ -231,7 +231,7 @@ class Member extends Model
 	 * @return boolean
 	 */
 	public function isFacebook() {
-		return $this->facebook;
+		return $this->facebook == 1;
 	}
 
 	/**

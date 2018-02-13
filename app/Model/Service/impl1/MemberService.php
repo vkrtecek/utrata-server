@@ -13,7 +13,6 @@ use App\Model\Dao\IMemberDAO;
 use App\Model\Entity\Currency;
 use App\Model\Entity\Language;
 use App\Model\Entity\Member;
-use App\Model\Enum\ItemType;
 use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\BadParameterException;
@@ -43,9 +42,6 @@ class MemberService implements IMemberService
 	/** @var IMemberPurposeService */
 	protected $memberPurposeService;
 
-	/** @var ICheckStateService */
-	protected $checkStateService;
-
 	/**
 	 * MemberService constructor.
 	 * @param IMemberDAO $memberDao
@@ -53,22 +49,19 @@ class MemberService implements IMemberService
 	 * @param ICurrencyService $currencyService
 	 * @param IPurposeService $purposeService
 	 * @param IMemberPurposeService $memberPurposeService
-	 * @param ICheckStateService $checkStateService
 	 */
 	public function __construct(
 		IMemberDAO $memberDao,
 		ILanguageService $languageService,
 		ICurrencyService $currencyService,
 		IPurposeService $purposeService,
-		IMemberPurposeService $memberPurposeService,
-		ICheckStateService $checkStateService
+		IMemberPurposeService $memberPurposeService
 	) {
 		$this->memberDao = $memberDao;
 		$this->languageService = $languageService;
 		$this->currencyService = $currencyService;
 		$this->purposeService = $purposeService;
 		$this->memberPurposeService = $memberPurposeService;
-		$this->checkStateService = $checkStateService;
 	}
 
 	/**
@@ -127,7 +120,6 @@ class MemberService implements IMemberService
 		} catch (NotFoundException $ex) {
 			$this->setMember($member, $data);
 			$member = $this->memberDao->create($member);
-			$this->createStartingCheckstates($member);
 			$this->createStartingPurposes($member);
 			return $member;
 		}
@@ -212,7 +204,6 @@ class MemberService implements IMemberService
 		$member->setToken($this->createToken());
 		$member->setLogged(1);
 		$member = $this->memberDao->create($member);
-		$this->createStartingCheckstates($member);
 		$this->createStartingPurposes($member);
 		return $member;
 	}
@@ -290,7 +281,6 @@ class MemberService implements IMemberService
 						$this->memberPurposeService->create($member, $purpose);
 					}
 					$changedLanguage = TRUE;
-					dump('měníme lazyk na ' . $data['languageCode']);
 				}
 
 				$member->setLanguage($this->languageService->getLanguage($data['languageCode']));
@@ -439,7 +429,7 @@ class MemberService implements IMemberService
 	 * @param Member $member
 	 * @return array
 	 */
-	public static function format(Member $member) {
+	public function format(Member $member) {
 		$ret = [];
 
 		$ret['id'] = $member->getId();
@@ -455,7 +445,7 @@ class MemberService implements IMemberService
 		$ret['languageCode'] = $member->getLanguage()->getCode();
 		$ret['currencyCode'] = $member->getCurrency()->getCode();
 		$ret['lastLogged'] = $member->getAccess()->format('Y-m-d H:i:s');
-		$ret['notes'] = MemberService::getFormattedPurposes($member);
+		$ret['notes'] = $this->getFormattedPurposes($member);
 
 		return $ret;
 	}
@@ -464,13 +454,13 @@ class MemberService implements IMemberService
 	 * @param Member $member
 	 * @return array
 	 */
-	public static function getFormattedPurposes(Member $member) {
+	public function getFormattedPurposes(Member $member) {
 		$ret = [];
 		if ($member->getMemberPurposes() == NULL)
 			return $ret;
 
 		foreach ($member->getMemberPurposes() as $memberPurpose) {
-			$ret[] = PurposeService::format($memberPurpose->getPurpose());
+			$ret[] = $this->purposeService->format($memberPurpose->getPurpose());
 		}
 		return $ret;
 	}
@@ -482,10 +472,10 @@ class MemberService implements IMemberService
 	 * @param Member[] $members
 	 * @return array
 	 */
-	public static function formatEntites($members) {
+	public function formatEntities($members) {
 		$ret = [];
 		foreach($members as $member)
-			$ret[] = MemberService::format($member);
+			$ret[] = $this->format($member);
 		return $ret;
 	}
 
@@ -522,8 +512,6 @@ class MemberService implements IMemberService
 	 * @return void
 	 */
 	private function setNotes(Member $member, $notes, $languageCode) {
-		dump('tool to setNotes');
-
 		$originNoteIds = [];
 		foreach ($member->getPurposes() as $purpose) {
 			$originNoteIds[] = $purpose->getId();
@@ -558,16 +546,6 @@ class MemberService implements IMemberService
 		}
 	}
 
-
-
-	/**
-	 * creates 2 beggining CheckStates. For card and cash with value of 0
-	 * @param Member $member
-	 */
-	private function createStartingCheckstates(Member $member) {
-		$this->checkStateService->createCheckState($member, ItemType::CARD);
-		$this->checkStateService->createCheckState($member, ItemType::CASH);
-	}
 
 	/**
 	 * creates basic purposes in member's language

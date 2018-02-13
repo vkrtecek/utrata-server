@@ -82,17 +82,17 @@ class CheckState extends Model
 	}
 
 	/**
-	 * @return Member
+	 * @return Wallet
 	 */
-	public function getMember() {
-		return Member::find($this->MemberID);
+	public function getWallet() {
+		return Wallet::find($this->WalletID);
 	}
 
 	/**
-	 * @param Member $member
+	 * @param Wallet $wallet
 	 */
-	public function setMember(Member $member) {
-		$this->MemberID = $member->getId();
+	public function setWallet(Wallet $wallet) {
+		$this->WalletID = $wallet->getId();
 	}
 
 }

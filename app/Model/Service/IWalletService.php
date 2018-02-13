@@ -9,6 +9,7 @@
 namespace App\Model\Service;
 
 
+use App\Model\Entity\CheckState;
 use App\Model\Entity\Member;
 use App\Model\Entity\Wallet;
 use App\Model\Exception\AlreadyExistException;
@@ -16,6 +17,7 @@ use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\BadParameterException;
 use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
+use App\Model\Exception\UnderEntityNotFoundException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 interface IWalletService
@@ -71,12 +73,27 @@ interface IWalletService
 	/**
 	 * @param Wallet $wallet
 	 * @return array
+	 * @throws UnderEntityNotFoundException
 	 */
 	public function format(Wallet $wallet);
 
 	/**
 	 * @param Wallet[] $wallets
 	 * @return array
+	 * @throws UnderEntityNotFoundException
 	 */
 	public function formatEntities($wallets);
+
+
+	/**
+	 * @param Member $member
+	 * @param int $walletId
+	 * @param string $type
+	 * @param double $value
+	 * @return array
+	 * @throws NotFoundException
+	 * @throws BadParameterException
+	 * @throws AuthenticationException
+	 */
+	public function updateCheckState(Member $member, $walletId, $type, $value);
 }

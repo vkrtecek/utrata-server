@@ -6,6 +6,7 @@ use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\BadParameterException;
 use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
+use App\Model\Exception\UnderEntityNotFoundException;
 use App\Model\Service\IMemberService;
 use App\Model\Service\IWalletService;
 use App\Model\Service\MemberService;
@@ -42,6 +43,8 @@ class WalletController extends AbstractController
 			return Response::create(['error' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
 		} catch (NotFoundException $ex) {
 			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NO_CONTENT);
+		} catch (UnderEntityNotFoundException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
 		}
 
 		return Response::create($wallets, Response::HTTP_OK);
@@ -64,6 +67,8 @@ class WalletController extends AbstractController
 			return Response::create(['error' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
 		} catch (AuthenticationException $ex) {
 			return Response::create(['error' => $ex->getMessage()], Response::HTTP_FORBIDDEN);
+		} catch (UnderEntityNotFoundException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
 		}
 
 		return Response::create($formatted, Response::HTTP_OK);
@@ -105,6 +110,8 @@ class WalletController extends AbstractController
 			return Response::create(['error' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
 		} catch (AuthenticationException $ex) {
 			return Response::create(['error' => $ex->getMessage()], Response::HTTP_FORBIDDEN);
+		} catch (UnderEntityNotFoundException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
 		}
 		return Response::create($wallet, Response::HTTP_OK);
 	}
@@ -129,5 +136,29 @@ class WalletController extends AbstractController
 			return Response::create(['error' => $ex->getMessage()], Response::HTTP_FORBIDDEN);
 		}
 		return Response::create($retID, Response::HTTP_OK);
+	}
+
+
+
+
+	public function updateCheckState(Request $req) {
+		$this->assumeLogged($req);
+		$member = $this->loggedUser($req);
+		$walletId = $req->get('id');
+		$type = $req->get('type');
+		$value = $req->get('value');
+		if (!$walletId || !$type || !$value)
+			return Response::create(['error' => 'missing id, type or value'], Response::HTTP_BAD_REQUEST);
+
+		try {
+			$formatted = $this->walletService->updateCheckState($member, $walletId, $type, $value);
+		} catch (NotFoundException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NO_CONTENT);
+		} catch (BadParameterException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
+		} catch (AuthenticationException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_FORBIDDEN);
+		}
+		return Response::create($formatted, Response::HTTP_ACCEPTED);
 	}
 }

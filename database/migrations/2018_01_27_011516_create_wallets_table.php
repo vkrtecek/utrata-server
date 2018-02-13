@@ -117,8 +117,8 @@ class CreateWalletsTable extends Migration
 			$table->dateTime('checked');
 			$table->double('value');
 
-			$table->bigInteger('MemberID')->nullable();
-			$table->foreign('MemberID')->references('MemberID')->on('utrata_members');
+			$table->integer('WalletID');
+			$table->foreign('WalletID')->references('WalletID')->on('utrata_wallets');
 		});
     }
 

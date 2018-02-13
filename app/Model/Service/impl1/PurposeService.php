@@ -157,7 +157,7 @@ class PurposeService implements IPurposeService
 	 * @param Purpose $purpose
 	 * @return array
 	 */
-	public static function format(Purpose $purpose) {
+	public function format(Purpose $purpose) {
 		$ret = [];
 
 		$ret['id'] = $purpose->getId();
@@ -171,7 +171,7 @@ class PurposeService implements IPurposeService
 	 * @param Purpose[] $purposes
 	 * @return array
 	 */
-	public static function formatEntites($purposes) {
+	public function formatEntities($purposes) {
 		$ret = [];
 		foreach($purposes as $purpose)
 			$ret[] = self::format($purpose);

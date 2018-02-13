@@ -64,7 +64,7 @@ class Purpose extends Model
 	 * @return boolean
 	 */
 	public function isBase() {
-		return $this->base;
+		return $this->base == 1;
 	}
 
 	/**

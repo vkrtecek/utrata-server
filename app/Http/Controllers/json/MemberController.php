@@ -37,7 +37,7 @@ class MemberController extends AbstractController
 	public function get(Request $req) {
 		$this->assumeLogged($req);
 		$member = $this->loggedUser($req);
-		$formatted = MemberService::format($member);
+		$formatted = $this->memberService->format($member);
 		return Response::create($formatted, Response::HTTP_OK);
 	}
 
@@ -140,7 +140,7 @@ class MemberController extends AbstractController
 
 		try {
 			$mem = $this->memberService->updateMember($member->getLogin(), $updated);
-			$formatted = MemberService::format($mem);
+			$formatted = $this->memberService->format($mem);
 		} catch (NotFoundException $e) {
 			return Response::create(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
 		} catch (BadRequestHttpException $e) {

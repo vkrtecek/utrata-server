@@ -9,7 +9,9 @@
 namespace App\Model\Exception;
 
 
-class UnderEntityNotFoundException
+use Exception;
+
+class UnderEntityNotFoundException extends Exception
 {
 
 }

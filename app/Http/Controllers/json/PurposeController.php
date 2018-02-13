@@ -6,7 +6,6 @@ use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\NotFoundException;
 use App\Model\Service\IMemberService;
 use App\Model\Service\IPurposeService;
-use App\Model\Service\PurposeService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -41,7 +40,7 @@ class PurposeController extends AbstractController
 
 		try {
 			$purposes = $this->purposeService->getUserPurposes($member);
-			$purposes = $this->purposeService->formatEntites($purposes);
+			$purposes = $this->purposeService->formatEntities($purposes);
 		} catch (NotFoundException $ex) {
 			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
 		}
@@ -57,7 +56,7 @@ class PurposeController extends AbstractController
 	public function getLanguagePurposes($languageCode) {
 		try {
 			$purposes = $this->purposeService->getLanguagePurposes($languageCode);
-			$formatted = PurposeService::formatEntites($purposes);
+			$formatted = $this->purposeService->formatEntities($purposes);
 		} catch (NotFoundException $e) {
 			return Response::create(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
 		}
@@ -78,7 +77,7 @@ class PurposeController extends AbstractController
 		$member = $this->loggedUser($req);
 		try {
 			$purpose = $this->purposeService->createPurpose($member, $note);
-			$formatted = PurposeService::format($purpose);
+			$formatted = $this->purposeService->format($purpose);
 		} catch (BadRequestHttpException $e) {
 			return Response::create(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
 		} catch (AlreadyExistException $e) {

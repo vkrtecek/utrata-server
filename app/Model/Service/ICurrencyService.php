@@ -68,11 +68,11 @@ interface ICurrencyService
 	 * @param Currency $currency
 	 * @return array
 	 */
-	public static function format(Currency $currency);
+	public function format(Currency $currency);
 
 	/**
 	 * @param Currency[] $currencies
 	 * @return array
 	 */
-	public static function formatEntites($currencies);
+	public function formatEntities($currencies);
 }

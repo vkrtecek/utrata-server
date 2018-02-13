@@ -12,7 +12,6 @@ namespace App\Model\Service;
 use App\Model\Dao\IItemDAO;
 use App\Model\Entity\Item;
 use App\Model\Entity\Member;
-use App\Model\Entity\Purpose;
 use App\Model\Enum\ItemState;
 use App\Model\Enum\ItemType;
 use App\Model\Exception\AlreadyExistException;
@@ -94,7 +93,6 @@ class ItemService implements IItemService
 		if (!$walletId)
 			throw new BadRequestHttpException('ItemService: "walletId" missing');
 
-		$notes = explode(',', $notes);
 		$filters = (new ItemFilter())->setWalletId($walletId)->setMonth($month)
 			->setNotes($notes)->setYear($year)->setPattern($pattern)
 			->setOrderBy($orderBy)->setOrderHow($orderHow)->setLimit($limit);
@@ -133,58 +131,16 @@ class ItemService implements IItemService
 	 * @throws AuthenticationException
 	 */
 	public function getMonthStatistics(Member $member, $walletId, $purposes = NULL) {
-		$wallet = $this->walletService->getWallet($walletId, $member);
+		$this->walletService->getWallet($walletId, $member);
 		$startYear = $member->getCreated()->format('Y');
 		$startMonth = $member->getCreated()->format('m');
 		$thisYear = (new DateTime())->format('Y');
 		$thisMonth = (new DateTime())->format('m');
 
-		$_monthStat = null;
 		//get values for previous months
-		$monthStats = [];
-		for ($_year = $startYear; $_year <= $thisYear; $_year++) {
-			for ($_month = $_year == $startYear ? $startMonth : '01'; $_month <= '12'; $_month++) {
-				if (strlen($_month) == 1) $_month = '0' . $_month;
-
-				$filters = new ItemFilter();
-				$filters->setWalletId($walletId)->setYear($_year)->setMonth($_month)->setActive(NULL);
-				if ($purposes) $filters->setNotes(explode(',', $purposes));
-				$expenses = $this->itemDao->findByFilter($filters);
-				$filters->setIncome(TRUE);
-				$incomes = $this->itemDao->findByFilter($filters);
-
-				$incomesValue = 0.0;
-				foreach ($incomes as $income)
-					$incomesValue += $income->getPrice() * $income->getCourse();
-				$expensesValue = 0.0;
-				foreach ($expenses as $expense)
-					$expensesValue += $expense->getPrice() * $expense->getCourse();
-
-				$_monthStat = [
-					"month" => $_month,
-					"year" => $_year,
-					"income" => $incomesValue,
-					"incomesCnt" => count($incomes),
-					"expense" => $expensesValue,
-					"expensesCnt" => count($expenses),
-				];
-				if ($_year == $thisYear && $_month == $thisMonth) { break; }
-				$monthStats[] = $_monthStat;
-			}
-		}
-
-		//get min, max and average
-		$minEx = $maxEx = $acc = 0;
-		foreach ($monthStats as $monthStat) {
-			$minEx = $minEx < $monthStat['expense'] ? $minEx : $monthStat['expense'];
-			$maxEx = $maxEx > $monthStat['expense'] ? $maxEx : $monthStat['expense'];
-			$acc += $monthStat['expense'];
-		}
-		$averageEx = count($monthStats) ? $acc / count($monthStats) : 0;
-
-
-
-		return [
+		list($monthStats, $_monthStat) = $this->fillMonths($walletId, $purposes, $startYear, $startMonth, $thisYear, $thisMonth, TRUE);
+		list($minEx, $maxEx, $averageEx, $sum) = $this->getMonthExtremes($monthStats);
+		$ret['full'] = [
 			//TODO note
 			"months" => $monthStats,
 			"thisMonth" => $_monthStat,
@@ -192,8 +148,23 @@ class ItemService implements IItemService
 			"min" => $minEx,
 			"max" => $maxEx,
 			"items" => count($monthStats),
-			"totalExpense" => $acc,
+			"totalExpense" => $sum,
 		];
+
+		list($monthStats, $_monthStat) = $this->fillMonths($walletId, $purposes, $startYear, $startMonth, $thisYear, $thisMonth, FALSE);
+		list($minEx, $maxEx, $averageEx, $sum) = $this->getMonthExtremes($monthStats);
+		$ret['part'] = [
+			//TODO note
+			"months" => $monthStats,
+			"thisMonth" => $_monthStat,
+			"average" => $averageEx,
+			"min" => $minEx,
+			"max" => $maxEx,
+			"items" => count($monthStats),
+			"totalExpense" => $sum,
+		];
+
+		return $ret;
 	}
 
 
@@ -332,7 +303,7 @@ class ItemService implements IItemService
 	 * @param Item $item
 	 * @return array
 	 */
-	public static function format(Item $item) {
+	public function format(Item $item) {
 		$ret = [];
 
 		$ret['id'] = $item->getId();
@@ -345,8 +316,8 @@ class ItemService implements IItemService
 		$ret['type'] = $item->getType();
 		$ret['odepsat'] = $item->isOdepsat();
 		$ret['income'] = $item->isIncome();
-		$ret['note'] = $item->getNote() ? PurposeService::format($item->getNote()) : NULL ;
-		$ret['currency'] = CurrencyService::format($item->getCurrency());
+		$ret['note'] = $item->getNote() ? $this->purposeService->format($item->getNote()) : NULL ;
+		$ret['currency'] = $this->currencyService->format($item->getCurrency());
 		$ret['member'] = $item->getMember()->getLogin();
 		$ret['wallet'] = $item->getWallet()->getId();
 
@@ -357,7 +328,7 @@ class ItemService implements IItemService
 	 * @param Item[] $items
 	 * @return array
 	 */
-	public static function formatEntities($items) {
+	public function formatEntities($items) {
 		$ret = [];
 		foreach ($items as $item) {
 			$ret[] = self::format($item);
@@ -470,8 +441,86 @@ class ItemService implements IItemService
 			&& $i->getWallet()->getId() == $item->getWallet()->getId()
 			&& abs($item->getDate()->getTimestamp() - $i->getDate()->getTimestamp()) < self::SECONDS
 		) {
-
 			throw new AlreadyExistException($message);
 		}
+	}
+
+
+	/**
+	 * @param int $walletId
+	 * @param string $purposes
+	 * @param int $startYear
+	 * @param string $startMonth
+	 * @param int $thisYear
+	 * @param string $thisMonth
+	 * @param bool $wholeMonth
+	 * @return array
+	 */
+	private function fillMonths($walletId, $purposes, $startYear, $startMonth, $thisYear, $thisMonth, $wholeMonth = TRUE) {
+		$monthStats = [];
+		$_monthStat = null;
+		for ($_year = $startYear; $_year <= $thisYear; $_year++) {
+			for ($_month = $_year == $startYear ? $startMonth : '01'; $_month <= '12'; $_month++) {
+				if (strlen($_month) == 1) $_month = '0' . $_month;
+
+				$filters = new ItemFilter();
+				$filters->setWalletId($walletId)->setYear($_year)->setMonth($_month)->setActive(NULL);
+				if ($purposes) $filters->setNotes($purposes);
+				$expenses = $this->itemDao->findByFilter($filters);
+				$filters->setIncome(TRUE);
+				$incomes = $this->itemDao->findByFilter($filters);
+
+				if (!$wholeMonth) {
+					foreach ($incomes as $key => $income) {
+						if ($income->getDate()->format('d') > (new \DateTime())->format('d'))
+							unset($incomes[$key]);
+					}
+					foreach ($expenses as $key => $expense) {
+						if ($expense->getDate()->format('d') > (new \DateTime())->format('d'))
+							unset($expenses[$key]);
+					}
+				}
+
+				$incomesValue = 0.0;
+				foreach ($incomes as $income) {
+					$incomesValue += $income->getPrice() * $income->getCourse();
+				}
+				$expensesValue = 0.0;
+				foreach ($expenses as $expense) {
+					$expensesValue += $expense->getPrice() * $expense->getCourse();
+				}
+
+				$_monthStat = [
+					"month" => $_month,
+					"year" => $_year,
+					"income" => $incomesValue,
+					"incomesCnt" => count($incomes),
+					"expense" => $expensesValue,
+					"expensesCnt" => count($expenses),
+				];
+				if ($_year == $thisYear && $_month == $thisMonth) { break; }
+				$monthStats[] = $_monthStat;
+			}
+		}
+		return [$monthStats, $_monthStat];
+	}
+
+
+	/**
+	 * @param array $monthStats
+	 * @return array
+	 */
+	private function getMonthExtremes($monthStats) {
+		//get min, max and average
+		$minEx['expense'] = PHP_INT_MAX;
+		$maxEx['expense'] = $acc = 0;
+		foreach ($monthStats as $monthStat) {
+			$minEx = $monthStat['expense'] < $minEx['expense'] && $monthStat['expense'] > 0 ? $monthStat : $minEx;
+			$maxEx = $maxEx['expense'] > $monthStat['expense'] ? $maxEx : $monthStat;
+			$acc += $monthStat['expense'];
+		}
+		$minEx = $minEx['expense'] == PHP_INT_MAX ? ['expense' => 0] : $minEx;
+		$averageEx = count($monthStats) ? $acc / count($monthStats) : 0;
+		return [$minEx, $maxEx, $averageEx, $acc];
 	}
 }

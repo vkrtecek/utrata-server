@@ -30,6 +30,13 @@ interface ICheckStateDAO
 	 * @param mixed $val
 	 * @return CheckState|NULL
 	 */
+	public function findByColumn($key, $val);
+
+	/**
+	 * @param string $key
+	 * @param mixed $val
+	 * @return CheckState|NULL
+	 */
 	public function findLastByColumn($key, $val);
 
 	/**
@@ -43,5 +50,11 @@ interface ICheckStateDAO
 	 * @return CheckState
 	 */
 	public function update(CheckState $checkState);
+
+	/**
+	 * @param int $id
+	 * @return void
+	 */
+	public function delete($id);
 
 }

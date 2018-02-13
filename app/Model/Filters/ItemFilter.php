@@ -120,16 +120,16 @@ class ItemFilter
 	}
 
 	/**
-	 * @param string[] $notes
+	 * @param string $notes
 	 * @return ItemFilter
 	 */
 	public function setNotes($notes)
 	{
-		$tmp = [];
-		foreach ($notes as $note)
-			if ($note != "")
-				$tmp[] = $note;
-		$this->notes = $tmp;
+		$notes = is_array($notes) ? $notes : explode(',', $notes);
+		foreach ($notes as $key => $note)
+			if ($note == "")
+				unset($notes[$key]);
+		$this->notes = $notes;
 		return $this;
 	}
 

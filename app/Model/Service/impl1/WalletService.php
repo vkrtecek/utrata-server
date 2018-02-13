@@ -10,15 +10,16 @@ namespace App\Model\Service;
 
 
 use App\Model\Dao\IWalletDAO;
+use App\Model\Entity\CheckState;
 use App\Model\Entity\Member;
 use App\Model\Entity\Wallet;
 use App\Model\Enum\ItemState;
 use App\Model\Enum\ItemType;
-use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\BadParameterException;
 use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
+use App\Model\Exception\UnderEntityNotFoundException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use DateTime;
 
@@ -30,14 +31,19 @@ class WalletService implements IWalletService
 	/** @var IMemberService */
 	protected $memberService;
 
+	/** @var ICheckStateService */
+	protected $checkStateService;
+
 	/**
 	 * WalletService constructor.
 	 * @param IWalletDAO $walletDao
 	 * @param IMemberService $memberService
+	 * @param ICheckStateService $checkStateService
 	 */
-	public function __construct(IWalletDAO $walletDao, IMemberService $memberService) {
+	public function __construct(IWalletDAO $walletDao, IMemberService $memberService, ICheckStateService $checkStateService) {
 		$this->walletDao = $walletDao;
 		$this->memberService = $memberService;
+		$this->checkStateService = $checkStateService;
 	}
 
 	/**
@@ -79,7 +85,8 @@ class WalletService implements IWalletService
 		$wallet = new Wallet();
 		$wallet->setMember($member);
 		$wallet->setName($name);
-		$this->walletDao->create($wallet);
+		$wallet = $this->walletDao->create($wallet);
+		$this->createStartingCheckstates($wallet);
 		return $wallet;
 	}
 
@@ -95,6 +102,7 @@ class WalletService implements IWalletService
 	 */
 	public function updateWallet(Member $member, $id, $name) {
 		$wallet = $this->walletDao->findOne($id);
+		dump($id);
 		if ($wallet->getMember()->getId() !== $member->getId())
 			throw new AuthenticationException('WalletService: Member is not owner of this wallet.');
 		$wallet->setName($name);
@@ -113,6 +121,7 @@ class WalletService implements IWalletService
 	 */
 	public function deleteWallet($id, Member $member) {
 		$wallet = $this->getWallet($id, $member);
+		$this->deleteCheckstates($wallet);
 		$this->walletDao->delete($wallet);
 		return $wallet->getId();
 	}
@@ -120,6 +129,7 @@ class WalletService implements IWalletService
 	/**
 	 * @param Wallet $wallet
 	 * @return array
+	 * @throws UnderEntityNotFoundException
 	 */
 	public function format(Wallet $wallet) {
 		$ret = [];
@@ -132,24 +142,50 @@ class WalletService implements IWalletService
 		$ret['incomeItemsCnt'] = $this->getItemsCount($wallet, ItemState::INCOMES);
 		$ret['cardRest'] = $this->countRest($wallet, ItemType::CARD);
 		$ret['cashRest'] = $this->countRest($wallet, ItemType::CASH);
+		$ret['checkState'] = [
+			"card" => $this->checkStateService->format($this->getCheckState($wallet, ItemType::CARD)),
+			"cash" => $this->checkStateService->format($this->getCheckState($wallet, ItemType::CASH))
+		];
 		$ret['monthExpense'] = $this->countMonthExpense($wallet);
 		$ret['empty'] = count($wallet->getItems()) == 0;
-
 		return $ret;
 	}
 
 	/**
 	 * @param Wallet[] $wallets
 	 * @return array
+	 * @throws UnderEntityNotFoundException
 	 */
 	public function formatEntities($wallets) {
 		if (!$wallets)
 			return NULL;
 		$ret = [];
-		foreach ($wallets as $wallet)
-			$ret[] = self::format($wallet);
+		foreach ($wallets as $wallet) {
+			$ret[] = $this->format($wallet);
+		}
 		return $ret;
 	}
+
+
+
+	/**
+	 * @param Member $member
+	 * @param int $walletId
+	 * @param string $type
+	 * @param double $value
+	 * @return array
+	 * @throws NotFoundException
+	 * @throws BadParameterException
+	 * @throws AuthenticationException
+	 */
+	public function updateCheckState(Member $member, $walletId, $type, $value) {
+		$wallet = $this->getWallet($walletId, $member);
+		$cs = $this->checkStateService->updateCheckState($wallet, $type, $value);
+		return $this->checkStateService->format($cs);
+	}
+
+
+
 
 
 
@@ -230,5 +266,37 @@ class WalletService implements IWalletService
 				break;
 		}
 		return $cnt;
+	}
+
+
+	/**
+	 * creates 2 beggining CheckStates. For card and cash with value of 0
+	 * @param Wallet $wallet
+	 */
+	private function createStartingCheckstates(Wallet $wallet) {
+		$this->checkStateService->createCheckState($wallet, ItemType::CARD);
+		$this->checkStateService->createCheckState($wallet, ItemType::CASH);
+	}
+
+	/**
+	 * @param Wallet $wallet
+	 */
+	private function deleteCheckstates(Wallet $wallet) {
+		foreach ($this->checkStateService->getWalletCheckStates($wallet) as $cs)
+			$this->checkStateService->deleteCheckState($cs->getId());
+	}
+
+	/**
+	 * @param Wallet $wallet
+	 * @param string $type
+	 * @return CheckState
+	 * @throws UnderEntityNotFoundException
+	 */
+	protected function getCheckState(Wallet $wallet, $type = ItemType::CARD) {
+		try {
+			return $this->checkStateService->getWalletCheckState($wallet, $type);
+		} catch (NotFoundException $e) {
+			throw new UnderEntityNotFoundException($e->getMessage());
+		}
 	}
 }

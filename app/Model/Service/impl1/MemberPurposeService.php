@@ -16,8 +16,6 @@ use App\Model\Entity\Item;
 use App\Model\Entity\Member;
 use App\Model\Entity\MemberPurpose;
 use App\Model\Entity\Purpose;
-use App\Model\Exception\BadParameterException;
-use App\Model\Exception\NotFoundException;
 use App\Model\Filter\ItemFilter;
 
 class MemberPurposeService implements IMemberPurposeService
