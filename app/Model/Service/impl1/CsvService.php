@@ -36,7 +36,7 @@ use App\Model\Exception\NotFoundException;
  * 		csv Wallets
  * 		number of items
  * 		csv Items
- * 		number of check_tates
+ * 		number of check_states
  * 		csv CheckStates
  * @package App\Model\Service
  */
@@ -45,7 +45,7 @@ class CsvService implements IFileService
 	//avoid to have only one field
 	// couse it could be confused with line describing number of following rows
 	// in bad format of CSV file
-	const MEMBER_FIELDS = 12;
+	const MEMBER_FIELDS = 11;
 	const PURPOSE_FIELDS = 6;
 	const WALLET_FIELDS = 2;
 	const ITEM_FIELDS = 15;
@@ -169,7 +169,12 @@ class CsvService implements IFileService
 
 
 		//checksates
-		$checkStates = $member->getLastCheckStates();
+		$checkStates = [];
+		foreach ($wallets as $wallet) {
+			foreach ($wallet->getCheckStates() as $checkState) {
+				$checkStates[] = $checkState;
+			}
+		}
 		$content->appendLine(count($checkStates));
 		foreach ($checkStates as $checkState)
 			$content->appendLine(self::formatCheckState($checkState));
@@ -238,7 +243,7 @@ class CsvService implements IFileService
 			throw new FileParseException('Parse: CheckState count expected: ' . ItemType::TYPES . ', got ' . $checkStatesCnt);
 		for ($i = 0; $i < $checkStatesCnt; $i++) {
 			try {
-				$checkStates[] = $this->getCheckState($file->getLine(), $member);
+				$checkStates[] = $this->getCheckState($file->getLine(), $wallets[(int)($i/2)]);
 			} catch (FileParseException $ex) {
 				throw new FileParseException(($i+1) . 'nt CheckState: ' . $ex->getMessage(), 0, $ex);
 			}
@@ -276,7 +281,6 @@ class CsvService implements IFileService
 		return $member->getFirstName() . ';' .
 			$member->getLastName() . ';' .
 			$member->getLogin() . ';' .
-			$member->getPassword() . ';' .
 			$member->shouldSendMonthly() . ';' .
 			$member->shouldSendByOne() . ';' .
 			$member->getMotherMail() . ';' .
@@ -325,10 +329,10 @@ class CsvService implements IFileService
 			$item->getDate()->format('Y-m-d H:i:s') . ';' .
 			$item->getCreated()->format('Y-m-d H:i:s') . ';' .
 			$item->getType() . ';' .
-			$item->isActive() . ';' .
-			$item->isIncome() . ';' .
-			$item->isVyber() . ';' .
-			$item->isOdepsat() . ';' .
+			($item->isActive() ? 1 : 0) . ';' .
+			($item->isIncome() ? 1 : 0) . ';' .
+			($item->isVyber() ? 1 : 0) . ';' .
+			($item->isOdepsat() ? 1 : 0) . ';' .
 			($item->getNote() ? $item->getNote()->getId() : NULL) . ';' .
 			$item->getCurrency()->getCode() . ';' .
 			$item->getWallet()->getId();
@@ -385,7 +389,6 @@ class CsvService implements IFileService
 		list($fName,
 			$lName,
 			$login,
-			$passwd,
 			$monthly,
 			$byOne,
 			$mother,
@@ -408,7 +411,7 @@ class CsvService implements IFileService
 
 		$_member = new Member();
 		$_member->setFirstName($fName)->setLastName($lName)->setLogin($login)
-			->setPassword($passwd)->setSendMonthly($monthly)->setSendByOne($byOne)
+			->setSendMonthly($monthly)->setSendByOne($byOne)
 			->setMotherMail($mother)->setMyMail($me)->setFacebook($fb)->setAccess(new \DateTime($access))
 			->setLanguage($language)->setCurrency($currency);
 
@@ -417,18 +420,6 @@ class CsvService implements IFileService
 		} catch (\Exception $ex) {
 			throw new FileParseException('ParseMember: member not found.');
 		}
-		if (
-			$member->getFirstName() != $_member->getFirstName()
-			|| $member->getLastName() != $_member->getLastName()
-			|| $member->getPassword() != $_member->getPassword()
-			|| $member->shouldSendMonthly() != $_member->shouldSendMonthly()
-			|| $member->shouldSendByOne() != $_member->shouldSendByOne()
-			|| $member->getMotherMail() != $_member->getMotherMail()
-			|| $member->getMyMail() != $_member->getMyMail()
-			|| $member->isFacebook() != $_member->isFacebook()
-			|| $member->getLanguage()->getCode() != $_member->getLanguage()->getCode()
-			|| $member->getCurrency() != $_member->getCurrency()
-		) throw new FileParseException('ParseMember: member not found');
 
 		return $member;
 	}
@@ -529,6 +520,7 @@ class CsvService implements IFileService
 			$_wallet
 			) = explode(';', $string);
 		try {
+			if (!trim($id)) throw new NotFoundException();
 			$item = $this->itemService->getItem($id);
 			self::checkBeforeSettingItem($id, $name, $price, $course, $date, $created, $type, $active, $income, $vyber, $odepsat, $_note, $_currency, $_wallet);
 			//needs the item to be updated?
@@ -579,11 +571,11 @@ class CsvService implements IFileService
 
 	/**
 	 * @param string $string
-	 * @param Member $member
+	 * @param Wallet $wallet
 	 * @return CheckState
 	 * @throws FileParseException
 	 */
-	private function getCheckState($string, Member $member) {
+	private function getCheckState($string, Wallet $wallet) {
 		if (count(explode(';', $string)) != self::CHECK_STATE_FIELDS)
 			throw new FileParseException(self::CHECK_STATE_FIELDS . ' fields expected, ' . count(explode(';', $string)) . ' given.');
 		list($id, $type, $checked, $value) = explode(';', $string);
@@ -595,7 +587,7 @@ class CsvService implements IFileService
 
 		try {
 			$checkState = $this->checkStateService->getCheckState($id);
-			if ($checkState->getMember()->getId() != $member->getId())
+			if ($checkState->getWallet()->getId() != $wallet->getId())
 				throw new FileParseException("CheckState's ID refers to other owner");
 
 			$checkState->setType($type)->setChecked(new \DateTime($checked))->setValue($value);
@@ -643,7 +635,7 @@ class CsvService implements IFileService
 	 * @throws FileParseException
 	 */
 	private static function checkBeforeSettingItem($id, $name, $price, $course, $date, $created, $type, $active, $income, $vyber, $odepsat, $_note, $_currency, $_wallet) {
-		if (!ctype_digit($id)
+		if ((trim($id) && !ctype_digit($id))
 			|| $name == ""
 			|| !is_numeric($price)
 			|| !is_numeric($course)

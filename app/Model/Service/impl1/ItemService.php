@@ -131,9 +131,9 @@ class ItemService implements IItemService
 	 * @throws AuthenticationException
 	 */
 	public function getMonthStatistics(Member $member, $walletId, $purposes = NULL) {
-		$this->walletService->getWallet($walletId, $member);
-		$startYear = $member->getCreated()->format('Y');
-		$startMonth = $member->getCreated()->format('m');
+		$wallet = $this->walletService->getWallet($walletId, $member);
+		$startYear = $wallet->getCreated()->format('Y');
+		$startMonth = $wallet->getCreated()->format('m');
 		$thisYear = (new DateTime())->format('Y');
 		$thisMonth = (new DateTime())->format('m');
 
@@ -377,7 +377,7 @@ class ItemService implements IItemService
 		}
 
 
-		$entity->setName(str_replace(';', '', str_replace("\n", ' ', $data['name'])));
+		$entity->setName(str_replace(';', ':', str_replace("\n", ' ', $data['name'])));
 		$entity->setPrice($data['price']);
 		$entity->setDate(new DateTime($data['date']));
 		if (isset($data['course'])) $entity->setCourse($data['course']);

@@ -45,6 +45,7 @@ class CreateWalletsTable extends Migration
 			$table->integer('logged')->default(0);
 			$table->string('token')->nullable();
 			$table->dateTime('expiration')->nullable();
+			$table->dateTime('created')->default('2015-09-01 00:00:00');
 			$table->boolean('facebook')->default(false);
 			$table->dateTime('access')->nullable();
 

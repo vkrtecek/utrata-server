@@ -2,6 +2,7 @@
 
 namespace App\Model\Entity;
 
+use App\Model\Enum\ItemType;
 use Illuminate\Database\Eloquent\Model;
 use DateTime;
 
@@ -87,5 +88,19 @@ class Wallet extends Model
 	 */
 	public function getItems() {
 		return Item::where('WalletID', $this->WalletID)->get();
+	}
+
+	/**
+	 * @return CheckState[]
+	 */
+	public function getCheckStates() {
+		$ret = [];
+		$ret[] = CheckState::where('WalletID', $this->WalletID)
+			->where('type', ItemType::CARD)
+			->first();
+		$ret[] = CheckState::where('WalletID', $this->WalletID)
+			->where('type', ItemType::CASH)
+			->first();
+		return $ret;
 	}
 }

@@ -339,23 +339,6 @@ class Member extends Model
 
 
 	/**
-	 * @return CheckState[]
-	 */
-	public function getLastCheckStates() {
-		$ret = [];
-		$ret[] = CheckState::where('MemberID', $this->MemberID)
-			->where('type', ItemType::CARD)
-			->orderBy('checked', 'DESC')
-			->first();
-		$ret[] = CheckState::where('MemberID', $this->MemberID)
-			->where('type', ItemType::CASH)
-			->orderBy('checked', 'DESC')
-			->first();
-		return $ret;
-	}
-
-
-	/**
 	 * @param string $login
 	 * @return boolean
 	 */
