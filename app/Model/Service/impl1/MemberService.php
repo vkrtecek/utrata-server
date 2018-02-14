@@ -275,10 +275,15 @@ class MemberService implements IMemberService
 					foreach ($member->getPurposes() as $purpose)
 						$this->memberPurposeService->delete($member, $purpose);
 
-					$newLanguageCode = $data['languageCode'];
-					$languagePurposes = $this->purposeService->getLanguageBasePurposes($newLanguageCode);
-					foreach ($languagePurposes as $purpose) {
-						$this->memberPurposeService->create($member, $purpose);
+					if (isset($data['notes']) && $data['notes'] && count($data['notes'])) {
+						//deletes less and adds more
+						$this->setNotes($member, $data['notes']);
+					} else {
+						$newLanguageCode = $data['languageCode'];
+						$languagePurposes = $this->purposeService->getLanguageBasePurposes($newLanguageCode);
+						foreach ($languagePurposes as $purpose) {
+							$this->memberPurposeService->create($member, $purpose);
+						}
 					}
 					$changedLanguage = TRUE;
 				}
@@ -316,7 +321,7 @@ class MemberService implements IMemberService
 		}
 		if (isset($data['notes']) && $data['notes'] && !$changedLanguage) {
 			//deletes less and adds more
-			$this->setNotes($member, $data['notes'], $data['languageCode']);
+			$this->setNotes($member, $data['notes']);
 		}
 
 		if (isset($data['sendMonthly'])) $member->setSendMonthly($data['sendMonthly']);
@@ -511,7 +516,7 @@ class MemberService implements IMemberService
 	 * @param array $notes
 	 * @return void
 	 */
-	private function setNotes(Member $member, $notes, $languageCode) {
+	private function setNotes(Member $member, $notes) {
 		$originNoteIds = [];
 		foreach ($member->getPurposes() as $purpose) {
 			$originNoteIds[] = $purpose->getId();
@@ -552,7 +557,7 @@ class MemberService implements IMemberService
 	 * @param Member $member
 	 */
 	private function createStartingPurposes(Member $member) {
-		$basicPurposes = $this->purposeService->getLanguagePurposes($member->getLanguage()->getCode());
+		$basicPurposes = $this->purposeService->getLanguageBasePurposes($member->getLanguage()->getCode());
 		foreach ($basicPurposes as $purpose) {
 			$this->memberPurposeService->create($member, $purpose);
 		}

@@ -42,6 +42,15 @@ interface IPurposeService
 
 	/**
 	 * @param Member $member
+	 * @param string $languageCode
+	 * @return Purpose[]
+	 * @throws NotFoundException
+	 * @throws BadParameterException
+	 */
+	public function getUserLanguagePurposes(Member $member, $languageCode);
+
+	/**
+	 * @param Member $member
 	 * @return Purpose[]
 	 * @throws NotFoundException
 	 */

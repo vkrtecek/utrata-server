@@ -50,12 +50,14 @@ class PurposeController extends AbstractController
 
 
 	/**
+	 * @param Request $req
 	 * @param string $languageCode
 	 * @return Response
 	 */
-	public function getLanguagePurposes($languageCode) {
+	public function getLanguagePurposes(Request $req, $languageCode) {
+		$member = $this->loggedUser($req);
 		try {
-			$purposes = $this->purposeService->getLanguagePurposes($languageCode);
+			$purposes = $this->purposeService->getUserLanguagePurposes($member, $languageCode);
 			$formatted = $this->purposeService->formatEntities($purposes);
 		} catch (NotFoundException $e) {
 			return Response::create(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);

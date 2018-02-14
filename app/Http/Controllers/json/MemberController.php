@@ -136,7 +136,7 @@ class MemberController extends AbstractController
 		if (!$updated)
 			return Response::create(['error' => 'No member specified'], Response::HTTP_BAD_REQUEST);
 		if ($member->getId() != $updated['id'])
-			return Response::create(['error' => 'Can modify olny yourself'], Response::HTTP_FORBIDDEN);
+			return Response::create(['error' => 'Can modify only yourself'], Response::HTTP_FORBIDDEN);
 
 		try {
 			$mem = $this->memberService->updateMember($member->getLogin(), $updated);

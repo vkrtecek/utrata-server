@@ -141,7 +141,6 @@ class ItemService implements IItemService
 		list($monthStats, $_monthStat) = $this->fillMonths($walletId, $purposes, $startYear, $startMonth, $thisYear, $thisMonth, TRUE);
 		list($minEx, $maxEx, $averageEx, $sum) = $this->getMonthExtremes($monthStats);
 		$ret['full'] = [
-			//TODO note
 			"months" => $monthStats,
 			"thisMonth" => $_monthStat,
 			"average" => $averageEx,
@@ -154,7 +153,6 @@ class ItemService implements IItemService
 		list($monthStats, $_monthStat) = $this->fillMonths($walletId, $purposes, $startYear, $startMonth, $thisYear, $thisMonth, FALSE);
 		list($minEx, $maxEx, $averageEx, $sum) = $this->getMonthExtremes($monthStats);
 		$ret['part'] = [
-			//TODO note
 			"months" => $monthStats,
 			"thisMonth" => $_monthStat,
 			"average" => $averageEx,
@@ -432,6 +430,7 @@ class ItemService implements IItemService
 	protected function checkForItemExistence(Item $item) {
 		$member = $item->getMember();
 		$i = $this->itemDao->findUserLastItem($member);
+		if (!$i) return;
 
 		$message = $this->translationService->getTranslation('AddItem.Form.Duplicity', $member->getLanguage()->getCode())->getValue();
 		$message = $message == "" ? 'Item already exists' : $message;

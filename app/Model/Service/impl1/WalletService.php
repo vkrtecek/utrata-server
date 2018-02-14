@@ -102,7 +102,6 @@ class WalletService implements IWalletService
 	 */
 	public function updateWallet(Member $member, $id, $name) {
 		$wallet = $this->walletDao->findOne($id);
-		dump($id);
 		if ($wallet->getMember()->getId() !== $member->getId())
 			throw new AuthenticationException('WalletService: Member is not owner of this wallet.');
 		$wallet->setName($name);

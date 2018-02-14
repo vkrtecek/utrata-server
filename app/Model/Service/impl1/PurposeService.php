@@ -81,6 +81,22 @@ class PurposeService implements IPurposeService
 
 	/**
 	 * @param Member $member
+	 * @param string $languageCode
+	 * @return Purpose[]
+	 * @throws NotFoundException
+	 * @throws BadParameterException
+	 */
+	public function getUserLanguagePurposes(Member $member, $languageCode) {
+		$purposes = $this->getLanguagePurposes($languageCode);
+		foreach ($purposes as $key => $purpose) {
+			if (!$purpose->isBase() && $purpose->getCreator() && $purpose->getCreator()->getId() != $member->getId())
+				unset($purposes[$key]);
+		}
+		return $purposes;
+	}
+
+	/**
+	 * @param Member $member
 	 * @return Purpose[]
 	 * @throws NotFoundException
 	 */
@@ -117,6 +133,7 @@ class PurposeService implements IPurposeService
 
 		$withSameCode = $this->purposeDao->findByColumn('code', $code);
 		foreach ($withSameCode as $note) {
+			//note with same code exists (basic or user's)
 			if ($note->isBase() || ($note->getCreator() && $note->getCreator()->getId() == $member->getId())) {
 				throw new AlreadyExistException('Note with this code already exists');
 			}
