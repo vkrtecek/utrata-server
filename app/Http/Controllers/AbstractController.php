@@ -38,7 +38,8 @@ abstract class AbstractController extends Controller
 		try {
 			$member = $this->loggedUser($req);
 		} catch (NotFoundException $ex) {
-			throw new AuthenticationException("Bad token: " . $ex->getMessage());
+			//throw new AuthenticationException("Bad token: " . $ex->getMessage());
+			throw new AuthenticationException("Member not logged.");
 		}
 
 		if ($member->getExpiration() < new \DateTime())

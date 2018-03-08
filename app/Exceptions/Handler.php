@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Response;
 
 class Handler extends ExceptionHandler
 {
@@ -44,6 +45,9 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+    	if ($exception instanceof \App\Model\Exception\AuthenticationException) {
+			return Response::create(['error' => $exception->getMessage()], Response::HTTP_UNAUTHORIZED);
+		}
         return parent::render($request, $exception);
     }
 
@@ -57,7 +61,7 @@ class Handler extends ExceptionHandler
     protected function unauthenticated($request, AuthenticationException $exception)
     {
         if ($request->expectsJson()) {
-            return response()->json(['error' => 'Unauthenticated.'], 401);
+            return Response::create(['error' => 'Unauthenticated.'], Response::HTTP_UNAUTHORIZED);
         }
 
         return redirect()->guest(route('login'));

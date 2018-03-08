@@ -175,7 +175,6 @@ class MemberService implements IMemberService
 		if ($member = $this->memberDao->findOne($fb_data['login'])) {
 			return $this->loginByFacebook($fb_data['login']);
 		}
-
 		$inputsKeys = [ 'fname', 'lname', 'login', 'email', 'locale' ];
 		foreach ($inputsKeys as $key) {
 			if (!isset($fb_data[$key]) || $fb_data[$key] == '')
@@ -351,8 +350,9 @@ class MemberService implements IMemberService
 	protected function getCurrencyFromLocale($locale) {
 		$currency = NULL;
 		if (preg_match('/cs_.*/', $locale)) $currency = $this->currencyService->getCurrencyByColumn('code', 'CZK');
-		if (preg_match('/en_.*/', $locale)) $currency = $this->currencyService->getCurrencyByColumn('code', 'EUR');
-		if (preg_match('/sk_.*/', $locale)) $currency = $this->currencyService->getCurrencyByColumn('code', 'EUR');
+		else if (preg_match('/en_.*/', $locale)) $currency = $this->currencyService->getCurrencyByColumn('code', 'EUR');
+		else if (preg_match('/sk_.*/', $locale)) $currency = $this->currencyService->getCurrencyByColumn('code', 'EUR');
+		else $currency = $this->currencyService->getCurrencyByColumn('code', 'EUR');  //default
 
 		return $currency;
 	}
@@ -364,20 +364,21 @@ class MemberService implements IMemberService
 	protected function getLanguageFromLocale($locale) {
 		$language = NULL;
 		if (preg_match('/cs_.*/', $locale)) $language = $this->languageService->getLanguage('CZK');
-		if (preg_match('/en_.*/', $locale)) $language = $this->languageService->getLanguage('ENG');
-		if (preg_match('/sk_.*/', $locale)) $language = $this->languageService->getLanguage('SVK');
+		else if (preg_match('/en_.*/', $locale)) $language = $this->languageService->getLanguage('ENG');
+		else if (preg_match('/sk_.*/', $locale)) $language = $this->languageService->getLanguage('SVK');
+		else $language = $this->languageService->getLanguage('ENG'); //default
 
 		return $language;
 	}
 
 	/**
 	 * @param string $column
-	 * @param mixed $login
+	 * @param mixed $value
 	 * @return Member|NULL
 	 * @throws NotFoundException
 	 */
-	public function getMemberByColumn($column, $login) {
-		$member = $this->memberDao->findOneByColumn($column, $login);
+	public function getMemberByColumn($column, $value) {
+		$member = $this->memberDao->findOneByColumn($column, $value);
 		if ($member == NULL)
 			throw new NotFoundException('Member with this ' . $column . ' not found.');
 		return $member;
@@ -412,7 +413,7 @@ class MemberService implements IMemberService
 	}
 
 	/**
-	 * @param $login
+	 * @param string $login
 	 * @return Member
 	 */
 	public function loginByFacebook($login) {
