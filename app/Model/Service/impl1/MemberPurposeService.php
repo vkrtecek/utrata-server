@@ -67,6 +67,14 @@ class MemberPurposeService implements IMemberPurposeService
 			$this->memberPurposeDao->delete($member, $purpose);
 	}
 
+	/**
+	 * @param Member $member
+	 * @return MemberPurpose[]
+	 */
+	public function getMemberPurposes(Member $member) {
+		return $this->memberPurposeDao->findPurposes($member);
+	}
+
 
 
 

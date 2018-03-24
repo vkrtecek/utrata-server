@@ -9,7 +9,11 @@
 namespace App\Model\Dao;
 
 
+use App\Model\Entity\Item;
 use App\Model\Entity\Member;
+use App\Model\Entity\MemberPurpose;
+use App\Model\Entity\Purpose;
+use App\Model\Entity\Wallet;
 use App\Model\Exception\IntegrityException;
 
 interface IMemberDAO
@@ -24,6 +28,30 @@ interface IMemberDAO
      * @return Member|NULL
      */
     public function findOne($name);
+
+	/**
+	 * @param Member $member
+	 * @return MemberPurpose[]
+	 */
+	public function getMemberPurposes(Member $member);
+
+	/**
+	 * @param Member $member
+	 * @return Purpose[]
+	 */
+	public function getPurposes(Member $member);
+
+	/**
+	 * @param Member $member
+	 * @return Wallet[]
+	 */
+	public function getWallets(Member $member);
+
+	/**
+	 * @param Member $member
+	 * @return Item[]
+	 */
+	public function getItems(Member $member);
 
     /**
      * @param Member $member
@@ -53,7 +81,12 @@ interface IMemberDAO
 	/**
 	 * @param string $login
 	 * @return bool
-	 *
 	 */
 	public function uniqueLogin($login);
+
+	/**
+	 * @param string $mail
+	 * @return bool
+	 */
+	public function uniqueMail($mail);
 }

@@ -9,7 +9,10 @@
 namespace App\Model\Dao;
 
 
+use App\Model\Entity\CheckState;
+use App\Model\Entity\Item;
 use App\Model\Entity\Wallet;
+use App\Model\Enum\ItemType;
 use App\Model\Exception\IntegrityException;
 use Illuminate\Database\QueryException;
 
@@ -46,6 +49,29 @@ class WalletDAO implements IWalletDAO
 	 */
 	public function findOneByColumn($key, $val) {
 		return Wallet::where($key, $val)->first();
+	}
+
+	/**
+	 * @param Wallet $wallet
+	 * @return Item[]
+	 */
+	public function getItems(Wallet $wallet) {
+		return Item::where('WalletID', $wallet->getId())->get();
+	}
+
+	/**
+	 * @param Wallet $wallet
+	 * @return CheckState[]
+	 */
+	public function getCheckStates(Wallet $wallet) {
+		$ret = [];
+		$ret[] = CheckState::where('WalletID', $wallet->getId())
+			->where('type', ItemType::CARD)
+			->first();
+		$ret[] = CheckState::where('WalletID', $wallet->getId())
+			->where('type', ItemType::CASH)
+			->first();
+		return $ret;
 	}
 
 	/**

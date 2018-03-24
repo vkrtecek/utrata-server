@@ -147,7 +147,7 @@ class WalletService implements IWalletService
 			"cash" => $this->checkStateService->format($this->getCheckState($wallet, ItemType::CASH))
 		];
 		$ret['monthExpense'] = $this->countMonthExpense($wallet);
-		$ret['empty'] = count($wallet->getItems()) == 0;
+		$ret['empty'] = count($this->walletDao->getItems($wallet)) == 0;
 		return $ret;
 	}
 
@@ -199,7 +199,7 @@ class WalletService implements IWalletService
 	 */
 	private function countRest(Wallet $wallet, $type = ItemType::CARD) {
 		$minus = $plus = 0;
-		foreach ($wallet->getItems() as $item) {
+		foreach ($this->walletDao->getItems($wallet) as $item) {
 			$amount = ($item->getPrice() * $item->getCourse());
 
 			if ($item->getType() == $type && $item->isIncome() && !$item->isVyber())
@@ -220,7 +220,7 @@ class WalletService implements IWalletService
 	 */
 	private function countMonthExpense(Wallet $wallet) {
 		$expense = 0;
-		foreach ($wallet->getItems() as $item) {
+		foreach ($this->walletDao->getItems($wallet) as $item) {
 			if ($item->getDate()->format('Y-m') == (new DateTime())->format('Y-m')) {
 				if ($item->isIncome() && !$item->isVyber())
 					$expense += ($item->getPrice() * $item->getCourse());
@@ -237,7 +237,7 @@ class WalletService implements IWalletService
 	 * @return int
 	 */
 	private function getItemsCount($wallet, $state = ItemState::ALL) {
-		$items = $wallet->getItems();
+		$items = $this->walletDao->getItems($wallet);
 		$cnt = 0;
 		switch ($state) {
 			case ItemState::UNCHECKED:

@@ -28,6 +28,14 @@ class MemberPurposeDAO implements IMemberPurposeDAO
 
 	/**
 	 * @param Member $member
+	 * @return MemberPurpose[]
+	 */
+	public function findPurposes(Member $member) {
+		return MemberPurpose::where('MemberID', $member->getId())->get();
+	}
+
+	/**
+	 * @param Member $member
 	 * @param Purpose $purpose
 	 * @return MemberPurpose
 	 */

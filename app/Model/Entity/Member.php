@@ -313,57 +313,10 @@ class Member extends Model
 		return $this;
 	}
 
-
-
-
-
-
-
-
-
 	/**
-	 * @return MemberPurpose[]
+	 * @return bool
 	 */
-	public function getMemberPurposes() {
-		return MemberPurpose::where('MemberID', $this->MemberID)->get();
-	}
-
-	/**
-	 * @return Purpose[]
-	 */
-	public function getPurposes() {
-		$purposes = [];
-		foreach ($this->getMemberPurposes() as $memberPurpose)
-			$purposes[] = $memberPurpose->getPurpose();
-		return $purposes;
-	}
-
-	/**
-	 * @return Item[]
-	 */
-	public function getItems() {
-		return Item::where('MemberID', $this->MemberID)->get();
-	}
-
-	/**
-	 * @return Wallet[]
-	 */
-	public function getWallets() {
-		return Wallet::where('MemberID', $this->MemberID)->get();
-	}
-
-	/**
-	 * @return CheckState[]
-	 */
-	public function getCheckStates() {
-		return CheckState::where('MemberID', $this->MemberID)->get();
-	}
-
-	/**
-	 * @param string $mail
-	 * @return boolean
-	 */
-	public static function uniqueMail($mail) {
-		return count(Member::where('myMail', $mail)->get()) == 0;
+	public function isExternal() {
+		return $this->isFacebook();
 	}
 }

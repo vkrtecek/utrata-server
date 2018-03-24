@@ -101,7 +101,11 @@ class PurposeService implements IPurposeService
 	 * @throws NotFoundException
 	 */
 	public function getUserPurposes(Member $member) {
-		return $member->getPurposes();
+		$memberPurposes = $this->memberPurposeService->getMemberPurposes($member);
+		$purposes = [];
+		foreach ($memberPurposes as $memberPurpose)
+			$purposes[] = $memberPurpose->getPurpose();
+		return $purposes;
 	}
 
 	/**

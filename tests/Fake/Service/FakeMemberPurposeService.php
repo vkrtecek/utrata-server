@@ -29,4 +29,10 @@ class FakeMemberPurposeService implements IMemberPurposeService
 	 * @return void
 	 */
 	public function delete(Member $member, Purpose $purpose) {}
+
+	/**
+	 * @param Member $member
+	 * @return MemberPurpose[]
+	 */
+	public function getMemberPurposes(Member $member) {}
 }

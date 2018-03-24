@@ -9,7 +9,11 @@
 namespace App\Model\Dao;
 
 
+use App\Model\Entity\Item;
 use App\Model\Entity\Member;
+use App\Model\Entity\MemberPurpose;
+use App\Model\Entity\Purpose;
+use App\Model\Entity\Wallet;
 use App\Model\Exception\IntegrityException;
 
 class MemberDAO implements IMemberDAO
@@ -28,6 +32,41 @@ class MemberDAO implements IMemberDAO
     public function findOne($login) {
     	return Member::where('login', $login)->first();
     }
+
+	/**
+	 * @param Member $member
+	 * @return MemberPurpose[]
+	 */
+	public function getMemberPurposes(Member $member) {
+		return MemberPurpose::where('MemberID', $member->getId())->get();
+	}
+
+	/**
+	 * @param Member $member
+	 * @return Purpose[]
+	 */
+	public function getPurposes(Member $member) {
+		$purposes = [];
+		foreach ($this->getMemberPurposes($member) as $memberPurpose)
+			$purposes[] = $memberPurpose->getPurpose();
+		return $purposes;
+	}
+
+	/**
+	 * @param Member $member
+	 * @return Wallet[]
+	 */
+	public function getWallets(Member $member) {
+		return Wallet::where('MemberID', $member->getId())->get();
+	}
+
+	/**
+	 * @param Member $member
+	 * @return Item[]
+	 */
+	public function getItems(Member $member) {
+		return Item::where('MemberID', $member->getId())->get();
+	}
 
     /**
      * @param Member $member
@@ -77,6 +116,14 @@ class MemberDAO implements IMemberDAO
 	 */
 	public function uniqueLogin($login) {
 		return count(Member::where('login', $login)->get()) == 0;
+	}
+
+	/**
+	 * @param string $mail
+	 * @return bool
+	 */
+	public function uniqueMail($mail) {
+		return count(Member::where('myMail', $mail)->get()) == 0;
 	}
 
 }

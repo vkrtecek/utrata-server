@@ -11,6 +11,7 @@ namespace App\Model\Service;
 
 use App\Model\Dao\ICheckStateDAO;
 use App\Model\Dao\IItemDAO;
+use App\Model\Dao\IMemberDAO;
 use App\Model\Dao\IPurposeDAO;
 use App\Model\Dao\IWalletDAO;
 use App\Model\Entity\CheckState;
@@ -49,7 +50,10 @@ class CsvService implements IFileService
 	const PURPOSE_FIELDS = 6;
 	const WALLET_FIELDS = 2;
 	const ITEM_FIELDS = 15;
-	const CHECK_STATE_FIELDS = 4;
+	const CHECK_STATE_FIELDS = 5;
+
+	/** @var IMemberDAO */
+	protected $memberDao;
 
 	/** @var IPurposeDAO */
 	protected $purposeDao;
@@ -86,6 +90,7 @@ class CsvService implements IFileService
 
 	/**
 	 * CsvService constructor.
+	 * @param IMemberDAO $memberDAO
 	 * @param IPurposeDAO $purposeDAO
 	 * @param IWalletDAO $walletDAO
 	 * @param IItemDAO $itemDAO
@@ -99,6 +104,7 @@ class CsvService implements IFileService
 	 * @param IItemService $itemService
 	 */
 	public function __construct(
+		IMemberDAO $memberDAO,
 		IPurposeDAO $purposeDAO,
 		IWalletDAO $walletDAO,
 		IItemDAO $itemDAO,
@@ -111,6 +117,7 @@ class CsvService implements IFileService
 		IMemberService $memberService,
 		IItemService $itemService
 	) {
+		$this->memberDao = $memberDAO;
 		$this->purposeDao = $purposeDAO;
 		$this->walletDao = $walletDAO;
 		$this->itemDao = $itemDAO;
@@ -148,7 +155,7 @@ class CsvService implements IFileService
 		$content->appendLine(self::formatMember($member));
 
 		//purposes
-		$memberPurposes = $member->getMemberPurposes();
+		$memberPurposes = $this->memberDao->getMemberPurposes($member);
 		$content->appendLine(count($memberPurposes));
 		foreach ($memberPurposes as $memberPurpose) {
 			$purpose = $memberPurpose->getPurpose();
@@ -156,13 +163,13 @@ class CsvService implements IFileService
 		}
 
 		//wallets
-		$wallets = $member->getWallets();
+		$wallets = $this->memberDao->getWallets($member);
 		$content->appendLine(count($wallets));
 		foreach ($wallets as $wallet)
 			$content->appendLine(self::formatWallet($wallet));
 
 		//items
-		$items = $member->getItems();
+		$items = $this->memberDao->getItems($member);
 		$content->appendLine(count($items));
 		foreach ($items as $item)
 			$content->appendLine(self::formatItem($item));
@@ -171,7 +178,7 @@ class CsvService implements IFileService
 		//checksates
 		$checkStates = [];
 		foreach ($wallets as $wallet) {
-			foreach ($wallet->getCheckStates() as $checkState) {
+			foreach ($this->walletDao->getCheckStates($wallet) as $checkState) {
 				$checkStates[] = $checkState;
 			}
 		}
@@ -223,7 +230,7 @@ class CsvService implements IFileService
 		//items
 		$items = [];
 		$itemsCnt = $file->getLine();
-		if (!ctype_digit($walletsCnt))
+		if (!ctype_digit($itemsCnt))
 			throw new FileParseException('Parse: Item count number not integer');
 		for ($i = 0; $i < $itemsCnt; $i++) {
 			try {
@@ -239,8 +246,8 @@ class CsvService implements IFileService
 		$checkStatesCnt = $file->getLine();
 		if (!ctype_digit($checkStatesCnt))
 			throw new FileParseException('Parse: CheckState count number not integer');
-		if ($checkStatesCnt != ItemType::TYPES)
-			throw new FileParseException('Parse: CheckState count expected: ' . ItemType::TYPES . ', got ' . $checkStatesCnt);
+		if ($checkStatesCnt != $walletsCnt * ItemType::TYPES)
+			throw new FileParseException('Parse: CheckState count expected: ' . ($walletsCnt * ItemType::TYPES) . ', got ' . $checkStatesCnt);
 		for ($i = 0; $i < $checkStatesCnt; $i++) {
 			try {
 				$checkStates[] = $this->getCheckState($file->getLine(), $wallets[(int)($i/2)]);
@@ -345,6 +352,7 @@ class CsvService implements IFileService
 	 */
 	private static function formatCheckState(CheckState $checkState) {
 		return $checkState->getId() . ';' .
+			$checkState->getWallet()->getId() . ';' .
 			$checkState->getType() . ';' .
 			$checkState->getChecked()->format('Y-m-d H:i:s') . ';' .
 			$checkState->getValue();
@@ -578,8 +586,9 @@ class CsvService implements IFileService
 	private function getCheckState($string, Wallet $wallet) {
 		if (count(explode(';', $string)) != self::CHECK_STATE_FIELDS)
 			throw new FileParseException(self::CHECK_STATE_FIELDS . ' fields expected, ' . count(explode(';', $string)) . ' given.');
-		list($id, $type, $checked, $value) = explode(';', $string);
+		list($id, $walletId, $type, $checked, $value) = explode(';', $string);
 		if (!ctype_digit($id)
+			|| !ctype_digit($walletId)
 			|| !ItemType::isType($type)
 			|| (new \DateTime($checked))->format('Y-m-d H:i:s') != $checked
 			|| !is_numeric($value)
@@ -646,7 +655,7 @@ class CsvService implements IFileService
 			|| !ctype_digit($income) || ($income != '1' && $income != '0')
 			|| !ctype_digit($vyber) || ($vyber != '1' && $vyber != '0')
 			|| !ctype_digit($odepsat) || ($odepsat != '1' && $odepsat != '0')
-			|| (!ctype_digit($_note) && !$vyber)
+			|| (!ctype_digit($_note) && !$vyber && !$income)
 			|| $_currency == ""
 			|| !ctype_digit($_wallet)
 		) throw new FileParseException('Some field has bad format');

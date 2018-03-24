@@ -9,6 +9,8 @@
 namespace App\Model\Dao;
 
 
+use App\Model\Entity\CheckState;
+use App\Model\Entity\Item;
 use App\Model\Entity\Wallet;
 use App\Model\Exception\IntegrityException;
 
@@ -38,6 +40,18 @@ interface IWalletDAO
 	 * @return Wallet
 	 */
 	public function findOneByColumn($key, $val);
+
+	/**
+	 * @param Wallet $wallet
+	 * @return Item[]
+	 */
+	public function getItems(Wallet $wallet);
+
+	/**
+	 * @param Wallet $wallet
+	 * @return CheckState[]
+	 */
+	public function getCheckStates(Wallet $wallet);
 
 	/**
 	 * @param Wallet $wallet

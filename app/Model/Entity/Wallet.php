@@ -83,30 +83,4 @@ class Wallet extends Model
 		$this->MemberID = $member->getId();
 		$this->member = $member;
 	}
-
-
-
-
-
-
-	/**
-	 * @return Item[]
-	 */
-	public function getItems() {
-		return Item::where('WalletID', $this->WalletID)->get();
-	}
-
-	/**
-	 * @return CheckState[]
-	 */
-	public function getCheckStates() {
-		$ret = [];
-		$ret[] = CheckState::where('WalletID', $this->WalletID)
-			->where('type', ItemType::CARD)
-			->first();
-		$ret[] = CheckState::where('WalletID', $this->WalletID)
-			->where('type', ItemType::CASH)
-			->first();
-		return $ret;
-	}
 }

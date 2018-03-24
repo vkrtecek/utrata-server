@@ -157,6 +157,9 @@ class MemberService implements IMemberService
 		try {
 			//test if member exists
 			$member = $this->getMember($login);
+			$purposes = $this->memberDao->getPurposes($member);
+			foreach ($purposes as $purpose)
+				$this->memberPurposeService->delete($member, $purpose);
 			return $this->memberDao->delete($member);
 		} catch (NotFoundException $ex) {
 			throw new NotFoundException('MemberService: No member with this login.', 0, $ex);
@@ -200,6 +203,7 @@ class MemberService implements IMemberService
 
 		//create new member
 		$member = new Member();
+		$member->setFacebook(TRUE);
 		$this->setMember($member, $data, TRUE);
 		$member->setToken($this->createToken());
 		$member->setLogged(1);
@@ -272,7 +276,7 @@ class MemberService implements IMemberService
 					 * delete all purposes of old language which user don't use
 					 * add all purposes with new language and base=true
 					 */
-					foreach ($member->getPurposes() as $purpose)
+					foreach ($this->memberDao->getPurposes($member) as $purpose)
 						$this->memberPurposeService->delete($member, $purpose);
 
 					if (isset($data['notes']) && $data['notes'] && count($data['notes'])) {
@@ -315,8 +319,8 @@ class MemberService implements IMemberService
 		if (isset($data['me']) && $data['me']) {
 			if (!preg_match($emailFormat, $data['me']))
 				throw new BadParameterException('MemberService: your mail in bad format');
-			//if ($member->getMyMail() != $data['me'] && !Member::uniqueMail($data['me']))
-			//	throw new AlreadyExistException('MemberService: This mail already exists');
+			if ($member->getMyMail() != $data['me'] && !$member->isExternal() && !$this->memberDao->uniqueMail($data['me']))
+				throw new AlreadyExistException('MemberService: This mail already exists');
 			$member->setMyMail($data['me']);
 		}
 		if (isset($data['notes']) && $data['notes'] && !$changedLanguage) {
@@ -463,10 +467,10 @@ class MemberService implements IMemberService
 	 */
 	public function getFormattedPurposes(Member $member) {
 		$ret = [];
-		if ($member->getMemberPurposes() == NULL)
+		if ($this->memberDao->getMemberPurposes($member) == NULL)
 			return $ret;
 
-		foreach ($member->getMemberPurposes() as $memberPurpose) {
+		foreach ($this->memberDao->getMemberPurposes($member) as $memberPurpose) {
 			$ret[] = $this->purposeService->format($memberPurpose->getPurpose());
 		}
 		return $ret;
@@ -520,7 +524,7 @@ class MemberService implements IMemberService
 	 */
 	private function setNotes(Member $member, $notes) {
 		$originNoteIds = [];
-		foreach ($member->getPurposes() as $purpose) {
+		foreach ($this->memberDao->getPurposes($member) as $purpose) {
 			$originNoteIds[] = $purpose->getId();
 		}
 

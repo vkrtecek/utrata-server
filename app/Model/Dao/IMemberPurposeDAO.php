@@ -25,6 +25,12 @@ interface IMemberPurposeDAO
 
 	/**
 	 * @param Member $member
+	 * @return MemberPurpose[]
+	 */
+	public function findPurposes(Member $member);
+
+	/**
+	 * @param Member $member
 	 * @param Purpose $purpose
 	 * @return MemberPurpose
 	 */
