@@ -9,7 +9,82 @@
 namespace Tests\Fake\Service;
 
 
-class FakeCurrencyService
-{
+use App\Model\Entity\Currency;
+use App\Model\Exception\BadParameterException;
+use App\Model\Exception\IntegrityException;
+use App\Model\Exception\NotFoundException;
+use App\Model\Service\ICurrencyService;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
+class FakeCurrencyService implements ICurrencyService
+{
+	/** @var Currency */
+	private $c;
+
+
+	/**
+	 * @return Currency[]
+	 * @throws NotFoundException
+	 */
+	public function getCurrencies() {}
+
+	/**
+	 * @param int $id
+	 * @return Currency
+	 * @throws BadParameterException
+	 * @throws NotFoundException
+	 */
+	public function getCurrency($id) {}
+
+	/**
+	 * @param $data
+	 * @return Currency
+	 * @throws BadRequestHttpException
+	 */
+	public function createCurrency($data) {}
+
+	/**
+	 * @param int $id
+	 * @param $data
+	 * @return Currency
+	 * @throws NotFoundException
+	 * @throws BadParameterException
+	 * @throws BadRequestHttpException
+	 */
+	public function updateCurrency($id, $data) {}
+
+	/**
+	 * @param int $id
+	 * @return int
+	 * @throws NotFoundException
+	 * @throws BadParameterException
+	 * @throws IntegrityException
+	 */
+	public function deleteCurrency($id) {}
+
+	/**
+	 * @param string $column column in database
+	 * @param mixed $value
+	 * @return Currency
+	 */
+	public function getCurrencyByColumn($column, $value) {
+		$this->c = new Currency();
+		$id = $column != 'languageCode' ? 1 : $column == 'CZK' ? 1 : $column == 'USD' ? 2 : 3;
+		$this->c->setId($id);
+		$settr = 'set' . $column;
+		$this->c->{$settr}($value);
+		return $this->c;
+	}
+
+	/**
+	 * @param Currency $currency
+	 * @return array
+	 */
+	public function format(Currency $currency) {}
+
+	/**
+	 * @param Currency[] $currencies
+	 * @return array
+	 */
+	public function formatEntities($currencies) {}
 }

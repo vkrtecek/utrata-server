@@ -22,6 +22,10 @@ class Translation extends Model
 	public $incrementing = false;
 
 
+	/** @var Language */
+	private $language = NULL;
+
+
 	/**
 	 * @return string
 	 */
@@ -54,14 +58,17 @@ class Translation extends Model
 	 * @return Language
 	 */
 	public function getLanguage() {
-		return Language::find($this->LanguageCode);
+		if (!$this->language)
+			$this->language = Language::find($this->LanguageCode);
+		return $this->language;
 	}
 
 	/**
 	 * @param Language $language
 	 */
 	public function setLanguage(Language $language) {
-		$this->LanguageCode = $language->getId();
+		$this->LanguageCode = $language->getCode();
+		$this->language = $language;
 	}
 
 }

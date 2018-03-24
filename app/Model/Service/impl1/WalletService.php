@@ -47,6 +47,7 @@ class WalletService implements IWalletService
 	}
 
 	/**
+	 * get all user's wallets
 	 * @param string $login
 	 * @return Wallet[]
 	 * @throws NotFoundException

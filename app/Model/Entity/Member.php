@@ -21,6 +21,12 @@ class Member extends Model
 
 	public $timestamps = false;
 
+	/** @var Language */
+	private $language = NULL;
+
+	/** @var Currency */
+	private $currency = NULL;
+
 
 	/**
 	 * @return int
@@ -166,9 +172,11 @@ class Member extends Model
 
 	/**
 	 * @param boolean $admin
+	 * @return Member
 	 */
 	public function setAdmin($admin) {
 		$this->admin = $admin;
+		return $this;
 	}
 
 	/**
@@ -180,9 +188,11 @@ class Member extends Model
 
 	/**
 	 * @param int $logged
+	 * @return Member
 	 */
 	public function setLogged($logged) {
 		$this->logged = $logged;
+		return $this;
 	}
 
 	/**
@@ -194,9 +204,11 @@ class Member extends Model
 
 	/**
 	 * @param string $token
+	 * @return Member
 	 */
 	public function setToken($token) {
 		$this->token = $token;
+		return $this;
 	}
 
 	/**
@@ -208,9 +220,11 @@ class Member extends Model
 
 	/**
 	 * @param DateTime $expiration
+	 * @return Member
 	 */
 	public function setExpiration(DateTime $expiration) {
 		$this->expiration = $expiration->format('Y-m-d H:i:s');
+		return $this;
 	}
 
 	/**
@@ -222,9 +236,11 @@ class Member extends Model
 
 	/**
 	 * @param DateTime $created
+	 * @return Member
 	 */
 	public function setCreated(DateTime $created) {
 		$this->created = $created->format('Y-m-d H:i:s');
+		return $this;
 	}
 
 	/**
@@ -263,7 +279,9 @@ class Member extends Model
 	 * @return Language
 	 */
 	public function getLanguage() {
-		return Language::find($this->LanguageCode);
+		if (!$this->language)
+			$this->language = Language::find($this->LanguageCode);
+		return $this->language;
 	}
 
 	/**
@@ -272,6 +290,7 @@ class Member extends Model
 	 */
 	public function setLanguage(Language $language) {
 		$this->LanguageCode = $language->getCode();
+		$this->language = $language;
 		return $this;
 	}
 
@@ -279,7 +298,9 @@ class Member extends Model
 	 * @return Currency
 	 */
 	public function getCurrency() {
-		return Currency::find($this->CurrencyID);
+		if (!$this->currency)
+			$this->currency = Currency::find($this->CurrencyID);
+		return $this->currency;
 	}
 
 	/**
@@ -288,6 +309,7 @@ class Member extends Model
 	 */
 	public function setCurrency(Currency $currency) {
 		$this->CurrencyID = $currency->getId();
+		$this->currency = $currency;
 		return $this;
 	}
 
@@ -335,15 +357,6 @@ class Member extends Model
 	 */
 	public function getCheckStates() {
 		return CheckState::where('MemberID', $this->MemberID)->get();
-	}
-
-
-	/**
-	 * @param string $login
-	 * @return boolean
-	 */
-	public static function uniqueLogin($login) {
-		return count(Member::where('login', $login)->get()) == 0;
 	}
 
 	/**

@@ -20,6 +20,12 @@ class Purpose extends Model
 
 	public $timestamps = false;
 
+	/** @var Member */
+	private $creator = NULL;
+
+	/** @var Language */
+	private $language = NULL;
+
 
 	/**
 	 * @return int
@@ -80,7 +86,9 @@ class Purpose extends Model
 	 * @return Language
 	 */
 	public function getLanguage() {
-		return Language::find($this->LanguageCode);
+		if (!$this->language)
+			$this->language = Language::find($this->LanguageCode);
+		return $this->language;
 	}
 
 	/**
@@ -89,6 +97,7 @@ class Purpose extends Model
 	 */
 	public function setLanguage(Language $language) {
 		$this->LanguageCode = $language->getCode();
+		$this->language = $language;
 		return $this;
 	}
 
@@ -96,7 +105,9 @@ class Purpose extends Model
 	 * @return Member
 	 */
 	public function getCreator() {
-		return Member::find($this->CreatorID);
+		if (!$this->creator)
+			$this->creator = Member::find($this->CreatorID);
+		return $this->creator;
 	}
 
 	/**
@@ -105,6 +116,7 @@ class Purpose extends Model
 	 */
 	public function setCreator(Member $creator) {
 		$this->CreatorID = $creator->getId();
+		$this->creator = $creator;
 		return $this;
 	}
 }

@@ -22,6 +22,7 @@ class Language extends Model
 	public $incrementing = false;
 
 
+
 	/**
 	 * @return string
 	 */

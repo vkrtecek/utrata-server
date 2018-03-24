@@ -19,6 +19,12 @@ class MemberPurpose extends Model
 
 	public $timestamps = false;
 
+	/** @var Purpose */
+	private $purpose = NULL;
+
+	/** @var Member */
+	private $member = NULL;
+
 
 	/**
 	 * @return int
@@ -31,7 +37,9 @@ class MemberPurpose extends Model
 	 * @return Purpose
 	 */
 	public function getPurpose() {
-		return Purpose::find($this->PurposeID);
+		if (!$this->purpose)
+			$this->purpose = Purpose::find($this->PurposeID);
+		return $this->purpose;
 	}
 
 	/**
@@ -39,13 +47,16 @@ class MemberPurpose extends Model
 	 */
 	public function setPurpose(Purpose $purpose) {
 		$this->PurposeID = $purpose->getId();
+		$this->purpose = $purpose;
 	}
 
 	/**
 	 * @return Member
 	 */
 	public function getMember() {
-		return Member::find($this->MemberID);
+		if (!$this->member)
+			$this->member = Member::find($this->MemberID);
+		return $this->member;
 	}
 
 	/**
@@ -53,6 +64,7 @@ class MemberPurpose extends Model
 	 */
 	public function setMember(Member $member) {
 		$this->MemberID = $member->getId();
+		$this->member = $member;
 	}
 
 }

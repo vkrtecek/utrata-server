@@ -22,6 +22,18 @@ class Item extends Model
 
 	public $timestamps = false;
 
+	/** @var Purpose */
+	private $purpose = NULL;
+
+	/** @var Currency */
+	private $currency = NULL;
+
+	/** @var Wallet */
+	private $wallet = NULL;
+
+	/** @var Member */
+	private $member = NULL;
+
 	/**
 	 * @return int
 	 */
@@ -224,7 +236,9 @@ class Item extends Model
 	 * @return Purpose
 	 */
 	public function getNote() {
-		return Purpose::find($this->PurposeID);
+		if (!$this->purpose)
+			$this->purpose = Purpose::find($this->PurposeID);
+		return $this->purpose;
 	}
 
 	/**
@@ -233,6 +247,7 @@ class Item extends Model
 	 */
 	public function setNote($purpose) {
 		$this->PurposeID = $purpose ? $purpose->getId() : NULL;
+		$this->purpose = $purpose;
 		return $this;
 	}
 
@@ -240,7 +255,9 @@ class Item extends Model
 	 * @return Currency
 	 */
 	public function getCurrency() {
-		return Currency::find($this->CurrencyID);
+		if(!$this->currency)
+			$this->currency = Currency::find($this->CurrencyID);
+		return $this->currency;
 	}
 
 	/**
@@ -249,6 +266,7 @@ class Item extends Model
 	 */
 	public function setCurrency(Currency $currency) {
 		$this->CurrencyID = $currency->getId();
+		$this->currency = $currency;
 		return $this;
 	}
 
@@ -256,7 +274,9 @@ class Item extends Model
 	 * @return Wallet
 	 */
 	public function getWallet() {
-		return Wallet::find($this->WalletID);
+		if (!$this->wallet)
+			$this->wallet = Wallet::find($this->WalletID);
+		return $this->wallet;
 	}
 
 	/**
@@ -265,6 +285,7 @@ class Item extends Model
 	 */
 	public function setWallet(Wallet $wallet) {
 		$this->WalletID = $wallet->getId();
+		$this->wallet = $wallet;
 		return $this;
 	}
 
@@ -272,7 +293,9 @@ class Item extends Model
 	 * @return Member
 	 */
 	public function getMember() {
-		return Member::find($this->MemberID);
+		if (!$this->member)
+			$this->member = Member::find($this->MemberID);
+		return $this->member;
 	}
 
 	/**
@@ -281,6 +304,7 @@ class Item extends Model
 	 */
 	public function setMember(Member $member) {
 		$this->MemberID = $member->getId();
+		$this->member = $member;
 		return $this;
 	}
 }

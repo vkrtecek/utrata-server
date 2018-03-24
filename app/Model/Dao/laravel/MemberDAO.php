@@ -71,4 +71,12 @@ class MemberDAO implements IMemberDAO
     	return Member::where($key, $val)->first();
 	}
 
+	/**
+	 * @param string $login
+	 * @return bool
+	 */
+	public function uniqueLogin($login) {
+		return count(Member::where('login', $login)->get()) == 0;
+	}
+
 }

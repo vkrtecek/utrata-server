@@ -49,4 +49,11 @@ interface IMemberDAO
 	 * @return Member|NULL
 	 */
 	public function findOneByColumn($key, $val);
+
+	/**
+	 * @param string $login
+	 * @return bool
+	 *
+	 */
+	public function uniqueLogin($login);
 }

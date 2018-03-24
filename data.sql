@@ -12,7 +12,9 @@ INSERT INTO `utrata_members` (`MemberID`, `firstName`, `lastName`, `login`, `pas
 (1, 'Štěpán', 'Krteček', 'vojta', '$2y$10$Mk3Ji0jttwhKABt0ywm4H.LmkEFsB7YCn2R3RqMvwbQQl1D3eXx7i', '', NULL, '2015-09-25 19:52:48', 0, 1, 0, 'stuchlikovaa@seznam.cz', 'krtek@zlin6.cz', 'CZK', 1, 0, 0, '2018-02-11 14:05:58'),
 (2, 'Jana', 'Harníková', 'jana', '$2y$12$TLHfaHdPgYNepUOB6A1Bi.XPh8EunvuzxI0.Cvl8BSGgyNdxdqjua', '', NULL, '2016-03-01 17:30:16', 0, 1, 0, 'ivana.harnikova@seznam.cz', 'harnikovaj@gmail.com', 'CZK', 1, 0, 0, '2017-09-03 22:30:17'),
 (3, 'Vojtěch', 'Jurák', 'broskev', '$2y$12$TLHfaHdPgYNepUOB6A1Bi.XPh8EunvuzxI0.Cvl8BSGgyNdxdqjua', '', NULL, '2016-11-21 21:23:23', 0, 1, 0, 'vojta@jurak.cz', 'vojta@jurak.cz', 'CZK', 1, 0, 0, '2016-12-31 23:59:59'),
-(4, '', '', 'english', '$2y$12$TLHfaHdPgYNepUOB6A1Bi.XPh8EunvuzxI0.Cvl8BSGgyNdxdqjua', '', NULL, '2017-10-31 20:49:00', 0, 0, 0, 'ss@ss.ss', 'ss@ss.ss', 'ENG', 3, 0, 0, '2018-01-30 22:41:38');
+(4, '', '', 'english', '$2y$12$TLHfaHdPgYNepUOB6A1Bi.XPh8EunvuzxI0.Cvl8BSGgyNdxdqjua', '', NULL, '2017-10-31 20:49:00', 0, 0, 0, 'ss@ss.ss', 'ss@ss.ss', 'ENG', 3, 0, 0, '2018-01-30 22:41:38'),
+(5, 'Anežka', 'Valentová', 'anezka', '$2y$12$TLHfaHdPgYNepUOB6A1Bi.XPh8EunvuzxI0.Cvl8BSGgyNdxdqjua', '', NULL, '2018-02-19 18:08:00', 0, 1, 0, 'anezka.valentova23@gmail.com', 'anezka.valentova23@gmail.com', 'CZK', 1, 0, 0, NULL),
+(6, 'Jana', 'Harníková', 'jana2', '$2y$12$TLHfaHdPgYNepUOB6A1Bi.XPh8EunvuzxI0.Cvl8BSGgyNdxdqjua', '', NULL, '2018-02-21 18:08:00', 0, 1, 0, 'blondynka195@seznam.cz', 'blondynka195@seznam.cz', 'CZK', 1, 0, 0, NULL);
 
 INSERT INTO `utrata_wallets` (`WalletID`, `name`, `created`, `modified`, `MemberID`) VALUES
 (1, 'rodičů', '2015-09-25 19:52:48', '2015-09-25 19:52:48', 1),

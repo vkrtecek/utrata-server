@@ -29,9 +29,11 @@ class Currency extends Model
 
 	/**
 	 * @param int $id
+	 * @return $this
 	 */
 	public function setId($id) {
 		$this->CurrencyID = $id;
+		return $this;
 	}
 
 	/**

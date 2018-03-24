@@ -32,6 +32,13 @@ interface ICurrencyService
     public function getCurrency($id);
 
     /**
+     * @param string $column column in database
+     * @param mixed $value
+     * @return Currency
+     */
+    public function getCurrencyByColumn($column, $value);
+
+    /**
      * @param $data
      * @return Currency
      * @throws BadRequestHttpException
@@ -56,13 +63,6 @@ interface ICurrencyService
      * @throws IntegrityException
      */
     public function deleteCurrency($id);
-
-	/**
-	 * @param string $column column in database
-	 * @param mixed $value
-	 * @return Currency
-	 */
-	public function getCurrencyByColumn($column, $value);
 
 	/**
 	 * @param Currency $currency

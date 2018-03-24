@@ -23,6 +23,9 @@ class CheckState extends Model
 
 	public $timestamps = false;
 
+	/** @var Wallet */
+	private $wallet = NULL;
+
 	/**
 	 * @return int
 	 */
@@ -85,7 +88,9 @@ class CheckState extends Model
 	 * @return Wallet
 	 */
 	public function getWallet() {
-		return Wallet::find($this->WalletID);
+		if (!$this->wallet)
+			$this->wallet = Wallet::find($this->WalletID);
+		return $this->wallet;
 	}
 
 	/**
@@ -93,6 +98,7 @@ class CheckState extends Model
 	 */
 	public function setWallet(Wallet $wallet) {
 		$this->WalletID = $wallet->getId();
+		$this->wallet;
 	}
 
 }

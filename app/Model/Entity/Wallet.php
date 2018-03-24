@@ -15,6 +15,9 @@ class Wallet extends Model
 
 	public $timestamps = false;
 
+	/** @var Member */
+	private $member = NULL;
+
 	/**
 	 * @return int
 	 */
@@ -68,7 +71,9 @@ class Wallet extends Model
 	 * @return Member
 	 */
 	public function getMember() {
-		return Member::find($this->MemberID);
+		if (!$this->member)
+			$this->member = Member::find($this->MemberID);
+		return $this->member;
 	}
 
 	/**
@@ -76,6 +81,7 @@ class Wallet extends Model
 	 */
 	public function setMember(Member $member) {
 		$this->MemberID = $member->getId();
+		$this->member = $member;
 	}
 
 

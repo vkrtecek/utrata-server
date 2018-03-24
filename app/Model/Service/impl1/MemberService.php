@@ -26,6 +26,7 @@ use DateTime;
 class MemberService implements IMemberService
 {
 	const defaultPassword = 'Facebook Password';
+	const defaultEmail = 'someFacebook@example.com';
 
 	/** @var IMemberDAO */
 	protected $memberDao;
@@ -175,7 +176,7 @@ class MemberService implements IMemberService
 		if ($member = $this->memberDao->findOne($fb_data['login'])) {
 			return $this->loginByFacebook($fb_data['login']);
 		}
-		$inputsKeys = [ 'fname', 'lname', 'login', 'email', 'locale' ];
+		$inputsKeys = [ 'fname', 'lname', 'login', /*'email',*/ 'locale' ];
 		foreach ($inputsKeys as $key) {
 			if (!isset($fb_data[$key]) || $fb_data[$key] == '')
 				throw new BadParameterException('MemberService: "' . $key . '" must be specified.');
@@ -189,8 +190,8 @@ class MemberService implements IMemberService
 		$data['lastName'] = $fb_data['lname'];
 		$data['login'] = $fb_data['login'];
 		$data['password'] = self::defaultPassword;
-		$data['mother'] = $fb_data['email'];
-		$data['me'] = $fb_data['email'];
+		$data['mother'] = self::defaultEmail; //$fb_data['email'];
+		$data['me'] = self::defaultEmail; //$fb_data['email'];
 		$data['expiration'] = (new DateTime('+ 14 days'))->format('Y-m-d H:i:s');
 		$data['access'] = (new DateTime())->format('Y-m-d H:i:s');
 		$data['currencyCode'] = $this->getCurrencyFromLocale($fb_data['locale'])->getCode();
@@ -293,7 +294,7 @@ class MemberService implements IMemberService
 			}
 		}
 		if (isset($data['login']) && $data['login']) {
-			if ($member->getLogin() != $data['login'] && !Member::uniqueLogin($data['login']))
+			if ($member->getLogin() != $data['login'] && !$this->memberDao->uniqueLogin($data['login']))
 				throw new AlreadyExistException('MemberService: This login already exists');
 			$member->setLogin($data['login']);
 		}
@@ -314,8 +315,8 @@ class MemberService implements IMemberService
 		if (isset($data['me']) && $data['me']) {
 			if (!preg_match($emailFormat, $data['me']))
 				throw new BadParameterException('MemberService: your mail in bad format');
-			if ($member->getMyMail() != $data['me'] && !Member::uniqueMail($data['me']))
-				throw new AlreadyExistException('MemberService: This mail already exists');
+			//if ($member->getMyMail() != $data['me'] && !Member::uniqueMail($data['me']))
+			//	throw new AlreadyExistException('MemberService: This mail already exists');
 			$member->setMyMail($data['me']);
 		}
 		if (isset($data['notes']) && $data['notes'] && !$changedLanguage) {
