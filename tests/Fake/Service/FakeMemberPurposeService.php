@@ -16,12 +16,26 @@ use App\Model\Service\IMemberPurposeService;
 
 class FakeMemberPurposeService implements IMemberPurposeService
 {
+	/** @var MemberPurpose */
+	protected $mp1;
+
+	/**
+	 * FakeMemberPurposeService constructor.
+	 */
+	public function __construct() {
+		$this->mp1 = new MemberPurpose();
+		$this->mp1->setPurpose((new FakePurposeService())->getPurpose(1));
+	}
+
 	/**
 	 * @param Member $member
 	 * @param Purpose $purpose
 	 * @return MemberPurpose
 	 */
-	public function create(Member $member, Purpose $purpose) {}
+	public function create(Member $member, Purpose $purpose) {
+		$this->mp1->setMember($member);
+		return $this->mp1;
+	}
 
 	/**
 	 * @param Member $member
@@ -34,5 +48,8 @@ class FakeMemberPurposeService implements IMemberPurposeService
 	 * @param Member $member
 	 * @return MemberPurpose[]
 	 */
-	public function getMemberPurposes(Member $member) {}
+	public function getMemberPurposes(Member $member) {
+		$this->mp1->setMember($member);
+		return [ $this->mp1 ];
+	}
 }

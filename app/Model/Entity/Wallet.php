@@ -48,9 +48,11 @@ class Wallet extends Model
 
 	/**
 	 * @param DateTime $created
+	 * @return Wallet
 	 */
 	public function setCreated(DateTime $created) {
 		$this->created = $created->format('Y-m-d H:i:s');
+		return $this;
 	}
 
 	/**
@@ -62,9 +64,11 @@ class Wallet extends Model
 
 	/**
 	 * @param DateTime $modified
+	 * @return Wallet
 	 */
 	public function setModified(DateTime $modified) {
 		$this->modified = $modified->format('Y-m-d H:i:s');
+		return $this;
 	}
 
 	/**

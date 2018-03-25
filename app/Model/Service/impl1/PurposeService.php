@@ -186,13 +186,11 @@ class PurposeService implements IPurposeService
 	 * @return array
 	 */
 	public function format(Purpose $purpose) {
-		$ret = [];
-
-		$ret['id'] = $purpose->getId();
-		$ret['code'] = $purpose->getCode();
-		$ret['value'] = $purpose->getValue();
-
-		return $ret;
+		return [
+			'id' => $purpose->getId(),
+			'code' => $purpose->getCode(),
+			'value' => $purpose->getValue(),
+		];
 	}
 
 	/**

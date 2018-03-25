@@ -17,9 +17,20 @@ use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
 use App\Model\Service\IPurposeService;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Tests\Fake\Dao\FakePurposeDAO;
 
 class FakePurposeService implements IPurposeService
 {
+	/** @var FakePurposeDAO */
+	protected $purposeDao;
+
+	/**
+	 * FakePurposeService constructor.
+	 */
+	public function __construct() {
+		$this->purposeDao = new FakePurposeDAO();
+	}
+
 	/**
 	 * @return Purpose[]
 	 * @throws NotFoundException
@@ -65,7 +76,9 @@ class FakePurposeService implements IPurposeService
 	 * @throws BadParameterException
 	 * @throws NotFoundException
 	 */
-	public function getPurpose($id) {}
+	public function getPurpose($id) {
+		return $this->purposeDao->findOne($id);
+	}
 
 	/**
 	 * @param Member $member
