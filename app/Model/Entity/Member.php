@@ -36,6 +36,15 @@ class Member extends Model
 	}
 
 	/**
+	 * @param int $id
+	 * @return Member
+	 */
+	public function setId($id) {
+		$this->MemberID = $id;
+		return $this;
+	}
+
+	/**
 	 * @return string
 	 */
 	public function getFirstName() {

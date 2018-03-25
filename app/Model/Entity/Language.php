@@ -32,9 +32,11 @@ class Language extends Model
 
 	/**
 	 * @param string $code
+	 * @return Language
 	 */
 	public function setCode($code) {
 		$this->LanguageCode = $code;
+		return $this;
 	}
 
 	/**
@@ -46,9 +48,11 @@ class Language extends Model
 
 	/**
 	 * @param string $name
+	 * @return Language
 	 */
 	public function setName($name) {
 		$this->name = $name;
+		return $this;
 	}
 
 }

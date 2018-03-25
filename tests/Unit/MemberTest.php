@@ -10,7 +10,6 @@ namespace Tests\Unit;
 
 
 use App\Model\Exception\BadParameterException;
-use App\Model\Exception\NotFoundException;
 use App\Model\Service\MemberService;
 use Tests\Fake\Dao\FakeMemberDAO;
 use Tests\Fake\Service\FakeCurrencyService;
@@ -18,8 +17,6 @@ use Tests\Fake\Service\FakeLanguageService;
 use Tests\Fake\Service\FakeMemberPurposeService;
 use Tests\Fake\Service\FakePurposeService;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class MemberTest extends TestCase
 {

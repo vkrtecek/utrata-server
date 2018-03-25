@@ -89,7 +89,7 @@ class PurposeService implements IPurposeService
 	public function getUserLanguagePurposes(Member $member, $languageCode) {
 		$purposes = $this->getLanguagePurposes($languageCode);
 		foreach ($purposes as $key => $purpose) {
-			if (!$purpose->isBase() && $purpose->getCreator() && $purpose->getCreator()->getId() != $member->getId())
+			if (!$purpose->isBase() && ($purpose->getCreator() === NULL || $purpose->getCreator()->getId() != $member->getId()))
 				unset($purposes[$key]);
 		}
 		return $purposes;
@@ -102,6 +102,8 @@ class PurposeService implements IPurposeService
 	 */
 	public function getUserPurposes(Member $member) {
 		$memberPurposes = $this->memberPurposeService->getMemberPurposes($member);
+		if ($memberPurposes === NULL)
+			throw new NotFoundException('PurposeService: No Purposes for this Member');
 		$purposes = [];
 		foreach ($memberPurposes as $memberPurpose)
 			$purposes[] = $memberPurpose->getPurpose();
