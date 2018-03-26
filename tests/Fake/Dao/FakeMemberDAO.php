@@ -18,6 +18,10 @@ use App\Model\Entity\MemberPurpose;
 use App\Model\Entity\Purpose;
 use App\Model\Entity\Wallet;
 use App\Model\Exception\IntegrityException;
+use Tests\Fake\Service\FakeItemService;
+use Tests\Fake\Service\FakeMemberPurposeService;
+use Tests\Fake\Service\FakePurposeService;
+use Tests\Fake\Service\FakeWalletService;
 
 class FakeMemberDAO implements IMemberDAO
 {
@@ -68,7 +72,7 @@ class FakeMemberDAO implements IMemberDAO
 	 * @return MemberPurpose[]
 	 */
 	public function getMemberPurposes(Member $member) {
-
+		return (new FakeMemberPurposeService())->getMemberPurposes($member);
 	}
 
 	/**
@@ -76,7 +80,7 @@ class FakeMemberDAO implements IMemberDAO
 	 * @return Purpose[]
 	 */
 	public function getPurposes(Member $member) {
-
+		return (new FakePurposeService())->getUserPurposes($member);
 	}
 
 	/**
@@ -84,7 +88,7 @@ class FakeMemberDAO implements IMemberDAO
 	 * @return Wallet[]
 	 */
 	public function getWallets(Member $member) {
-
+		return (new FakeWalletService())->getWallets($member->getLogin());
 	}
 
 	/**
@@ -92,7 +96,7 @@ class FakeMemberDAO implements IMemberDAO
 	 * @return Item[]
 	 */
 	public function getItems(Member $member) {
-
+		return (new FakeItemService())->getMonthStatistics($member, 1);
 	}
 
 	/**

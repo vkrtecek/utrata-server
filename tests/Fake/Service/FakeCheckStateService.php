@@ -13,10 +13,10 @@ use App\Model\Entity\CheckState;
 use App\Model\Entity\Wallet;
 use App\Model\Enum\ItemType;
 use App\Model\Exception\BadParameterException;
-use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
 use App\Model\Service\ICheckStateService;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Tests\Exception\FirstDeleteForeignException;
 
 class FakeCheckStateService implements ICheckStateService
 {
@@ -41,7 +41,12 @@ class FakeCheckStateService implements ICheckStateService
 	 * @return CheckState[]
 	 * @throws NotFoundException
 	 */
-	public function getWalletCheckStates(Wallet $wallet) {}
+	public function getWalletCheckStates(Wallet $wallet) {
+		return [
+			$this->cs1,
+			$this->cs2,
+		];
+	}
 
 	/**
 	 * @param Wallet $wallet
@@ -62,7 +67,12 @@ class FakeCheckStateService implements ICheckStateService
 	 * @throws NotFoundException
 	 * @throws BadParameterException
 	 */
-	public function getCheckState($id) {}
+	public function getCheckState($id) {
+		if ($id % 2)
+			return $this->cs1;
+		else
+			return $this->cs2;
+	}
 
 	/**
 	 * @param Wallet $wallet
@@ -70,7 +80,12 @@ class FakeCheckStateService implements ICheckStateService
 	 * @return CheckState
 	 * @throws BadRequestHttpException
 	 */
-	public function createCheckState(Wallet $wallet, $type = ItemType::CARD) {}
+	public function createCheckState(Wallet $wallet, $type = ItemType::CARD) {
+		if ($type == ItemType::CARD)
+			return $this->cs1;
+		else
+			return $this->cs2;
+	}
 
 	/**
 	 * @param Wallet $wallet
@@ -79,16 +94,24 @@ class FakeCheckStateService implements ICheckStateService
 	 * @return CheckState
 	 * @throws NotFoundException
 	 */
-	public function updateCheckState(Wallet $wallet, $type, $value) {}
+	public function updateCheckState(Wallet $wallet, $type, $value) {
+		if ($type == ItemType::CARD)
+			$c = $this->cs1;
+		else
+			$c = $this->cs2;
+		$c->setValue($value);
+		$c->setChecked(new \DateTime());
+		return $c;
+	}
 
 	/**
 	 * @param int $id
 	 * @return int
-	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 * @throws IntegrityException
+	 * @throws FirstDeleteForeignException
 	 */
-	public function deleteCheckState($id) {}
+	public function deleteCheckState($id) {
+		throw new FirstDeleteForeignException();
+	}
 
 	/**
 	 * @param CheckState $checkState

@@ -349,6 +349,17 @@ class ItemService implements IItemService
 	 * @throws NotFoundException
 	 */
 	protected function setItem(Item $entity, $data, $newEntity = TRUE) {
+
+		if (!isset($data['name']) || $data['name'] == NULL)
+			throw new BadRequestHttpException('ItemService: "name" must be specified.');
+
+		if (!isset($data['price']) || $data['price'] == NULL)
+			throw new BadRequestHttpException('ItemService: "price" must be specified.');
+
+		if (!isset($data['date']) || $data['date'] == NULL)
+			throw new BadRequestHttpException('ItemService: "date" must be specified.');
+
+
 		if ($newEntity) {
 			if (!isset($data['member']) || $data['member'] == NULL)
 				throw new BadRequestHttpException('ItemService: Member("login") must be specified.');
@@ -363,15 +374,6 @@ class ItemService implements IItemService
 
 			if (!isset($data['wallet']) || $data['wallet'] == NULL)
 				throw new BadRequestHttpException('ItemService: Wallet("id") must be specified.');
-
-			if (!isset($data['name']) || $data['name'] == NULL)
-				throw new BadRequestHttpException('ItemService: "name" must be specified.');
-
-			if (!isset($data['price']) || $data['price'] == NULL)
-				throw new BadRequestHttpException('ItemService: "price" must be specified.');
-
-			if (!isset($data['date']) || $data['date'] == NULL)
-				throw new BadRequestHttpException('ItemService: "date" must be specified.');
 		}
 
 

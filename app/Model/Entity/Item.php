@@ -236,7 +236,7 @@ class Item extends Model
 	 * @return Purpose
 	 */
 	public function getNote() {
-		if (!$this->purpose)
+		if (!$this->purpose && !$this->isIncome())
 			$this->purpose = Purpose::find($this->PurposeID);
 		return $this->purpose;
 	}

@@ -19,11 +19,22 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class FakeLanguageService implements ILanguageService
 {
+	/** @var Language */
+	private $language;
+
+	public function __construct() {
+		$this->language = new Language();
+		$this->language->setCode('CZK');
+		$this->language->setName('Česky');
+	}
+
 	/**
 	 * @return Language[]
 	 * @throws NotFoundException
 	 */
-	public function getLanguages() {}
+	public function getLanguages() {
+		return [ $this->language ];
+	}
 
 	/**
 	 * @param string $code
@@ -32,9 +43,8 @@ class FakeLanguageService implements ILanguageService
 	 * @throws NotFoundException
 	 */
 	public function getLanguage($code) {
-		$l = new Language();
-		$l->setCode($code);
-		return $l;
+		$this->language->setCode($code);
+		return $this->language;
 	}
 
 	/**
@@ -44,7 +54,9 @@ class FakeLanguageService implements ILanguageService
 	 * @throws BadParameterException
 	 * @throws BadRequestHttpException
 	 */
-	public function createLanguage($data) {}
+	public function createLanguage($data) {
+		return $this->language;
+	}
 
 	/**
 	 * @param string $code
@@ -54,7 +66,9 @@ class FakeLanguageService implements ILanguageService
 	 * @throws NotFoundException
 	 * @throws BadRequestHttpException
 	 */
-	public function updateLanguage($code, $data) {}
+	public function updateLanguage($code, $data) {
+		return $this->language;
+	}
 
 	/**
 	 * @param string $code
@@ -63,17 +77,23 @@ class FakeLanguageService implements ILanguageService
 	 * @throws NotFoundException
 	 * @throws IntegrityException
 	 */
-	public function deleteLanguage($code) {}
+	public function deleteLanguage($code) {
+		return $code;
+	}
 
 	/**
 	 * @param Language $language
 	 * @return array
 	 */
-	public function format(Language $language) {}
+	public function format(Language $language) {
+		return [];
+	}
 
 	/**
 	 * @param Language[] $languages
 	 * @return array
 	 */
-	public function formatEntites($languages) {}
+	public function formatEntites($languages) {
+		return [];
+	}
 }

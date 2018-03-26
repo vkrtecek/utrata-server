@@ -21,12 +21,21 @@ class FakeCurrencyService implements ICurrencyService
 	/** @var Currency */
 	private $c;
 
+	public function __construct() {
+		$this->c = new Currency();
+		$this->c->setId(1);
+		$this->c->setCode('CZK');
+		$this->c->setValue('Kč');
+		$this->c->setName('Česká koruna');
+	}
 
 	/**
 	 * @return Currency[]
 	 * @throws NotFoundException
 	 */
-	public function getCurrencies() {}
+	public function getCurrencies() {
+		return [ $this->c ];
+	}
 
 	/**
 	 * @param int $id
@@ -34,14 +43,18 @@ class FakeCurrencyService implements ICurrencyService
 	 * @throws BadParameterException
 	 * @throws NotFoundException
 	 */
-	public function getCurrency($id) {}
+	public function getCurrency($id) {
+		return $this->c;
+	}
 
 	/**
 	 * @param $data
 	 * @return Currency
 	 * @throws BadRequestHttpException
 	 */
-	public function createCurrency($data) {}
+	public function createCurrency($data) {
+		return $this->c;
+	}
 
 	/**
 	 * @param int $id
@@ -51,7 +64,9 @@ class FakeCurrencyService implements ICurrencyService
 	 * @throws BadParameterException
 	 * @throws BadRequestHttpException
 	 */
-	public function updateCurrency($id, $data) {}
+	public function updateCurrency($id, $data) {
+		return $this->c;
+	}
 
 	/**
 	 * @param int $id
@@ -60,7 +75,9 @@ class FakeCurrencyService implements ICurrencyService
 	 * @throws BadParameterException
 	 * @throws IntegrityException
 	 */
-	public function deleteCurrency($id) {}
+	public function deleteCurrency($id) {
+		return $id;
+	}
 
 	/**
 	 * @param string $column column in database
@@ -80,11 +97,15 @@ class FakeCurrencyService implements ICurrencyService
 	 * @param Currency $currency
 	 * @return array
 	 */
-	public function format(Currency $currency) {}
+	public function format(Currency $currency) {
+		return [];
+	}
 
 	/**
 	 * @param Currency[] $currencies
 	 * @return array
 	 */
-	public function formatEntities($currencies) {}
+	public function formatEntities($currencies) {
+		return [];
+	}
 }

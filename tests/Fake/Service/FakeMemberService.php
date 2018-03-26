@@ -13,10 +13,12 @@ use App\Model\Entity\Member;
 use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\BadParameterException;
+use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
 use App\Model\Exception\SecurityException;
 use App\Model\Service\IMemberService;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Tests\Fake\Dao\FakeMemberDAO;
 
 class FakeMemberService implements IMemberService
 {
@@ -56,8 +58,17 @@ class FakeMemberService implements IMemberService
 	 * @return Member
 	 * @throws NotFoundException
 	 */
-	public function getByToken($token)
-	{
+	public function getByToken($token) {
+	}
+
+	/**
+	 * @param string $column
+	 * @param mixed $login
+	 * @return Member|NULL
+	 * @throws NotFoundException
+	 */
+	public function getMemberByColumn($column, $login) {
+		return $this->getMember($login);
 	}
 
 	/**
@@ -107,16 +118,6 @@ class FakeMemberService implements IMemberService
 	 * @throws AlreadyExistException
 	 */
 	public function interactWithFacebook($data)
-	{
-	}
-
-	/**
-	 * @param string $column
-	 * @param mixed $login
-	 * @return Member|NULL
-	 * @throws NotFoundException
-	 */
-	public function getMemberByColumn($column, $login)
 	{
 	}
 

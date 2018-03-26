@@ -14,6 +14,7 @@ use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\BadParameterException;
 use App\Model\Service\WalletService;
 use \DateTime;
+use Tests\Exception\FirstDeleteForeignException;
 use Tests\Fake\Dao\FakeWalletDAO;
 use Tests\Fake\Service\FakeCheckStateService;
 use Tests\Fake\Service\FakeMemberService;
@@ -98,5 +99,10 @@ class WalletTest extends TestCase
 		];
 
 		$this->assertEquals($expected, $formatted);
+	}
+
+	public function testDeleteWallet() {
+		$this->expectException(FirstDeleteForeignException::class);
+		$this->walletService->deleteWallet(1, $this->member);
 	}
 }
