@@ -21,13 +21,13 @@ class CurrencySeeder extends Seeder
 			'name' => 'Česká koruna',
 		]);
 		DB::table('utrata_currencies')->insert([
-			'CurrencyID' => 1,
+			'CurrencyID' => 2,
 			'code' => 'EUR',
 			'value' => '€',
 			'name' => 'Euro',
 		]);
 		DB::table('utrata_currencies')->insert([
-			'CurrencyID' => 1,
+			'CurrencyID' => 3,
 			'code' => 'USD',
 			'value' => '$',
 			'name' => 'Dollar',

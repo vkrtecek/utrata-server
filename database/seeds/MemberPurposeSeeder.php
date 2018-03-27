@@ -27,5 +27,33 @@ class MemberPurposeSeeder extends Seeder
 			'PurposeID' => 5,
 			'MemberID' => 1,
 		]);
+		DB::table('utrata_memberpurposes')->insert([
+			'PurposeID' => 1,
+			'MemberID' => 2,
+		]);
+		DB::table('utrata_memberpurposes')->insert([
+			'PurposeID' => 2,
+			'MemberID' => 2,
+		]);
+		DB::table('utrata_memberpurposes')->insert([
+			'PurposeID' => 3,
+			'MemberID' => 2,
+		]);
+		DB::table('utrata_memberpurposes')->insert([
+			'PurposeID' => 4,
+			'MemberID' => 2,
+		]);
+		DB::table('utrata_memberpurposes')->insert([
+			'PurposeID' => 5,
+			'MemberID' => 2,
+		]);
+		DB::table('utrata_memberpurposes')->insert([
+			'PurposeID' => 6,
+			'MemberID' => 3,
+		]);
+		DB::table('utrata_memberpurposes')->insert([
+			'PurposeID' => 7,
+			'MemberID' => 3,
+		]);
 	}
 }

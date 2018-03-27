@@ -9,7 +9,30 @@
 namespace Seeds;
 
 
-class ItemSeeder
-{
+use Illuminate\Database\Seeder;
 
+class ItemSeeder extends Seeder
+{
+	public function run() {
+		/*DB::table('utrata_items')->insert([
+			'ItemID' => '',
+			'mainName' => '',
+			'description' => '',
+			'price' => '',
+			'course' => '',
+			'date' => '',
+			'created' => '',
+			'modified' => '',
+			'type' => '',
+			'active' => '',
+			'income' => '',
+			'vyber' => '',
+			'odepsat' => '',
+			'PurposeID' => '',
+			'CurrencyID' => '',
+			'WalletID' => '',
+			'MemberID' => '',
+		]);
+		*/
+	}
 }

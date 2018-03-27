@@ -34,8 +34,10 @@ test:
     - php composer-setup.php
     - php -r "unlink('composer-setup.php');"
     - php composer.phar install
-#    - echo "SELECT 'OK';" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql "$MYSQL_DB_NAME"
-#    - php artisan migrate
+    - chmod +x CI-scripts/createDB.sh
+    - chmod +x CI-scripts/dropDatabase.sh
+    - ./CI-scripts/dropDatabase.sh
+    - ./CI-scripts/createDB.sh
   stage: test
   script:
     - ./vendor/bin/phpunit --configuration phpunit.xml
