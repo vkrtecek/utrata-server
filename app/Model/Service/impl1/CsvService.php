@@ -655,9 +655,9 @@ class CsvService implements IFileService
 			|| !ctype_digit($income) || ($income != '1' && $income != '0')
 			|| !ctype_digit($vyber) || ($vyber != '1' && $vyber != '0')
 			|| !ctype_digit($odepsat) || ($odepsat != '1' && $odepsat != '0')
-			|| (!ctype_digit($_note) && !$vyber && !$income)
+			//|| (!ctype_digit($_note) && !$vyber && !$income)
 			|| $_currency == ""
-			|| !ctype_digit($_wallet)
+			//|| !ctype_digit($_wallet)
 		) throw new FileParseException('Some field has bad format');
 	}
 

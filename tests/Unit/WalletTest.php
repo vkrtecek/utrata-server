@@ -82,7 +82,7 @@ class WalletTest extends TestCase
 		$wallet = $this->walletService->getWallet(1, $this->member);
 		$formatted = $this->walletService->format($wallet);
 		$expected = [
-			'id' => NULL,
+			'id' => 1,
 			'name' => 'wallet name 1',
 			'itemsCnt' => 0,
 			'activeItemsCnt' => 0,

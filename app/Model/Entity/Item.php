@@ -42,6 +42,15 @@ class Item extends Model
 	}
 
 	/**
+	 * @param int $id
+	 * @return Item
+	 */
+	public function setId($id){
+		$this->ItemID = $id;
+		return $this;
+	}
+
+	/**
 	 * @return string
 	 */
 	public function getName() {

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateApplicationTable extends Migration
+class CreateWalletTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,6 +13,9 @@ class CreateApplicationTable extends Migration
      */
     public function up()
     {
+    	echo "dropping first\n";
+    	$this->down();
+
 		Schema::create('utrata_languages', function(Blueprint $table) { //OK
 			$table->string('LanguageCode')->primary();
 			$table->string('name');
@@ -137,7 +140,7 @@ class CreateApplicationTable extends Migration
 		Schema::dropIfExists('utrata_wallets');
 		Schema::dropIfExists('utrata_members');
 		Schema::dropIfExists('utrata_currencies');
-		Schema::dropIfExists('utrata_languages');
 		Schema::dropIfExists('utrata_translations');
+		Schema::dropIfExists('utrata_languages');
     }
 }

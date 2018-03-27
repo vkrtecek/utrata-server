@@ -26,6 +26,15 @@ class Wallet extends Model
 	}
 
 	/**
+	 * @param int $id
+	 * @return Wallet
+	 */
+	public function setId($id) {
+		$this->WalletID = $id;
+		return $this;
+	}
+
+	/**
 	 * @return string
 	 */
 	public function getName() {

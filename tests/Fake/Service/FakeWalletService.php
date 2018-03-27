@@ -28,7 +28,9 @@ class FakeWalletService implements IWalletService
 	 * @throws NotFoundException
 	 * @throws BadParameterException
 	 */
-	public function getWallets($login) {}
+	public function getWallets($login) {
+		return (new FakeWalletDAO())->findAll();
+	}
 
 	/**
 	 * @param int $id

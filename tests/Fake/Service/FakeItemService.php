@@ -37,7 +37,9 @@ class FakeItemService implements IItemService
 	 * @throws BadParameterException
 	 * @throws AuthenticationException
 	 */
-	public function getWalletItems($walletId, Member $member, $state, $month, $notes, $year, $pattern, $orderBy, $orderHow, $offset) {}
+	public function getWalletItems($walletId, Member $member, $state, $month, $notes, $year, $pattern, $orderBy, $orderHow, $offset) {
+		return (new FakeItemDAO())->findAll();
+	}
 
 
 	/**

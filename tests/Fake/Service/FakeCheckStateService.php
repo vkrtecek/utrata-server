@@ -10,6 +10,7 @@ namespace Tests\Fake\Service;
 
 
 use App\Model\Entity\CheckState;
+use App\Model\Entity\Member;
 use App\Model\Entity\Wallet;
 use App\Model\Enum\ItemType;
 use App\Model\Exception\BadParameterException;
@@ -26,14 +27,21 @@ class FakeCheckStateService implements ICheckStateService
 	protected $cs2;
 
 	public function __construct() {
+		$wallet = new Wallet();
+		$wallet->setId(1);
+
 		$this->cs1 = new CheckState();
+		$this->cs1->setId(1);
 		$this->cs1->setType(ItemType::CARD);
-		$this->cs1->setChecked(new \DateTime());
+		$this->cs1->setChecked(new \DateTime('2018-03-26 22:23:38'));
 		$this->cs1->setValue(100);
+		$this->cs1->setWallet($wallet);
 		$this->cs2 = new CheckState();
+		$this->cs2->setId(2);
 		$this->cs2->setType(ItemType::CASH);
-		$this->cs2->setChecked(new \DateTime());
+		$this->cs2->setChecked(new \DateTime('2018-03-26 22:23:38'));
 		$this->cs2->setValue(30);
+		$this->cs2->setWallet($wallet);
 	}
 
 	/**

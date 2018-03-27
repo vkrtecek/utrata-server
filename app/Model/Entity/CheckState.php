@@ -34,6 +34,15 @@ class CheckState extends Model
 	}
 
 	/**
+	 * @param int $id
+	 * @return CheckState
+	 */
+	public function setId($id) {
+		$this->CheckStateID = $id;
+		return $this;
+	}
+
+	/**
 	 * @return string
 	 */
 	public function getType() {
@@ -98,7 +107,7 @@ class CheckState extends Model
 	 */
 	public function setWallet(Wallet $wallet) {
 		$this->WalletID = $wallet->getId();
-		$this->wallet;
+		$this->wallet = $wallet;
 	}
 
 }

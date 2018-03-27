@@ -50,6 +50,8 @@ class FakeMemberService implements IMemberService
 		}
 		$member->setLogin($login);
 		$member->setLanguage((new FakeLanguageService())->getLanguage('CZK'));
+		$member->setCurrency((new FakeCurrencyService())->getCurrency(1));
+		$member->setAccess(new \DateTime('2017-08-26 22:23:38'));
 		return $member;
 	}
 

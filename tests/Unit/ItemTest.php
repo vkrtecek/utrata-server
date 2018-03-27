@@ -134,7 +134,7 @@ class ItemTest extends TestCase
 		$item = (new FakeItemService())->getItem(0);
 		$formatted = $this->itemService->format($item);
 		$expected = [
-			'id' => NULL,
+			'id' => 1,
 			'name' => 'some name',
 			'description' => 'some desc',
 			'price' => 100,
@@ -148,7 +148,7 @@ class ItemTest extends TestCase
 			'note' => NULL,
 			'currency' => [],
 			'member' => 'vojta',
-			'wallet' => NULL,
+			'wallet' => 1,
 		];
 
 		$this->assertEquals($expected, $formatted);
@@ -166,9 +166,9 @@ class ItemTest extends TestCase
 			'thisMonth' => [
 				'month' => (new \DateTime())->format('m'),
 				'year' => (new \DateTime())->format('Y'),
-				'income' => 1350.0,
+				'income' => 2600,
 				'incomesCnt' => 3,
-				'expense' => 1350.0,
+				'expense' => 2600,
 				'expensesCnt' => 3,
 			],
 			'average' => 0,

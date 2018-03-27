@@ -32,10 +32,12 @@ class FakeWalletDAO implements IWalletDAO
 
 	public function __construct() {
 		$this->wallet1 = new Wallet();
+		$this->wallet1->setId(1);
 		$this->wallet1->setName('wallet name 1');
 		$this->wallet1->setCreated(new \DateTime());
 		$this->wallet1->setMember((new FakeMemberService())->getMember('vojta'));
 		$this->wallet2 = new Wallet();
+		$this->wallet2->setId(2);
 		$this->wallet2->setName('wallet name 2');
 		$this->wallet2->setCreated(new \DateTime());
 		$this->wallet2->setMember((new FakeMemberService())->getMember('jožka'));

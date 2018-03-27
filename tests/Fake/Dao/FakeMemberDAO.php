@@ -96,7 +96,7 @@ class FakeMemberDAO implements IMemberDAO
 	 * @return Item[]
 	 */
 	public function getItems(Member $member) {
-		return (new FakeItemService())->getMonthStatistics($member, 1);
+		return (new FakeItemService())->getWalletItems(1, $member, NULL, NULL, NULL, NULL, NULL, 'price', 'DESC', NULL);
 	}
 
 	/**
