@@ -88,6 +88,7 @@ interface IMemberService
 	 * @param mixed $login
 	 * @return Member|NULL
 	 * @throws NotFoundException
+	 * @throws BadParameterException
 	 */
 	public function getMemberByColumn($column, $login);
 

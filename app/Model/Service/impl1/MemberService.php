@@ -381,8 +381,12 @@ class MemberService implements IMemberService
 	 * @param mixed $value
 	 * @return Member|NULL
 	 * @throws NotFoundException
+	 * @throws BadParameterException
 	 */
 	public function getMemberByColumn($column, $value) {
+		$columns = [ 'login', 'token', 'MemberID', 'myMail' ];
+		if (!in_array($column, $columns))
+			throw new BadParameterException('MemberService: This column (' . $column . ') not allowed.');
 		$member = $this->memberDao->findOneByColumn($column, $value);
 		if ($member == NULL)
 			throw new NotFoundException('Member with this ' . $column . ' not found.');
@@ -465,7 +469,7 @@ class MemberService implements IMemberService
 	 * @param Member $member
 	 * @return array
 	 */
-	public function getFormattedPurposes(Member $member) {
+	private function getFormattedPurposes(Member $member) {
 		$ret = [];
 		if ($this->memberDao->getMemberPurposes($member) == NULL)
 			return $ret;

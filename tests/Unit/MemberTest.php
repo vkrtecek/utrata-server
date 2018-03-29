@@ -9,7 +9,9 @@
 namespace Tests\Unit;
 
 
+use App\Model\Entity\Member;
 use App\Model\Exception\BadParameterException;
+use App\Model\Exception\NotFoundException;
 use App\Model\Service\MemberService;
 use Tests\Fake\Dao\FakeMemberDAO;
 use Tests\Fake\Service\FakeCurrencyService;
@@ -35,9 +37,97 @@ class MemberTest extends TestCase
 	}
 
 
+
+	public function testGetMember() {
+		$member = $this->memberService->getMember('vojta');
+		$this->assertTrue($member instanceof Member);
+		$this->assertEquals('vojta', $member->getLogin());
+
+		$member2 = $this->memberService->getMember('krtek');
+		$this->assertTrue($member instanceof Member);
+		$this->assertNotEquals($member, $member2);
+
+		$this->expectException(NotFoundException::class);
+		$this->memberService->getMember('asdadad');
+	}
+
+	public function testGetByColumnBadColumn() {
+		$this->expectException(BadParameterException::class);
+		$this->memberService->getMemberByColumn('bad column', 'ahoj');
+	}
+
+	public function testGetByColumnNoMember() {
+		$this->expectException(NotFoundException::class);
+		$this->memberService->getMemberByColumn('login', 'ahoj');
+	}
+
 	/**
+	 * @depends testGetByColumnBadColumn
+	 * @depends testGetByColumnNoMember
+	 */
+	public function testGetByColumn() {
+		$member = $this->memberService->getMemberByColumn('login', 'vojta');
+		$expectedMember = $this->memberService->getMember('vojta');
+
+		$this->assertEquals($expectedMember, $member);
+		$this->assertTrue($member instanceof Member);
+		$this->assertEquals('vojta', $member->getLogin());
+		$this->assertEquals('Štěpán', $member->getFirstName());
+		$this->assertEquals('Krteček', $member->getLastName());
+	}
+
+	/**
+	 * @depends testGetByColumn
+	 */
+	public function testGetByToken() {
+		$token = 'dome token';
+		$member = $this->memberService->getByToken($token);
+		$memberExpect = $this->memberService->getMemberByColumn('token', $token);
+		$this->assertEquals($memberExpect, $member);
+	}
+
+
+	public function testCreateMember() {}
+
+	public function testUpdateMember() {}
+
+	public function testLogin() {}
+
+	public function testLoginByFacebook() {}
+
+	public function testLogout() {}
+
+	/**
+	 * @depends testGetMember
+	 */
+	public function testFormat() {
+		$member = $this->memberService->getMember('vojta');
+		$formatted = $this->memberService->format($member);
+		$expected = [
+			'id' => 1,
+			'firstName' => 'Štěpán',
+			'lastName' => 'Krteček',
+			'login' => 'vojta',
+			'sendMonthly' => FALSE,
+			'sendByOne' => NULL,
+			'mother' => 'example12@mail.com',
+			'me' => 'example123@mail.com',
+			'token' => 'some token',
+			'facebook' => FALSE,
+			'languageCode' => 'CZK',
+			'currencyCode' => NULL,
+			'lastLogged' => '2018-03-29 12:07:23',
+			'notes' => [
+				NULL
+			],
+		];
+		$this->assertEquals($expected, $formatted);
+	}
+
+
+		/**
 	 * A basic test example.
-	 *
+	 * @depends testGetMember
 	 * @return void
 	 */
 	public function testInteractWithFacebook()
@@ -70,14 +160,25 @@ class MemberTest extends TestCase
 		$this->assertTrue($member->isFacebook());
 	}
 
-	public function testInteractWithFacebookBadInput() {
+	/**
+	 *
+	 * @depends testGetMember
+	 */
+	public function testInteractWithFacebookBadInput()
+	{
 		//bad login
 		$data = [
 			'login' => '15151d'
 		];
 		$this->expectException(BadParameterException::class);
 		$this->memberService->interactWithFacebook($data);
+	}
 
+	/**
+	 *
+	 * @depends testGetMember
+	 */
+	public function testInteractWithFacebookMissingName() {
 		//missing fname
 		$data = [
 			'lname' => 'Doe',

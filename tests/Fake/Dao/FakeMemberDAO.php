@@ -25,20 +25,37 @@ use Tests\Fake\Service\FakeWalletService;
 
 class FakeMemberDAO implements IMemberDAO
 {
+	/** @var Member */
+	private $member;
+	/** @var Member */
+	private $member2;
+
+	public function __construct() {
+		$l = new Language(); $l->setCode('CZK');
+		$c = new Currency(); $c->setId(1)->setValue('Kč');
+
+		$this->member = new Member();
+		$this->member->setFirstName('Štěpán')->setLastName('Krteček')
+			->setLogin('vojta')->setSendMonthly(FALSE)->setMotherMail('example12@mail.com')
+			->setMyMail('example123@mail.com')->setLogged(1)->setToken('some token')
+			->setPassword('$2y$12$TLHfaHdPgYNepUOB6A1Bi.XPh8EunvuzxI0.Cvl8BSGgyNdxdqjua')
+			->setExpiration((new \DateTime('+ 14 days')))->setAccess(new \DateTime('2018-03-29 12:07:23'))
+			->setCreated((new \DateTime()))->setLanguage($l)->setCurrency($c)->setId(1);
+
+		$this->member2 = new Member();
+		$this->member2->setFirstName('John')->setLastName('Doe')
+			->setLogin('example_login')->setSendMonthly(FALSE)->setMotherMail('example12@mail.com')
+			->setMyMail('example123@mail.com')->setLogged(1)->setToken('some token')
+			->setPassword('$2y$12$TLHfaHdPgYNepUOB6A1Bi.XPh8EunvuzxI0.Cvl8BSGgyNdxdqjua')
+			->setExpiration((new \DateTime('+ 14 days')))->setAccess(new \DateTime('2018-03-29 12:07:23'))
+			->setCreated((new \DateTime()))->setLanguage($l)->setCurrency($c)->setId(2);
+	}
+
 	/**
 	 * @return Member[]|NULL
 	 */
 	public function findAll() {
-		$l = new Language(); $l->setCode('CZK');
-		$c = new Currency(); $c->setId(1)->setValue('Kč');
-		$member = new Member();
-		$member->setFirstName('John')->setLastName('Doe')
-			->setLogin('example_login')->setSendMonthly(FALSE)->setMotherMail('example12@mail.com')
-			->setMyMail('example123@mail.com')->setLogged(1)->setToken('some token')
-			->setPassword('$2y$12$TLHfaHdPgYNepUOB6A1Bi.XPh8EunvuzxI0.Cvl8BSGgyNdxdqjua')
-			->setExpiration((new \DateTime('+ 14 days')))
-			->setCreated((new \DateTime()))->setLanguage($l)->setCurrency($c);
-		return [ $member ];
+		return [ $this->member, $this->member2 ];
 	}
 
 	/**
@@ -46,21 +63,17 @@ class FakeMemberDAO implements IMemberDAO
 	 * @return Member|NULL
 	 */
 	public function findOne($login) {
+		$logins = [ 'vojta' ];
+		if (in_array($login, $logins)) {
+			$this->member->setLogin($login);
+			return $this->member;
+		}
+
 		$logins = [ 'krtek', 'example', '123456789' ];
 
 		if (in_array($login, $logins)) {
-			$l = new Language();
-			$l->setCode('CZK');
-			$c = new Currency();
-			$c->setId(1)->setValue('Kč');
-			$member = new Member();
-			$member->setFirstName('John')->setLastName('Doe')
-				->setLogin($login)->setSendMonthly(FALSE)->setMotherMail('example12@mail.com')
-				->setMyMail('example123@mail.com')->setLogged(1)->setToken('some token')
-				->setPassword('$2y$12$TLHfaHdPgYNepUOB6A1Bi.XPh8EunvuzxI0.Cvl8BSGgyNdxdqjua')
-				->setExpiration((new \DateTime('+ 14 days')))
-				->setCreated((new \DateTime()))->setLanguage($l)->setCurrency($c);
-			return $member;
+			$this->member2->setLogin($login);
+			return $this->member2;
 		}
 		return NULL;
 	}
@@ -132,16 +145,7 @@ class FakeMemberDAO implements IMemberDAO
 		if ($key == 'login')
 			return $this->findOne($val);
 
-		$l = new Language(); $l->setCode('CZK');
-		$c = new Currency(); $c->setId(1)->setValue('Kč');
-		$member = new Member();
-		$member->setFirstName('John')->setLastName('Doe')
-			->setLogin('example_login')->setSendMonthly(FALSE)->setMotherMail('example12@mail.com')
-			->setMyMail('example123@mail.com')->setLogged(1)->setToken('some token')
-			->setPassword('$2y$12$TLHfaHdPgYNepUOB6A1Bi.XPh8EunvuzxI0.Cvl8BSGgyNdxdqjua')
-			->setExpiration((new \DateTime('+ 14 days')))
-			->setCreated((new \DateTime()))->setLanguage($l)->setCurrency($c);
-		return $member;
+		return $this->member;
 	}
 
 	/**
