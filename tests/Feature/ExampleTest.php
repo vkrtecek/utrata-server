@@ -13,29 +13,28 @@ class ExampleTest extends TestCase
 		$app = require __DIR__ . '/../../bootstrap/app.php';
 		$app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 		return $app;
-	}
-
-	public function setUp() {
-		parent::setUp();
-		Artisan::call('migrate');
-		Artisan::call('db:seed');
 	}*/
+
+	protected function setUp() {
+		parent::setUp();
+	}
 
 	/**
      * A basic test example.
      *
      * @return void
      */
-    public function testBasicTest()
-    {
+    public function testBasicTest() {
     	/*
         $response = $this->get('/');
         $response->assertStatus(404);
     	*/
+    	dump(\App\Model\Entity\Language::where('LanguageCode', 'CZK')->get());
     }
 
-    public function testTranslation() {
+    //public function testTranslation() {
+	//	echo 'second test';
 		//$response = $this->get('/translations?language=ENG');
 		//$response->assertStatus(200);
-	}
+	//}
 }
