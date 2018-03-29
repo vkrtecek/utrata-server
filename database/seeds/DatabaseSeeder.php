@@ -7,6 +7,9 @@ use Seeds\CurrencySeeder;
 use Seeds\MemberSeeder;
 use Seeds\PurposeSeeder;
 use Seeds\MemberPurposeSeeder;
+use Seeds\CheckStateSeeder;
+use Seeds\WalletSeeder;
+use Seeds\ItemSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -21,7 +24,10 @@ class DatabaseSeeder extends Seeder
 		$this->call(TranslationSeeder::class);
 		$this->call(CurrencySeeder::class);
 		$this->call(MemberSeeder::class);
+		$this->call(WalletSeeder::class);
 		$this->call(PurposeSeeder::class);
 		$this->call(MemberPurposeSeeder::class);
+		$this->call(ItemSeeder::class);
+		$this->call(CheckStateSeeder::class);
     }
 }
