@@ -27,6 +27,8 @@ if [ "$APP_KEY" != "" ]; then
     #setting environmental variables
     cp .env.example .env
     sed -i "s|^APP_KEY=.*$|APP_KEY=$APP_KEY|" .env
+    sed -i "s|^APP_ENV=.*$|APP_ENV=production|" .env
+    sed -i "s|^APP_DEBUG=.*$|APP_DEBUG=false|" .env
     sed -i "s|^DB_DATABASE=.*$|DB_DATABASE=$MYSQL_DB_NAME|" .env
     sed -i "s|^DB_USERNAME=.*$|DB_USERNAME=$MYSQL_USERNAME|" .env
     sed -i "s|^DB_PASSWORD=.*$|DB_PASSWORD=$MYSQL_ROOT_PASSWORD|" .env

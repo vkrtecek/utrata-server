@@ -13,9 +13,6 @@ class CreateWalletsTable extends Migration
      */
     public function up()
     {
-    	echo "dropping first\n";
-    	$this->down();
-
 		Schema::create('utrata_languages', function(Blueprint $table) { //OK
 			$table->string('LanguageCode')->primary();
 			$table->string('name');
