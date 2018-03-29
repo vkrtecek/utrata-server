@@ -1,21 +1,4 @@
 image: php:5.6
-#image: ubuntu
-
-#services:
-#  - mysql:latest
-
-#variables:
-#  MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
-#  MYSQL_DATABASE: $MYSQL_DB_NAME
-
-#before_script:
-#  - php -v
-#  - curl --silent --show-error https://getcomposer.org/installer | php
-
-#connect:
-#  image: mysql
-#  script:
-#  - echo "SELECT 'OK';" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=localhost "$MYSQL_DB_NAME"
 
 cache:
   paths:
@@ -34,8 +17,9 @@ test:
     - php composer-setup.php
     - php -r "unlink('composer-setup.php');"
     - php composer.phar install
-#    - echo "SELECT 'OK';" | mysql --user=root --password="$MYSQL_ROOT_PASSWORD" --host=mysql "$MYSQL_DB_NAME"
-#    - php artisan migrate
+    - chmod +x CI-scripts/*
+    - ./CI-scripts/dropDatabase.sh
+    - ./CI-scripts/createDB.sh
   stage: test
   script:
     - ./vendor/bin/phpunit --configuration phpunit.xml
