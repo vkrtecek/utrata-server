@@ -34,6 +34,10 @@ if [ "$APP_KEY" != "" ]; then
     sed -i "s|^DB_PASSWORD=.*$|DB_PASSWORD=$MYSQL_ROOT_PASSWORD|" .env
 
     echo "put .env public_html/api/.env" >> "$FILE"
+else
+    echo "Variable APP_KEY required"
+    rm "$FILE"
+    exit 116
 fi
 
 echo "quit" >> "$FILE"

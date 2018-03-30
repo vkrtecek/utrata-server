@@ -10,6 +10,7 @@
 namespace App\Model\Filter;
 
 use App\Model\Entity\Member;
+use App\Model\Exception\BadParameterException;
 
 class ItemFilter
 {
@@ -235,6 +236,7 @@ class ItemFilter
 	/**
 	 * @param int $limit
 	 * @return ItemFilter
+	 * @throws BadParameterException
 	 */
 	public function setLimit($limit)
 	{

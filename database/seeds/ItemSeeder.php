@@ -28,7 +28,7 @@ class ItemSeeder extends Seeder
 			'PurposeID' => 5, 
 			'active' => 1,
 			'type' => 'karta',
-			'vyber' => 1,
+			'vyber' => 1, // výběr
 			'odepsat' => 0,
 			'income' => 0,
 			'WalletID' => 1, 
@@ -49,7 +49,7 @@ class ItemSeeder extends Seeder
 			'type' => 'karta',
 			'vyber' => 0,
 			'odepsat' => 0,
-			'income' => 1,
+			'income' => 1, // příjem
 			'WalletID' => 1, 
 			'created' => '2015-09-01 00:00:00', 
 			'modified' => '2015-09-01 00:00:00',
@@ -102,7 +102,7 @@ class ItemSeeder extends Seeder
 			'CurrencyID' => 1,
 			'date' => '2015-10-01 19:22:49',
 			'PurposeID' => 1,
-			'active' => 0,
+			'active' => 0, // neaktivní
 			'type' => 'karta',
 			'vyber' => 0,
 			'odepsat' => 0,

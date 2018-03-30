@@ -48,7 +48,7 @@ class Handler extends ExceptionHandler
     	if ($exception instanceof \App\Model\Exception\AuthenticationException) {
 			return Response::create(['auth' => $exception->getMessage()], Response::HTTP_UNAUTHORIZED);
 		} elseif ($exception instanceof \App\Model\Exception\NotFoundException) {
-			return Response::create(['not found' => $exception->getMessage()], Response::HTTP_NOT_FOUND);
+			return Response::create(['not found' => $exception->getMessage()], Response::HTTP_UNAUTHORIZED);
 		}
         return parent::render($request, $exception);
     }

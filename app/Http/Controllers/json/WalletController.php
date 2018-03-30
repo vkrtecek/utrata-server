@@ -34,8 +34,9 @@ class WalletController extends AbstractController
 
 	public function getUserWallets(Request $req) {
 		$this->assumeLogged($req);
+		$member = $this->loggedUser($req);
 
-		$login = $req->get('login');
+		$login = $member->getLogin();
 		try {
 			$wallets = $this->walletService->getWallets($login);
 			$wallets = $this->walletService->formatEntities($wallets);
@@ -52,11 +53,11 @@ class WalletController extends AbstractController
 
 	/**
 	 * @param Request $req
+	 * @param int $walletId
 	 * @return Response
 	 */
-	public function get(Request $req) {
+	public function get(Request $req, $walletId) {
 		$this->assumeLogged($req);
-		$walletId = $req->get('id');
 		try {
 			$member = $this->loggedUser($req);
 			$wallet = $this->walletService->getWallet($walletId, $member);
@@ -113,7 +114,7 @@ class WalletController extends AbstractController
 		} catch (UnderEntityNotFoundException $ex) {
 			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
 		}
-		return Response::create($wallet, Response::HTTP_OK);
+		return Response::create($wallet, Response::HTTP_ACCEPTED);
 	}
 
 	/**
@@ -139,12 +140,14 @@ class WalletController extends AbstractController
 	}
 
 
-
-
-	public function updateCheckState(Request $req) {
+	/**
+	 * @param Request $req
+	 * @param int $walletId
+	 * @return Response
+	 */
+	public function updateCheckState(Request $req, $walletId) {
 		$this->assumeLogged($req);
 		$member = $this->loggedUser($req);
-		$walletId = $req->get('id');
 		$type = $req->get('type');
 		$value = $req->get('value');
 		if (!strlen($walletId) || !strlen($type) || !strlen($value))

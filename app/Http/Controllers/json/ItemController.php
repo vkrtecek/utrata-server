@@ -9,7 +9,6 @@ use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
 use App\Model\Service\IItemService;
 use App\Model\Service\IMemberService;
-use App\Model\Service\ItemService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;

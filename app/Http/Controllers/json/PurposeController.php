@@ -44,7 +44,6 @@ class PurposeController extends AbstractController
 		} catch (NotFoundException $ex) {
 			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
 		}
-
 		return Response::create(["purposes" => $purposes], Response::HTTP_OK);
 	}
 

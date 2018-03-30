@@ -92,6 +92,8 @@ class ItemService implements IItemService
 		if ($state == NULL) $state = ItemState::UNCHECKED;
 		if (!$walletId)
 			throw new BadRequestHttpException('ItemService: "walletId" missing');
+		//test if member is owner
+		$this->walletService->getWallet($walletId, $member);
 
 		$filters = (new ItemFilter())->setWalletId($walletId)->setMonth($month)
 			->setNotes($notes)->setYear($year)->setPattern($pattern)

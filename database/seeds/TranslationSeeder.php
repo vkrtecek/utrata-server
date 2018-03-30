@@ -30,6 +30,7 @@ class TranslationSeeder extends Seeder
 			'value' => 'Nevyplněný datum',
 			'LanguageCode' => 'CZK',
 		]);
+		/*
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'AddIncome.Error.Name.Empty',
 			'value' => 'Prázdný název',
@@ -200,7 +201,6 @@ class TranslationSeeder extends Seeder
 			'value' => 'Název',
 			'LanguageCode' => 'CZK',
 		]);
-		/*
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'AddItem.Form.Name.Placeholder',
 			'value' => 'n�zev',

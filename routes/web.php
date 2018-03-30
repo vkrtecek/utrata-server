@@ -47,7 +47,7 @@ Route::get('/currencies', 'CurrencyController@gets');
 /*##################-  Item  -######################*/
 Route::get('/items/wallet/{walletId}', 'ItemController@getWalletItems');
 Route::get('/items/statistics', 'ItemController@statistics');
-Route::get('/item', 'ItemController@get');
+//Route::get('/item', 'ItemController@get');
 Route::post('/item', 'ItemController@create');
 Route::put('/item', 'ItemController@update');
 Route::put('/item/check/{id}', 'ItemController@check');
@@ -82,9 +82,9 @@ Route::get('/translations', 'TranslationController@gets');
 
 /*##################-  Wallet  -######################*/
 Route::get('/wallets', 'WalletController@getUserWallets');
-Route::get('/wallet', 'WalletController@get');
+Route::get('/wallet/{id}', 'WalletController@get');
 Route::post('/wallet', 'WalletController@create');
-Route::put('/wallet/checkState', 'WalletController@updateCheckState');
+Route::put('/wallet/checkState/{walletId}', 'WalletController@updateCheckState');
 Route::put('/wallet/{id}', 'WalletController@update');
 Route::delete('/wallet/{id}', 'WalletController@delete');
 
