@@ -37,4 +37,11 @@ interface IMemberPurposeService
 	 */
 	public function getMemberPurposes(Member $member);
 
+	/**
+	 * @param Member $member
+	 * @param Purpose $purpose
+	 * @return MemberPurpose|NULL
+	 */
+	public function getMemberPurpose(Member $member, Purpose $purpose);
+
 }

@@ -111,6 +111,14 @@ class PurposeService implements IPurposeService
 	}
 
 	/**
+	 * @param Member $member
+	 * @return Purpose[]
+	 */
+	public function getPurposesCreatedByUser(Member $member) {
+		return $this->purposeDao->findByColumn('CreatorID', $member->getId());
+	}
+
+	/**
 	 * @param int $id
 	 * @return Purpose
 	 * @throws BadParameterException
@@ -141,7 +149,7 @@ class PurposeService implements IPurposeService
 		foreach ($withSameCode as $note) {
 			//note with same code exists (basic or user's)
 			if ($note->isBase() || ($note->getCreator() && $note->getCreator()->getId() == $member->getId())) {
-				throw new AlreadyExistException('Note with this code already exists');
+				throw (new AlreadyExistException('Note with this code already exists'))->setReason($code);
 			}
 		}
 		if (isset($data['language']) && $data['language']) {
@@ -174,12 +182,28 @@ class PurposeService implements IPurposeService
 
 	/**
 	 * @param int $id
+	 * @param Member $member
 	 * @return int
 	 * @throws NotFoundException
 	 * @throws BadParameterException
 	 * @throws IntegrityException
 	 */
-	public function deletePurpose($id) {}
+	public function deletePurpose($id, Member $member) {
+		if (!ctype_digit(trim($id)) || (int)$id < 1)
+			throw new BadParameterException('PurposeService: Not integer or smaller than 1');
+		$purpose = $this->purposeDao->findOne($id);
+		if (!$purpose)
+			throw new NotFoundException('PurposeService: Purpose with given id not found.');
+		if ($purpose->isBase())
+			throw new IntegrityException('PurposeService: Cannot delete this note.');
+
+		$mp = $this->memberPurposeService->getMemberPurpose($member, $purpose);
+		if ($mp !== NULL) {
+			$this->memberPurposeService->delete($member, $purpose);
+		}
+		$this->purposeDao->delete($purpose);
+		return $id;
+	}
 
 	/**
 	 * @param Purpose $purpose
@@ -190,6 +214,7 @@ class PurposeService implements IPurposeService
 			'id' => $purpose->getId(),
 			'code' => $purpose->getCode(),
 			'value' => $purpose->getValue(),
+			'deletable' => !$purpose->isBase(),
 		];
 	}
 
@@ -198,6 +223,8 @@ class PurposeService implements IPurposeService
 	 * @return array
 	 */
 	public function formatEntities($purposes) {
+		if (!$purposes)
+			return [];
 		$ret = [];
 		foreach($purposes as $purpose)
 			$ret[] = self::format($purpose);

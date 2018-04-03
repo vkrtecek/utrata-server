@@ -66,10 +66,11 @@ Route::delete('/item/{id}', 'ItemController@delete');
 /*##################-  Note  -######################*/
 Route::get('/purposes', 'PurposeController@getUserPurposes');
 Route::get('/purposes/language/{code}', 'PurposeController@getLanguagePurposes');
+Route::get('/purposesOfUser', 'PurposeController@getPurposesCreatedByUser');
 //Route::get('/purpose', 'PurposeController@get');
 Route::post('/purpose', 'PurposeController@create');
 //Route::put('/purpose', 'PurposeController@update');
-//Route::delete('/purpose', 'PurposeController@delete');
+Route::delete('/purpose/{id}', 'PurposeController@delete');
 
 
 /*##################-  Translation  -######################*/

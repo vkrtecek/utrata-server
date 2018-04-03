@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Model\Exception\AlreadyExistException;
+use App\Model\Exception\BadParameterException;
 use App\Model\Exception\NotFoundException;
 use App\Model\Service\IMemberService;
 use App\Model\Service\IPurposeService;
@@ -64,6 +65,20 @@ class PurposeController extends AbstractController
 		return Response::create(['purposes' => $formatted], Response::HTTP_OK);
 	}
 
+	/**
+	 * @param Request $req
+	 * @return Response
+	 */
+	public function getPurposesCreatedByUser(Request $req) {
+		$this->assumeLogged($req);
+		$member = $this->loggedUser($req);
+
+		$purposes = $this->purposeService->getPurposesCreatedByUser($member);
+		$formatted = $this->purposeService->formatEntities($purposes);
+		return Response::create(['purposes' => $formatted], Response::HTTP_OK);
+
+	}
+
 
 	/**
 	 * @param Request $req
@@ -82,8 +97,30 @@ class PurposeController extends AbstractController
 		} catch (BadRequestHttpException $e) {
 			return Response::create(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
 		} catch (AlreadyExistException $e) {
-			return Response::create(['error' => $e->getMessage()], Response::HTTP_CONFLICT);
+			return Response::create([
+				'error' => $e->getMessage(),
+				'code' => $e->getReason(),
+			], Response::HTTP_CONFLICT);
 		}
 		return Response::create($formatted, Response::HTTP_CREATED);
+	}
+
+	/**
+	 * @param Request $req
+	 * @param int $id
+	 * @return Response
+	 */
+	public function delete(Request $req, $id) {
+		$this->assumeLogged($req);
+		$member = $this->loggedUser($req);
+
+		try {
+			$retId = $this->purposeService->deletePurpose($id, $member);
+		} catch (NotFoundException $e) {
+			return Response::create(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+		} catch (BadParameterException $e) {
+			return Response::create(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+		}
+		return Response::create($retId, Response::HTTP_OK);
 	}
 }

@@ -75,6 +75,15 @@ class MemberPurposeService implements IMemberPurposeService
 		return $this->memberPurposeDao->findPurposes($member);
 	}
 
+	/**
+	 * @param Member $member
+	 * @param Purpose $purpose
+	 * @return MemberPurpose|NULL
+	 */
+	public function getMemberPurpose(Member $member, Purpose $purpose) {
+		return $this->memberPurposeDao->find($member, $purpose);
+	}
+
 
 
 

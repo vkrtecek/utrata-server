@@ -58,6 +58,7 @@ abstract class AbstractController extends Controller
 	}
 
 	/**
+	 * @param Request $req
 	 * @return Member
 	 * @throws NotFoundException
 	 */

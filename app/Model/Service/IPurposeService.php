@@ -56,6 +56,12 @@ interface IPurposeService
 	 */
 	public function getUserPurposes(Member $member);
 
+	/**
+	 * @param Member $member
+	 * @return Purpose[]
+	 */
+	public function getPurposesCreatedByUser(Member $member);
+
     /**
      * @param int $id
      * @return Purpose
@@ -85,12 +91,13 @@ interface IPurposeService
 
     /**
      * @param int $id
+	 * @param Member $member
      * @return int
      * @throws NotFoundException
      * @throws BadParameterException
      * @throws IntegrityException
      */
-    public function deletePurpose($id);
+    public function deletePurpose($id, Member $member);
 
 	/**
 	 * @param Purpose $purpose
