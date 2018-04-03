@@ -166,9 +166,9 @@ class ItemTest extends TestCase
 			'thisMonth' => [
 				'month' => (new \DateTime())->format('m'),
 				'year' => (new \DateTime())->format('Y'),
-				'income' => 2600,
+				'income' => 2600.0,
 				'incomesCnt' => 3,
-				'expense' => 2600,
+				'expense' => 2600.0,
 				'expensesCnt' => 3,
 			],
 			'average' => 0,
@@ -184,6 +184,14 @@ class ItemTest extends TestCase
 		$this->assertEquals($expectedFull, $statistics['full']);
 
 		$expectedPart = $expectedFull;
+		$expectedPart['thisMonth'] = [
+			'month' => (new \DateTime())->format('m'),
+			'year' => (new \DateTime())->format('Y'),
+			'income' => 0.0,
+			'incomesCnt' => 0,
+			'expense' => 0.0,
+			'expensesCnt' => 0,
+		];
 		$this->assertEquals($expectedPart, $statistics['part']);
 
 		$this->assertEquals([

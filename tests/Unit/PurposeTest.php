@@ -110,6 +110,7 @@ class PurposeTest extends TestCase
 			'id' => NULL,
 			'code' => 'transport',
 			'value' => 'Transport',
+			'deletable' => TRUE,
 		];
 
 		$this->assertEquals($expected, $formatted);
