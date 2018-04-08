@@ -21,525 +21,1045 @@ class TranslationSeeder extends Seeder
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddIncome.Error.Course.Empty',
+		'TranslationCode' => 'AddIncome.Error.Course.Empty',
 			'value' => 'Prázdný kurz',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddIncome.Error.Date.Empty',
-			'value' => 'Nevyplněný datum',
-			'LanguageCode' => 'CZK',
+		'TranslationCode' => 'AddIncome.Error.Course.Empty',
+			'value' => 'Empty course',
+			'LanguageCode' => 'ENG',
 		]);
 		/*
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddIncome.Error.Name.Empty',
+		'TranslationCode' => 'AddIncome.Error.Date.Empty',
+			'value' => 'Nevyplněný datum',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddIncome.Error.Date.Empty',
+			'value' => 'Empty date',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddIncome.Error.Name.Empty',
 			'value' => 'Prázdný název',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddIncome.Error.Price.BadFormat',
+		'TranslationCode' => 'AddIncome.Error.Name.Empty',
+			'value' => 'Empty name',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddIncome.Error.Price.BadFormat',
 			'value' => 'Cena ve špatném formátu',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddIncome.Error.Price.Empty',
+		'TranslationCode' => 'AddIncome.Error.Price.BadFormat',
+			'value' => 'Price in bad format',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddIncome.Error.Price.Empty',
 			'value' => 'Prázdná cena',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddIncome.Form.AnotherCurrency',
+		'TranslationCode' => 'AddIncome.Error.Price.Empty',
+			'value' => 'Empty price',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddIncome.Form.AnotherCurrency',
 			'value' => 'jiná měna',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddIncome.Form.Currency',
+		'TranslationCode' => 'AddIncome.Form.AnotherCurrency',
+			'value' => 'other currency',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddIncome.Form.Currency',
 			'value' => 'Měna:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddIncome.Form.CurrencyCourse',
+		'TranslationCode' => 'AddIncome.Form.Currency',
+			'value' => 'Currency:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddIncome.Form.CurrencyCourse',
 			'value' => 'kurz:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddIncome.Form.Date',
+		'TranslationCode' => 'AddIncome.Form.CurrencyCourse',
+			'value' => 'course:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddIncome.Form.Date',
 			'value' => 'Datum:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddIncome.Form.Heading',
+		'TranslationCode' => 'AddIncome.Form.Date',
+			'value' => 'Date:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddIncome.Form.Heading',
 			'value' => 'Nový příjem',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddIncome.Form.Name',
+		'TranslationCode' => 'AddIncome.Form.Heading',
+			'value' => 'Create new income',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddIncome.Form.Name',
 			'value' => 'Krátký popis:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddIncome.Form.Name.Placeholder',
+		'TranslationCode' => 'AddIncome.Form.Name',
+			'value' => 'Short description:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddIncome.Form.Name.Placeholder',
 			'value' => 'výplata',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddIncome.Form.Price',
+		'TranslationCode' => 'AddIncome.Form.Name.Placeholder',
+			'value' => 'salary',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddIncome.Form.Price',
 			'value' => 'Cena:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddIncome.Form.Save',
+		'TranslationCode' => 'AddIncome.Form.Price',
+			'value' => 'Price:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddIncome.Form.Save',
 			'value' => 'Vytvořit',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddIncome.Form.Storno',
+		'TranslationCode' => 'AddIncome.Form.Save',
+			'value' => 'Store',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddIncome.Form.Storno',
 			'value' => 'Storno',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddIncome.Form.Type',
+		'TranslationCode' => 'AddIncome.Form.Storno',
+			'value' => 'Storno',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddIncome.Form.Type',
 			'value' => 'Typ:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddIncome.Form.Type.Card',
+		'TranslationCode' => 'AddIncome.Form.Type',
+			'value' => 'Type:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddIncome.Form.Type.Card',
 			'value' => 'Na kartu',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddIncome.Form.Type.Cash',
+		'TranslationCode' => 'AddIncome.Form.Type.Card',
+			'value' => 'To card',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddIncome.Form.Type.Cash',
 			'value' => 'V hotovosti',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Error.Course.Empty',
+		'TranslationCode' => 'AddIncome.Form.Type.Cash',
+			'value' => 'In cash',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Error.Course.Empty',
 			'value' => 'Prázdný kurz',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Error.Date.Empty',
-			'value' => 'Prázdný datum',
+		'TranslationCode' => 'AddItem.Error.Course.Empty',
+			'value' => 'Empty course',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Error.Date.Empty',
+			'value' => 'Prázdné datum',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Error.Name.Empty',
+		'TranslationCode' => 'AddItem.Error.Date.Empty',
+			'value' => 'Empty date',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Error.Name.Empty',
 			'value' => 'Prázdné jméno',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Error.Note.NoNote',
-			'value' => 'Nevybrána poznámka. Nějakou si vyberte v nastavení.',
+		'TranslationCode' => 'AddItem.Error.Name.Empty',
+			'value' => 'Empty name',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Error.Note.NoNote',
+			'value' => 'Nevybrán druh útraty. Nějaký si vyberte v nastavení.',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Error.Price.BadFormat',
+		'TranslationCode' => 'AddItem.Error.Note.NoNote',
+			'value' => 'No note selected. Take some notes in settings.',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Error.Price.BadFormat',
 			'value' => 'Špatná cena',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Error.Price.Empty',
+		'TranslationCode' => 'AddItem.Error.Price.BadFormat',
+			'value' => 'Wrong price',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Error.Price.Empty',
 			'value' => 'Prázdná cena',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Form.AnotherCurrency',
+		'TranslationCode' => 'AddItem.Error.Price.Empty',
+			'value' => 'Empty price',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Form.AnotherCurrency',
 			'value' => 'jiná měna',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Form.BadName',
+		'TranslationCode' => 'AddItem.Form.AnotherCurrency',
+			'value' => 'other currency',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Form.BadName',
 			'value' => 'Vyplň název',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Form.BadPrice',
+		'TranslationCode' => 'AddItem.Form.BadName',
+			'value' => 'Fill name',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Form.BadPrice',
 			'value' => 'Vyplň cenu',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Form.Currency',
+		'TranslationCode' => 'AddItem.Form.BadPrice',
+			'value' => 'Fill price',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Form.Currency',
 			'value' => 'Měna:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Form.CurrencyCourse',
+		'TranslationCode' => 'AddItem.Form.Currency',
+			'value' => 'Currency:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Form.CurrencyCourse',
 			'value' => 'kurz',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Form.Date',
+		'TranslationCode' => 'AddItem.Form.CurrencyCourse',
+			'value' => 'course',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Form.Date',
 			'value' => 'Datum',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Form.Description',
+		'TranslationCode' => 'AddItem.Form.Date',
+			'value' => 'Date',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Form.Description',
 			'value' => 'Popis',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Form.Description.Placeholder',
+		'TranslationCode' => 'AddItem.Form.Description',
+			'value' => 'Description',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Form.Description.Placeholder',
 			'value' => 'popis',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Form.Duplicity',
+		'TranslationCode' => 'AddItem.Form.Description.Placeholder',
+			'value' => 'description',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Form.Duplicity',
 			'value' => 'Záznam již existuje',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Form.Heading',
+		'TranslationCode' => 'AddItem.Form.Duplicity',
+			'value' => 'Item already exists',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Form.Heading',
 			'value' => 'Přidat novou položku',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Form.MyExpense',
+		'TranslationCode' => 'AddItem.Form.Heading',
+			'value' => 'Add new item',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Form.MyExpense',
 			'value' => 'ODEPSAT',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Form.Name',
+		'TranslationCode' => 'AddItem.Form.MyExpense',
+			'value' => 'WRITE OFF',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Form.Name',
 			'value' => 'Název',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Form.Name.Placeholder',
-			'value' => 'n�zev',
+		'TranslationCode' => 'AddItem.Form.Name',
+			'value' => 'Name',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Form.Name.Placeholder',
+			'value' => 'název',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Form.Note',
-			'value' => 'Pozn�mka',
+		'TranslationCode' => 'AddItem.Form.Name.Placeholder',
+			'value' => 'name',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Form.Note',
+			'value' => 'Druh útraty',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Form.Pick',
-			'value' => 'VYBRAT',
+		'TranslationCode' => 'AddItem.Form.Note',
+			'value' => 'Note',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Form.Pick',
+			'value' => 'VÝBĚR Z BANKOMATU',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Form.Price',
+		'TranslationCode' => 'AddItem.Form.Pick',
+			'value' => 'ATM PICK',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Form.Price',
 			'value' => 'Cena',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Form.RequiredField',
-			'value' => 'Povinn� pole',
+		'TranslationCode' => 'AddItem.Form.Price',
+			'value' => 'Price',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Form.RequiredField',
+			'value' => 'Povinné pole',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Form.Save',
-			'value' => 'Nahr�t',
+		'TranslationCode' => 'AddItem.Form.RequiredField',
+			'value' => 'Required field',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Form.Save',
+			'value' => 'Nahrát',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Form.Storno',
+		'TranslationCode' => 'AddItem.Form.Save',
+			'value' => 'Store',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Form.Storno',
 			'value' => 'Storno',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Form.Success',
-			'value' => 'Polo�ka byla nahr�na do datab�ze',
+		'TranslationCode' => 'AddItem.Form.Storno',
+			'value' => 'Storno',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Form.Success',
+			'value' => 'Položka byla nahrána do databáze',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Form.SuccessButton',
-			'value' => 'P?idat dal�� polo�ku',
+		'TranslationCode' => 'AddItem.Form.Success',
+			'value' => 'Item was stored into database',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Form.SuccessButton',
+			'value' => 'Přidat další položku',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Form.Type',
+		'TranslationCode' => 'AddItem.Form.SuccessButton',
+			'value' => 'Add another item',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Form.Type',
 			'value' => 'Typ platby',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Form.Type.Card',
+		'TranslationCode' => 'AddItem.Form.Type',
+			'value' => 'Payment type',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Form.Type.Card',
 			'value' => 'Karta',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddItem.Form.Type.Cash',
+		'TranslationCode' => 'AddItem.Form.Type.Card',
+			'value' => 'Card',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddItem.Form.Type.Cash',
 			'value' => 'Hotovost',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddTransaction.Form.AddAnotherItem',
-			'value' => 'P?idal tal�� polo�ku',
+		'TranslationCode' => 'AddItem.Form.Type.Cash',
+			'value' => 'Cash',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddTransaction.Form.AddAnotherItem',
+			'value' => 'Přidal talší položku',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddTransaction.Form.AddedText',
-			'value' => 'Transakce prob?hla �sp?n?',
+		'TranslationCode' => 'AddTransaction.Form.AddAnotherItem',
+			'value' => 'Add another item',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddTransaction.Form.AddedText',
+			'value' => 'Transakce proběhla úspěně',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddTransaction.Form.BadPrice',
-			'value' => 'Vypl? cenu',
+		'TranslationCode' => 'AddTransaction.Form.AddedText',
+			'value' => 'Transaction completed',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddTransaction.Form.BadPrice',
+			'value' => 'Vyplň cenu',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddTransaction.Form.BadReason',
-			'value' => 'Vypl? d?vod',
+		'TranslationCode' => 'AddTransaction.Form.BadPrice',
+			'value' => 'Fill price',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddTransaction.Form.BadReason',
+			'value' => 'Vyplň důvod',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddTransaction.Form.Price',
-			'value' => 'V?novat',
+		'TranslationCode' => 'AddTransaction.Form.BadReason',
+			'value' => 'Fill reason',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddTransaction.Form.Price',
+			'value' => 'Věnovat',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddTransaction.Form.PriceNaN',
-			'value' => 'Cena nen� ?�slo',
+		'TranslationCode' => 'AddTransaction.Form.Price',
+			'value' => 'Give',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddTransaction.Form.PriceNaN',
+			'value' => 'Cena není číslo',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddTransaction.Form.Reason',
-			'value' => 'D?vod',
+		'TranslationCode' => 'AddTransaction.Form.PriceNaN',
+			'value' => 'Price is not a number',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddTransaction.Form.Reason',
+			'value' => 'Důvod',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddTransaction.Form.Reason.Default',
-			'value' => 'Max 60 zank?',
+		'TranslationCode' => 'AddTransaction.Form.Reason',
+			'value' => 'Reason',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddTransaction.Form.Reason.Default',
+			'value' => 'Max 60 zanků',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddTransaction.Form.ReasonBadLength',
-			'value' => 'D?vod m?�e m�t nejv�e {%d} znak?',
+		'TranslationCode' => 'AddTransaction.Form.Reason.Default',
+			'value' => 'Max 60 chars',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddTransaction.Form.ReasonBadLength',
+			'value' => 'Důvod může mít nejvýe {%d} znaků',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddTransaction.Form.Send',
-			'value' => 'Nahr�t',
+		'TranslationCode' => 'AddTransaction.Form.ReasonBadLength',
+			'value' => 'Reason can have at least {%d} letters',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddTransaction.Form.Send',
+			'value' => 'Nahrát',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddTransaction.Form.Type',
+		'TranslationCode' => 'AddTransaction.Form.Send',
+			'value' => 'Add',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddTransaction.Form.Type',
 			'value' => 'Na',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddTransaction.Form.Type.Card',
+		'TranslationCode' => 'AddTransaction.Form.Type',
+			'value' => 'On',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddTransaction.Form.Type.Card',
 			'value' => 'Kartu',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddTransaction.Form.Type.Cash',
+		'TranslationCode' => 'AddTransaction.Form.Type.Card',
+			'value' => 'Card',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddTransaction.Form.Type.Cash',
 			'value' => 'V hotovosti',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddTransaction.Form.UseDelimiter',
-			'value' => 'Pro odd?len� hal�?? pou�ij desetinnou te?ku',
+		'TranslationCode' => 'AddTransaction.Form.Type.Cash',
+			'value' => 'Cash',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddTransaction.Form.UseDelimiter',
+			'value' => 'Pro oddělení haléřů použij desetinnou tečku',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddTransaction.Heading1',
-			'value' => 'P?idat ?�stku',
+		'TranslationCode' => 'AddTransaction.Form.UseDelimiter',
+			'value' => 'Use decimal point instead of comma',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddTransaction.Heading1',
+			'value' => 'Přidat částku',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddTransaction.SuccessMail.Message1',
-			'value' => 'Bylo p?ips�no',
+		'TranslationCode' => 'AddTransaction.Heading1',
+			'value' => 'Add amount',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddTransaction.SuccessMail.Message1',
+			'value' => 'Bylo připsáno',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddTransaction.SuccessMail.Message2',
-			'value' => 'V?c',
+		'TranslationCode' => 'AddTransaction.SuccessMail.Message1',
+			'value' => 'Was credited',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddTransaction.SuccessMail.Message2',
+			'value' => 'Věc',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddTransaction.SuccessMail.Subject',
+		'TranslationCode' => 'AddTransaction.SuccessMail.Message2',
+			'value' => 'Purpose',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddTransaction.SuccessMail.Subject',
 			'value' => 'Transakce na',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddTransaction.Table.Date',
+		'TranslationCode' => 'AddTransaction.SuccessMail.Subject',
+			'value' => 'Transaction on',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddTransaction.Table.Date',
 			'value' => 'Datum',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddTransaction.Table.Delete',
+		'TranslationCode' => 'AddTransaction.Table.Date',
+			'value' => 'Date',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddTransaction.Table.Delete',
 			'value' => 'Smazat',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddTransaction.Table.Delete.Title',
+		'TranslationCode' => 'AddTransaction.Table.Delete',
+			'value' => 'Delete',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddTransaction.Table.Delete.Title',
 			'value' => 'Smazat',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddTransaction.Table.ID',
+		'TranslationCode' => 'AddTransaction.Table.Delete.Title',
+			'value' => 'Delete',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddTransaction.Table.ID',
 			'value' => 'ID',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddTransaction.Table.Reason',
-			'value' => 'D?vod',
+		'TranslationCode' => 'AddTransaction.Table.ID',
+			'value' => 'ID',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddTransaction.Table.Reason',
+			'value' => 'Důvod',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddTransaction.Table.Type',
+		'TranslationCode' => 'AddTransaction.Table.Reason',
+			'value' => 'Reason',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddTransaction.Table.Type',
 			'value' => 'Typ',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'AddTransaction.Table.Value',
+		'TranslationCode' => 'AddTransaction.Table.Type',
+			'value' => 'Type',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'AddTransaction.Table.Value',
 			'value' => 'Hodnota',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Dashboard.AddWallet',
-			'value' => 'P?idat pen?�enku',
+		'TranslationCode' => 'AddTransaction.Table.Value',
+			'value' => 'Amount',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Dashboard.AddWallet',
+			'value' => 'Přidat peněženku',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Error.LoginAgain',
-			'value' => 'P?ihla�te se znova',
+		'TranslationCode' => 'Dashboard.AddWallet',
+			'value' => 'Add wallet',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Error.LoginAgain',
+			'value' => 'Přihlašte se znova',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Error.LogInFirst',
-			'value' => 'Nejd?�v se p?ihla�te',
+		'TranslationCode' => 'Error.LoginAgain',
+			'value' => 'Log in again',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Error.LogInFirst',
+			'value' => 'Nejdřív se přihlašte',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Facebook.Error.AllowEmail',
-			'value' => 'Mus�te si na Facebooku povolit p?�stup k emailu',
+		'TranslationCode' => 'Error.LogInFirst',
+			'value' => 'You have to login first',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Facebook.Error.AllowEmail',
+			'value' => 'Musíte si na Facebooku povolit přístup k emailu',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Facebook.Error.AllowLocale',
-			'value' => 'Mus�te si na Facebooku povolit sv� �daje o poloze a st�tu',
+		'TranslationCode' => 'Facebook.Error.AllowEmail',
+			'value' => 'You must allow your email in facebook',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Facebook.Error.AllowLocale',
+			'value' => 'Musíte si na Facebooku povolit své údaje o poloze a státu',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Facebook.Error.AllowName',
-			'value' => 'Mus�te si nejprve povolit p?�stup ke jm�nu na facebooku',
+		'TranslationCode' => 'Facebook.Error.AllowLocale',
+			'value' => 'You must allow your locale on Facebook',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Facebook.Error.AllowName',
+			'value' => 'Musíte si nejprve povolit přístup ke jménu na facebooku',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Import.Description',
-			'value' => 'Vlo�te soubor CSV, kter� jste si d?�ve st�hl(a)',
+		'TranslationCode' => 'Facebook.Error.AllowName',
+			'value' => 'You must allou your name in facebook',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Import.Description',
+			'value' => 'Vložte soubor CSV, který jste si dříve stáhl(a)',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Import.Send',
-			'value' => 'Nahr�t',
+		'TranslationCode' => 'Import.Description',
+			'value' => 'Load CSV file, which you previously download',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Import.Send',
+			'value' => 'Nahrát',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Import.Title',
-			'value' => 'Nahr�t z�lohu',
+		'TranslationCode' => 'Import.Send',
+			'value' => 'Import',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Import.Title',
+			'value' => 'Nahrát zálohu',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Incomes.H2',
-			'value' => 'P?�jmy pen?�enky:',
+		'TranslationCode' => 'Import.Title',
+			'value' => 'Import backup',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Incomes.H2',
+			'value' => 'Příjmy peněženky:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Item.Form.Required',
-			'value' => 'Povinn� polo�ky',
+		'TranslationCode' => 'Incomes.H2',
+			'value' => 'Incomes of wallet:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Item.Form.Required',
+			'value' => 'Povinné položky',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Items.Loading.Alt',
-			'value' => 'Na?�t�n�',
+		'TranslationCode' => 'Item.Form.Required',
+			'value' => 'Required fields',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Items.Loading.Alt',
+			'value' => 'Načítání',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Login.Admin',
-			'value' => 'administr�tor',
+		'TranslationCode' => 'Items.Loading.Alt',
+			'value' => 'Loading',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Login.Admin',
+			'value' => 'administrátor',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Login.BadInput',
-			'value' => '�patn� p?ihla�ovac� �daje',
+		'TranslationCode' => 'Login.Admin',
+			'value' => 'admin section',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Login.BadInput',
+			'value' => 'Špatné přihlašovací údaje',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Login.Forgotten.Mail.Message.Login',
+		'TranslationCode' => 'Login.BadInput',
+			'value' => 'Wrong login',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Login.Forgotten.Mail.Message.Login',
 			'value' => 'Login',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Login.Forgotten.Mail.Message.Password',
+		'TranslationCode' => 'Login.Forgotten.Mail.Message.Login',
+			'value' => 'Login',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Login.Forgotten.Mail.Message.Password',
 			'value' => 'heslo',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Login.Forgotten.Mail.Subject.AppName',
-			'value' => '�trata',
+		'TranslationCode' => 'Login.Forgotten.Mail.Message.Password',
+			'value' => 'password',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Login.Forgotten.Mail.Subject.AppName',
+			'value' => 'Útrata',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Login.Forgotten.Mail.Subject.Specification',
-			'value' => 'zapomenut� �daje',
+		'TranslationCode' => 'Login.Forgotten.Mail.Subject.AppName',
+			'value' => 'Charge',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Login.Forgotten.Mail.Subject.Specification',
+			'value' => 'zapomenuté údaje',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Login.Forgotten.Modal.Headding1',
-			'value' => 'Zapomenut� �daje',
+		'TranslationCode' => 'Login.Forgotten.Mail.Subject.Specification',
+			'value' => 'forgotten login',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Login.Forgotten.Modal.Headding1',
+			'value' => 'Zapomenuté údaje',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Login.Forgotten.Modal.Mail',
-			'value' => 'V� e-mail',
+		'TranslationCode' => 'Login.Forgotten.Modal.Headding1',
+			'value' => 'Forgotten login',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Login.Forgotten.Modal.Mail',
+			'value' => 'Váš e-mail',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Login.Forgotten.Modal.Send',
+		'TranslationCode' => 'Login.Forgotten.Modal.Mail',
+			'value' => 'Your e-mail',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Login.Forgotten.Modal.Send',
 			'value' => 'Odeslat',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Login.Forgotten.Modal.Status.EmptyMail',
-			'value' => 'Vypl? mail',
+		'TranslationCode' => 'Login.Forgotten.Modal.Send',
+			'value' => 'Send',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Login.Forgotten.Modal.Status.EmptyMail',
+			'value' => 'Vyplň mail',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Login.Forgotten.Modal.Status.Error',
-			'value' => 'N?co se pokazilo',
+		'TranslationCode' => 'Login.Forgotten.Modal.Status.EmptyMail',
+			'value' => 'Fill mail',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Login.Forgotten.Modal.Status.Error',
+			'value' => 'Něco se pokazilo',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Login.Forgotten.Modal.Status.MailNotSent',
-			'value' => 'Email se nepoda?ilo odeslat',
+		'TranslationCode' => 'Login.Forgotten.Modal.Status.Error',
+			'value' => 'Something gone wrong',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Login.Forgotten.Modal.Status.MailNotSent',
+			'value' => 'Email se nepodařilo odeslat',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Login.Forgotten.Modal.Status.MailNotSent',
+			'value' => 'Can\'t send an e-mail',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Login.Forgotten.Modal.Status.MorePeopleWithSameMail',
+			'value' => 'Více lidí má stejný mail. Kontaktujte správce webu',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Login.Forgotten.Modal.Status.MorePeopleWithSameMail',
-			'value' => 'V�ce lid� m� stejn� mail. Kontaktujte spr�vce webu',
+			'value' => 'More people has the same e-mail address. Contact the web admin',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Login.Forgotten.Modal.Status.Nobody',
+			'value' => 'Nikdo s takovým mailem není v databázi veden',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Login.Forgotten.Modal.Status.Nobody',
-			'value' => 'Nikdo s takov�m mailem nen� v datab�zi veden',
+			'value' => 'Nobody with this e-mail address exists',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Login.Forgotten.Modal.Status.SQLStatementError',
+			'value' => 'španý SQL příkaz',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Login.Forgotten.Modal.Status.SQLStatementError',
-			'value' => '�pan� SQL p?�kaz',
+			'value' => 'bad SQL statement',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Login.Forgotten.Modal.Status.Success',
+			'value' => 'Přihlašovací údaje Vám byly zaslány na',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Login.Forgotten.Modal.Status.Success',
-			'value' => 'P?ihla�ovac� �daje V�m byly zasl�ny na',
+			'value' => 'Your login was sent to Your mail',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Login.ForgottenPassword',
+			'value' => 'Zapomenuté přihlašovací údaje',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Login.ForgottenPassword',
-			'value' => 'Zapomenut� p?ihla�ovac� �daje',
+			'value' => 'Forgotten login',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Login.Login',
+			'value' => 'Jméno',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Login.Login',
-			'value' => 'Jm�no',
+			'value' => 'Name',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Login.LogInto',
+			'value' => 'Přihlásit',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Login.LogInto',
-			'value' => 'P?ihl�sit',
-			'LanguageCode' => 'CZK',
+			'value' => 'Log in',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Login.Password',
@@ -547,80 +1067,219 @@ class TranslationSeeder extends Seeder
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Login.Password',
+			'value' => 'Password',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Login.SignIn',
 			'value' => 'Registrovat se',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Login.SignIn',
+			'value' => 'Sign in',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'MailEngine.FailToSend',
-			'value' => 'E-mail se nepoda?ilo odeslat',
+			'value' => 'E-mail se nepodařilo odeslat',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'MailEngine.FailToSend',
+			'value' => 'Cannot send an e-mail',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'ManageNotes.Form.AddButton',
+			'value' => 'přidat',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'ManageNotes.Form.AddButton',
+			'value' => 'add',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'ManageNotes.Form.AddLabel',
+			'value' => 'Přidat',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'ManageNotes.Form.AddLabel',
+			'value' => 'Add',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'ManageNotes.Form.Back',
+			'value' => 'Zpět',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'ManageNotes.Form.Back',
+			'value' => 'Back',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'ManageNotes.Form.DeleteNote',
+			'value' => 'Smazat druh útraty',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'ManageNotes.Form.DeleteNote',
+			'value' => 'Delete note',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'ManageNotes.Form.NoNote',
+			'value' => 'Žádný druh útraty',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'ManageNotes.Form.NoNote',
+			'value' => 'No one note',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'ManageNotes.Form.Table.Code',
+			'value' => 'Kód',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'ManageNotes.Form.Table.Code',
+			'value' => 'Code',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'ManageNotes.Form.Table.Name',
+			'value' => 'Název',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'ManageNotes.Form.Table.Name',
+			'value' => 'Name',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Menu.AddItem',
+			'value' => 'Přidat položku',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Menu.AddItem',
-			'value' => 'P?idat polo�ku',
+			'value' => 'Add item',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Menu.Back',
+			'value' => 'Zpět',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Menu.Back',
-			'value' => 'Zp?t',
+			'value' => 'Back',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Menu.DownloadBackUp',
+			'value' => 'Stáhnout zálohu',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Menu.DownloadBackUp',
-			'value' => 'St�hnout z�lohu',
+			'value' => 'Download backup',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Menu.Home',
+			'value' => 'Domů',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Menu.Home',
-			'value' => 'Dom?',
+			'value' => 'Home',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Menu.Incomes',
+			'value' => 'Příjmy',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Menu.Incomes',
-			'value' => 'P?�jmy',
+			'value' => 'Incomes',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Menu.LoadImport',
+			'value' => 'Nahrát data',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Menu.LoadImport',
-			'value' => 'Nahr�t data',
+			'value' => 'Load data',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Menu.Logout',
+			'value' => 'Odhlásit',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Menu.Logout',
-			'value' => 'Odhl�sit',
+			'value' => 'Logout',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Menu.MothlyPreview',
+			'value' => 'Měsíční přehled',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Menu.MothlyPreview',
-			'value' => 'M?s�?n� p?ehled',
+			'value' => 'Monthly preview',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Menu.OldItems',
+			'value' => 'Archiv',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Menu.OldItems',
-			'value' => 'Star� �?ty',
+			'value' => 'Archive',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Menu.Settings',
+			'value' => 'Nastavení',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Menu.Settings',
-			'value' => 'Nastaven�',
+			'value' => 'Settings',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Menu.Shortcuts',
+			'value' => 'klávesové zkratky',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Menu.Shortcuts',
-			'value' => 'kl�vesov� zkratky',
+			'value' => 'shortcuts',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Menu.ShortcutsTitle',
+			'value' => 'Ctrl+, - nový záznam Ctrl+M - nová transakce Ctrl+O - archiv Ctrl+S - nastavení Ctrl+Z - zpět v historii Ctrl+Y - vpřed v historii Ctrl+B - zpět na hlavní',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Menu.ShortcutsTitle',
-			'value' => 'Ctrl+, - nov� z�znam
-Ctrl+M - nov� transakce
-Ctrl+O - star� z�znamy
-Ctrl+S - nastaven�
-Ctrl+Z - zp?t v historii
-Ctrl+Y - vp?ed v historii
-Ctrl+B - zp?t na hlavn�',
-			'LanguageCode' => 'CZK',
+			'value' => 'Ctrl+, - new item Ctrl+M - new transaction Ctrl+O - archive Ctrl+S - settings Ctrl+Z - back in history Ctrl+Y - front to history Ctrl+B - back Ctrl+L - lo',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Month.April',
@@ -628,9 +1287,19 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Month.April',
+			'value' => 'April',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Month.August',
 			'value' => 'Srpen',
 			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Month.August',
+			'value' => 'August',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Month.December',
@@ -638,9 +1307,19 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Month.December',
+			'value' => 'December',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Month.February',
-			'value' => '�nor',
+			'value' => 'Únor',
 			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Month.February',
+			'value' => 'February',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Month.January',
@@ -648,24 +1327,49 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Month.January',
+			'value' => 'January',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Month.July',
-			'value' => '?ervenec',
+			'value' => 'Červenec',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Month.July',
+			'value' => 'July',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Month.June',
+			'value' => 'Červen',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Month.June',
-			'value' => '?erven',
+			'value' => 'June',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Month.March',
+			'value' => 'Březen',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Month.March',
-			'value' => 'B?ezen',
+			'value' => 'March',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Month.May',
+			'value' => 'Květen',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Month.May',
-			'value' => 'Kv?ten',
-			'LanguageCode' => 'CZK',
+			'value' => 'May',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Month.November',
@@ -673,14 +1377,29 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Month.November',
+			'value' => 'November',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Month.October',
-			'value' => '?�jen',
+			'value' => 'Říjen',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Month.October',
+			'value' => 'October',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Month.September',
+			'value' => 'Září',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Month.September',
-			'value' => 'Z�?�',
-			'LanguageCode' => 'CZK',
+			'value' => 'September',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'No',
@@ -688,49 +1407,99 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'No',
+			'value' => 'NO',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'OldItems.Heading1',
-			'value' => 'Ji� zapsan� �?ty',
+			'value' => 'Archiv',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'OldItems.Heading1',
+			'value' => 'Archive',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'PrintItems.CheckedItemTitle',
+			'value' => 'Přesunout do archivu',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'PrintItems.CheckedItemTitle',
-			'value' => 'Check',
+			'value' => 'Move to archive',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'PrintItems.DeleteItemTitle',
+			'value' => 'Smazat záznam',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'PrintItems.DeleteItemTitle',
-			'value' => 'Smazat z�znam',
+			'value' => 'Delete item',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'PrintItems.Description',
+			'value' => 'Bližší popis',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'PrintItems.Description',
-			'value' => 'Bli��� popis',
+			'value' => 'Description',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'PrintItems.Filtering.Error.TwoSpaces',
+			'value' => 'Řetězec začínal dvěma mezarama!',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'PrintItems.Filtering.Error.TwoSpaces',
-			'value' => '?et?zec za?�nal dv?ma mezarama!',
+			'value' => 'Pattern started with two spaces!',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'PrintItems.More.Button',
+			'value' => 'Dalších',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'PrintItems.More.Button',
-			'value' => 'Dal��ch',
+			'value' => 'More',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'PrintItems.Name',
+			'value' => 'Název položky',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'PrintItems.Name',
-			'value' => 'N�zev polo�ky',
+			'value' => 'Item name',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'PrintItems.NoResults',
+			'value' => 'Takovému výběru neodpovídají žádné výsledky',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'PrintItems.NoResults',
-			'value' => 'Takov�mu v�b?ru neodpov�daj� ��dn� v�sledky',
+			'value' => 'No results for this choice',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'PrintItems.Note',
+			'value' => 'Druh útraty',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'PrintItems.Note',
-			'value' => 'Pozn�mka',
-			'LanguageCode' => 'CZK',
+			'value' => 'Note',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'PrintItems.PayedBy.Card',
@@ -738,14 +1507,39 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'PrintItems.PayedBy.Card',
+			'value' => 'card',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'PrintItems.PayedBy.Cash',
 			'value' => 'hotovost',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'PrintItems.PayedBy.Cash',
+			'value' => 'cash',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'PrintItems.Price',
-			'value' => 'Celkov� cena',
+			'value' => 'Celková cena',
 			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'PrintItems.Price',
+			'value' => 'Total price',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'PrintItems.Status.Card',
+			'value' => 'Rest on card',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'PrintItems.Status.Cash',
+			'value' => 'Rest in cash',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'PrintItems.TotalItemsPrice',
@@ -753,9 +1547,19 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'PrintItems.TotalItemsPrice',
+			'value' => 'SUM:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'PrintItems.TotalItemsSize',
-			'value' => 'Celkem polo�ek:',
+			'value' => 'Celkem položek:',
 			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'PrintItems.TotalItemsSize',
+			'value' => 'Total items:',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'PrintItems.Type',
@@ -763,14 +1567,29 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'PrintItems.Type',
+			'value' => 'Payed by',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'PrintItems.UpdateItemTitle',
-			'value' => 'Aktualizovat polo�ku',
+			'value' => 'Aktualizovat položku',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'PrintItems.UpdateItemTitle',
+			'value' => 'Update item',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'SendToParent.Button',
+			'value' => 'Náhled e-mailu',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'SendToParent.Button',
-			'value' => 'N�hled e-mailu',
-			'LanguageCode' => 'CZK',
+			'value' => 'E-mail preview',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'SendToParent.Preview.For',
@@ -778,9 +1597,19 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'SendToParent.Preview.For',
+			'value' => 'For',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'SendToParent.Preview.FromMonth',
-			'value' => 'Vy�?tov�n� za',
+			'value' => 'Vyúčtování za',
 			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'SendToParent.Preview.FromMonth',
+			'value' => 'Audit for',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'SendToParent.Preview.FromYear',
@@ -788,19 +1617,39 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'SendToParent.Preview.FromYear',
+			'value' => 'of year',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'SendToParent.Preview.Intro',
-			'value' => 'Text zpr�vy',
+			'value' => 'Text zprávy',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'SendToParent.Preview.Intro',
+			'value' => 'Message content',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'SendToParent.Preview.Items',
+			'value' => 'položek',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'SendToParent.Preview.Items',
-			'value' => 'polo�ek',
+			'value' => 'items',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'SendToParent.Preview.ItemsCount',
+			'value' => 'Počet položek',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'SendToParent.Preview.ItemsCount',
-			'value' => 'Po?et polo�ek',
-			'LanguageCode' => 'CZK',
+			'value' => 'Number of items',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'SendToParent.Preview.Send',
@@ -808,14 +1657,29 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'SendToParent.Preview.Send',
+			'value' => 'Really send',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'SendToParent.Sent.ToDate',
-			'value' => '�?etnictv� za',
+			'value' => 'Účetnictví za',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'SendToParent.Sent.ToDate',
+			'value' => 'Audit for',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'SendToParent.Sent.ToMail',
+			'value' => 'odesláno na',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'SendToParent.Sent.ToMail',
-			'value' => 'odesl�no na',
-			'LanguageCode' => 'CZK',
+			'value' => 'send to',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'SendToParent.Year',
@@ -823,49 +1687,99 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'SendToParent.Year',
+			'value' => 'year',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.Alert.Login',
-			'value' => '�patn? vypln?n� login',
+			'value' => 'Špatně vyplněný login',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.Alert.Login',
+			'value' => 'Wrong filled login',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.Alert.MailToParent',
+			'value' => 'Špatně vyplněný mail na rodiče',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.Alert.MailToParent',
-			'value' => '�patn? vypln?n� mail na rodi?e',
+			'value' => 'Wrong filled mail to parent',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.Alert.Name',
+			'value' => 'Špatně vyplněné jméno',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.Alert.Name',
-			'value' => '�patn? vypln?n� jm�no',
+			'value' => 'Wrong filled name',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.Alert.Password',
+			'value' => 'Špatně vyplněné heslo',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.Alert.Password',
-			'value' => '�patn? vypln?n� heslo',
+			'value' => 'Wrong filled password',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.Alert.PasswordAgain',
+			'value' => 'Špatně vyplněné heslo',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.Alert.PasswordAgain',
-			'value' => '�patn? vypln?n� heslo',
+			'value' => 'Wrong filled password',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.Change',
+			'value' => 'Změnit',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.Change',
-			'value' => 'Zm?nit',
+			'value' => 'Change',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.ChangePassword.CheckBox',
+			'value' => 'Změnit heslo',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.ChangePassword.CheckBox',
-			'value' => 'Zm?nit heslo',
+			'value' => 'Change password',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.ConfirmPassword',
+			'value' => 'Potvrzení heslo:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.ConfirmPassword',
-			'value' => 'Potvrzen� heslo:',
+			'value' => 'Confirm password:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.ConfirmPassword.NotSame',
+			'value' => 'hesla se neshodují',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.ConfirmPassword.NotSame',
-			'value' => 'hesla se neshoduj�',
-			'LanguageCode' => 'CZK',
+			'value' => 'passwords not match',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.ConfirmPassword.Placeholder',
@@ -873,19 +1787,39 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.ConfirmPassword.Placeholder',
+			'value' => 'password againn',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.Currency',
-			'value' => 'M?na:',
+			'value' => 'Měna:',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.Currency',
+			'value' => 'Currency:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.FirstName',
+			'value' => 'Jméno:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.FirstName',
-			'value' => 'Jm�no:',
+			'value' => 'Name:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.FirstName.Empty',
+			'value' => 'Prázdné jméno',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.FirstName.Empty',
-			'value' => 'Pr�zdn� jm�no',
-			'LanguageCode' => 'CZK',
+			'value' => 'Empty first name',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.FirstName.Placeholder',
@@ -893,19 +1827,29 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Settings.Form.Form.MyMail.Empty',
-			'value' => 'Pr�zdn� e-mailov� adresa',
-			'LanguageCode' => 'CZK',
+			'TranslationCode' => 'Settings.Form.FirstName.Placeholder',
+			'value' => 'John',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Settings.Form.KindOfSpend.AddNew',
-			'value' => 'P?idat',
+			'TranslationCode' => 'Settings.Form.Form.MyMail',
+			'value' => 'Empty e-mail address',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.Form.MyMail.Empty',
+			'value' => 'Prázdná e-mailová adresa',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.KindsOfSpend',
-			'value' => 'Druhy �traty:',
+			'value' => 'Druhy útraty:',
 			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.KindsOfSpend',
+			'value' => 'Kind of charges:',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.Language',
@@ -913,19 +1857,39 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.Language',
+			'value' => 'Language:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.LastName',
-			'value' => 'P?�jmen�:',
+			'value' => 'Příjmení:',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.LastName',
+			'value' => 'Last name:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.LastName.Empty',
+			'value' => 'Prázdné příjmení',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.LastName.Empty',
-			'value' => 'Pr�zdn� p?�jmen�',
+			'value' => 'Emty last name',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.LastName.Placeholder',
+			'value' => 'Novák',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.LastName.Placeholder',
-			'value' => 'Nov�k',
-			'LanguageCode' => 'CZK',
+			'value' => 'Doe',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.Login',
@@ -933,44 +1897,99 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.Login',
+			'value' => 'Login:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.Login.AlreadyExists',
-			'value' => 'Tato hodnota je ji� zabran�',
+			'value' => 'Tato hodnota je již zabraná',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.Login.AlreadyExists',
+			'value' => 'This value is already taken',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.Login.SomeError',
+			'value' => 'Nějaká chyba',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.Login.SomeError',
-			'value' => 'N?jak� chyba',
+			'value' => 'Some error',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.Login.TooShort',
+			'value' => 'příliš krátké (< {%d} znaků)',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.Login.TooShort',
-			'value' => 'p?�li� kr�tk� (< {%d} znak?)',
+			'value' => 'too short (< {%d} chars)',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.Mail.BadFormat',
+			'value' => 'Špatný formát',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.Mail.BadFormat',
-			'value' => '�patn� form�t',
+			'value' => 'Wrong format',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.MailToMe',
+			'value' => 'Mail na mě:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.MailToMe',
-			'value' => 'Mail na m?:',
+			'value' => 'Mail to me:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.MailToParent',
+			'value' => 'Mail na rodiče:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.MailToParent',
-			'value' => 'Mail na rodi?e:',
+			'value' => 'Mail to parent:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.ManageNotes',
+			'value' => 'Spravovat druhy útraty',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.ManageNotes',
+			'value' => 'Manage notes',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.NoteAdd.Empty',
+			'value' => 'Prázdný druh útraty',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.NoteAdd.Empty',
-			'value' => 'Pr�zdn� druh �traty',
+			'value' => 'Empty kind of expende',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.OldPassword',
+			'value' => 'Nynější heslo:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.OldPassword',
-			'value' => 'Nyn?j�� heslo:',
-			'LanguageCode' => 'CZK',
+			'value' => 'Old password:',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.OldPassword.Placeholder',
@@ -978,14 +1997,29 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.OldPassword.Placeholder',
+			'value' => 'password',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.Password',
-			'value' => 'Zm?na hesla:',
+			'value' => 'Změna hesla:',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.Password',
+			'value' => 'Password change:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.Password.BadSecurity',
+			'value' => 'Alespoň 2 vlastnosti z [a-z], [A-Z] a [0-9]',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.Password.BadSecurity',
-			'value' => 'Alespo? 2 vlastnosti z [a-z], [A-Z] a [0-9]',
-			'LanguageCode' => 'CZK',
+			'value' => 'At least 2 property of [a-z], [A-Z] and [0-9]',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.Password.Placeholder',
@@ -993,74 +2027,149 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.Password.Placeholder',
+			'value' => 'password',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.Password.TooShort',
-			'value' => 'p?�li� kr�tk� (< {%d} znak?)',
+			'value' => 'příliš krátké (< {%d} znaků)',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.Password.TooShort',
+			'value' => 'too short (< {%d} chars)',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.Result.Error',
+			'value' => 'Něco se pokazilo',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.Result.Error',
-			'value' => 'N?co se pokazilo',
+			'value' => 'Something gone wrong',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.Result.Success',
+			'value' => 'Vše změněno',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.Result.Success',
-			'value' => 'V�e zm?n?no',
+			'value' => 'Everything changed',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.SendByOne',
+			'value' => 'Posílat rodiči každou položku:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.SendByOne',
-			'value' => 'Pos�lat rodi?i ka�dou polo�ku:',
+			'value' => 'Send to parent every added item:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Form.SendMonthly',
+			'value' => 'Možnost posílat měsíční výpis:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.SendMonthly',
-			'value' => 'Mo�nost pos�lat m?s�?n� v�pis:',
+			'value' => 'Ability to send monthly expense:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Settings.Heading',
+			'value' => 'nastavení',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Heading',
-			'value' => 'nastaven�',
+			'value' => 'settings',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'ShowItems.CheckAll.Alert',
+			'value' => 'Chcete přesunout do archivu všechny tyto položky?',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'ShowItems.CheckAll.Alert',
-			'value' => 'Chce� checknout v�echny tyto polo�ky?',
+			'value' => 'Do you really want to archive all displayed items?',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'ShowItems.CheckAll.Title',
+			'value' => 'Přesunout do archivu všechny zobrazené',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'ShowItems.CheckAll.Title',
-			'value' => 'Check v�echny zobrazen�',
+			'value' => 'Archive all pisplayed items',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'ShowItems.Delete.Alert',
+			'value' => 'Opravdu chceš smazat?',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'ShowItems.Delete.Alert',
-			'value' => 'Opravdu chce� smazat?',
+			'value' => 'Do you really want to delete this item?',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Statistics.Description',
+			'value' => 'Zde se můžete podívat na statistiku, jak na tom tento měsíc jste vzhledem k předešlým měsícům. Vybrat si můžete, jestli chcete přehled konkrétního druhu útraty, či všeho.',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Statistics.Description',
-			'value' => 'Zde se m?�ete pod�vat na statistiku, jak na tom tento m?s�c jste vzhledem k p?ede�l�m m?s�c?m. Vybrat si m?�ete, jestli chcete p?ehled konkr�tn� pozn�mky, ?i v�eho.',
+			'value' => 'Here you can look at the statistics as of the month you are due to the previous months. Choose if you want to review a specific note or everything.',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Statistics.Filtering.NotesLabel',
+			'value' => 'Statistika pro určitý druh útraty:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Statistics.Filtering.NotesLabel',
-			'value' => 'Statistika pro ur?itou pozn�mku:',
+			'value' => 'Statistics for specific note:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Statistics.Filtering.Types.Default',
+			'value' => '--druh útraty--',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Statistics.Filtering.Types.Default',
-			'value' => '--pozn�mka--',
+			'value' => '--note--',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Statistics.FullMonth.Extremes.Average',
+			'value' => 'PRŮMĚRNĚ:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Statistics.FullMonth.Extremes.Average',
-			'value' => 'PR?M?RN?:',
+			'value' => 'AVERAGE:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Statistics.FullMonth.Extremes.Date',
+			'value' => 'Měsíc',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Statistics.FullMonth.Extremes.Date',
-			'value' => 'M?s�c',
-			'LanguageCode' => 'CZK',
+			'value' => 'Month',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Statistics.FullMonth.Extremes.Max',
@@ -1068,9 +2177,19 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Statistics.FullMonth.Extremes.Max',
+			'value' => 'MAX:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Statistics.FullMonth.Extremes.Min',
 			'value' => 'MIN:',
 			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Statistics.FullMonth.Extremes.Min',
+			'value' => 'MIN:',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Statistics.FullMonth.Extremes.Percentage',
@@ -1078,34 +2197,69 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Statistics.FullMonth.Extremes.Percentage',
+			'value' => 'Percentage',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Statistics.FullMonth.Extremes.ThisMonth',
-			'value' => 'Tento m?s�c',
+			'value' => 'Tento měsíc',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Statistics.FullMonth.Extremes.ThisMonth',
+			'value' => 'This month',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Statistics.FullMonth.Extremes.Value',
+			'value' => 'Útrata',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Statistics.FullMonth.Extremes.Value',
-			'value' => '�trata',
+			'value' => 'Expense',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Statistics.FullMonth.H2',
+			'value' => 'Srovnání s celými měsíci',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Statistics.FullMonth.H2',
-			'value' => 'Srovn�n� s cel�mi m?s�ci',
+			'value' => 'Comparsion with whole months',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Statistics.H1',
+			'value' => 'Měsíční přehled peněženky:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Statistics.H1',
-			'value' => 'M?s�?n� p?ehled pen?�enky:',
+			'value' => 'Monthly preview of wallet:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Statistics.PartMonth.Extremes.Average',
+			'value' => 'PRŮMĚR:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Statistics.PartMonth.Extremes.Average',
-			'value' => 'PR?M?R:',
+			'value' => 'AVERAGE:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Statistics.PartMonth.Extremes.Date',
+			'value' => 'Měsíc',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Statistics.PartMonth.Extremes.Date',
-			'value' => 'M?s�c',
-			'LanguageCode' => 'CZK',
+			'value' => 'Month',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Statistics.PartMonth.Extremes.Max',
@@ -1113,9 +2267,19 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Statistics.PartMonth.Extremes.Max',
+			'value' => 'MAX:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Statistics.PartMonth.Extremes.Min',
 			'value' => 'MIN:',
 			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Statistics.PartMonth.Extremes.Min',
+			'value' => 'MIN:',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Statistics.PartMonth.Extremes.Percentage',
@@ -1123,139 +2287,269 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Statistics.PartMonth.Extremes.Percentage',
+			'value' => 'Percentage',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Statistics.PartMonth.Extremes.ThisMonth',
-			'value' => 'Tento m?s�c',
+			'value' => 'Tento měsíc',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Statistics.PartMonth.Extremes.ThisMonth',
+			'value' => 'This month',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Statistics.PartMonth.Extremes.Value',
+			'value' => 'Útrata',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Statistics.PartMonth.Extremes.Value',
-			'value' => '�trata',
+			'value' => 'Expense',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Statistics.PartMonth.H2',
+			'value' => 'Srovnání s měsíci do {%d}. každého měsíce',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Statistics.PartMonth.H2',
-			'value' => 'Srovn�n� s m?s�ci do {%d}. ka�d�ho m?s�ce',
+			'value' => 'Comparsion with months since {%d}th of each month',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Statistics.TableFull.Head.Expense',
+			'value' => 'Útrata',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Statistics.TableFull.Head.Expense',
-			'value' => '�trata',
+			'value' => 'Expense',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Statistics.TableFull.Head.ExpensesCnt',
+			'value' => 'položek',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Statistics.TableFull.Head.ExpensesCnt',
-			'value' => 'polo�ek',
+			'value' => '#expenses',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Statistics.TableFull.Head.Income',
+			'value' => 'Příjem',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Statistics.TableFull.Head.Income',
-			'value' => 'P?�jem',
+		'TranslationCode' => 'Statistics.TableFull.Head.Income',
+			'value' => 'Income',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Statistics.TableFull.Head.IncomesCnt',
+			'value' => 'položek',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Statistics.TableFull.Head.IncomesCnt',
-			'value' => 'polo�ek',
-			'LanguageCode' => 'CZK',
+		'TranslationCode' => 'Statistics.TableFull.Head.IncomesCnt',
+			'value' => '#incomes',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Statistics.TableFull.Head.Percentage',
+		'TranslationCode' => 'Statistics.TableFull.Head.Percentage',
 			'value' => 'Procento',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Statistics.TableFull.Head.Season',
-			'value' => 'M?s�c',
+		'TranslationCode' => 'Statistics.TableFull.Head.Percentage',
+			'value' => 'Percentage',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Statistics.TableFull.Head.Season',
+			'value' => 'Měsíc',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Statistics.TableFull.Head.ThisMonth',
-			'value' => '�trata tohoto m?s�ce',
+		'TranslationCode' => 'Statistics.TableFull.Head.Season',
+			'value' => 'Month',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Statistics.TableFull.Head.ThisMonth',
+			'value' => 'Útrata tohoto měsíce',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Statistics.TablePart.Head.Expense',
-			'value' => '�trata',
+		'TranslationCode' => 'Statistics.TableFull.Head.ThisMonth',
+			'value' => 'Expense of this month',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Statistics.TablePart.Head.Expense',
+			'value' => 'Útrata',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Statistics.TablePart.Head.ExpensesCnt',
-			'value' => 'polo�ek',
+		'TranslationCode' => 'Statistics.TablePart.Head.Expense',
+			'value' => 'Monthly expense',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Statistics.TablePart.Head.ExpensesCnt',
+			'value' => 'položek',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Statistics.TablePart.Head.Income',
-			'value' => 'P?�jem',
+		'TranslationCode' => 'Statistics.TablePart.Head.ExpensesCnt',
+			'value' => '#expenses',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Statistics.TablePart.Head.Income',
+			'value' => 'Příjem',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Statistics.TablePart.Head.IncomesCnt',
-			'value' => 'polo�ek',
+		'TranslationCode' => 'Statistics.TablePart.Head.Income',
+			'value' => 'Monthly income',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Statistics.TablePart.Head.IncomesCnt',
+			'value' => 'položek',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Statistics.TablePart.Head.Percentage',
+		'TranslationCode' => 'Statistics.TablePart.Head.IncomesCnt',
+			'value' => '#incomes',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Statistics.TablePart.Head.Percentage',
 			'value' => 'Procento',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Statistics.TablePart.Head.Season',
-			'value' => 'M?s�c',
+		'TranslationCode' => 'Statistics.TablePart.Head.Percentage',
+			'value' => 'Percentage',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Statistics.TablePart.Head.Season',
+			'value' => 'Měsíc',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Statistics.TablePart.Head.ThisMonth',
-			'value' => '�trata tohoto m?s�ce',
+		'TranslationCode' => 'Statistics.TablePart.Head.Season',
+			'value' => 'Month',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Statistics.TablePart.Head.ThisMonth',
+			'value' => 'Útrata tohoto měsíce',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Status.Card',
-			'value' => 'Z?statek na kart?',
+		'TranslationCode' => 'Statistics.TablePart.Head.ThisMonth',
+			'value' => 'Expense of this month',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Status.Card',
+			'value' => 'Zůstatek na kartě',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Status.Cash',
-			'value' => 'Z?statek v hotovosti',
+		'TranslationCode' => 'Status.Cash',
+			'value' => 'Zůstatek v hotovosti',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Title',
-			'value' => ' - �trata',
+		'TranslationCode' => 'Title',
+			'value' => ' - útrata',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+		'TranslationCode' => 'Title',
+			'value' => '\'s expense',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateIncome.Error.Course.Empty',
+			'value' => 'Prázdný kurz',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateIncome.Error.Course.Empty',
-			'value' => 'Pr�zdn� kurz',
+			'value' => 'Empty course',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateIncome.Error.Date.Empty',
+			'value' => 'Nevyplněný datum',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateIncome.Error.Date.Empty',
-			'value' => 'Nevypln?n� datum',
+			'value' => 'Empty date',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateIncome.Error.Name.Empty',
+			'value' => 'Prázdný název',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateIncome.Error.Name.Empty',
-			'value' => 'Pr�zdn� n�zev',
+			'value' => 'Empty name',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateIncome.Error.Price.BadFormat',
+			'value' => 'Cena ve špatném formátu',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateIncome.Error.Price.BadFormat',
-			'value' => 'Cena ve �patn�m form�tu',
+			'value' => 'Price in bad format',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateIncome.Error.Price.Empty',
+			'value' => 'Prázdná cena',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateIncome.Error.Price.Empty',
-			'value' => 'Pr�zdn� cena',
+			'value' => 'Empty price',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateIncome.Form.AnotherCurrency',
+			'value' => 'jiná měna',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateIncome.Form.AnotherCurrency',
-			'value' => 'jin� m?na',
+			'value' => 'other currency',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateIncome.Form.Currency',
+			'value' => 'Měna:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateIncome.Form.Currency',
-			'value' => 'M?na:',
-			'LanguageCode' => 'CZK',
+			'value' => 'Currency:',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateIncome.Form.CurrencyCourse',
@@ -1263,19 +2557,39 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateIncome.Form.CurrencyCourse',
+			'value' => 'course:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateIncome.Form.Date',
 			'value' => 'Datum:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateIncome.Form.Date',
+			'value' => 'Date:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateIncome.Form.Heading',
-			'value' => 'Upravit p?�jem',
+			'value' => 'Upravit příjem',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateIncome.Form.Heading',
+			'value' => 'Change income',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateIncome.Form.Name',
+			'value' => 'Krátký popis:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateIncome.Form.Name',
-			'value' => 'Kr�tk� popis:',
-			'LanguageCode' => 'CZK',
+			'value' => 'Short description:',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateIncome.Form.Price',
@@ -1283,9 +2597,19 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateIncome.Form.Price',
+			'value' => 'Price:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateIncome.Form.Save',
-			'value' => 'Vytvo?it',
+			'value' => 'Vytvořit',
 			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateIncome.Form.Save',
+			'value' => 'Store',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateIncome.Form.Storno',
@@ -1293,9 +2617,19 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateIncome.Form.Storno',
+			'value' => 'Storno',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateIncome.Form.Type',
 			'value' => 'Typ:',
 			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateIncome.Form.Type',
+			'value' => 'Type:',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateIncome.Form.Type.Card',
@@ -1303,49 +2637,99 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateIncome.Form.Type.Card',
+			'value' => 'To card',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateIncome.Form.Type.Cash',
 			'value' => 'V hotovosti',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateIncome.Form.Type.Cash',
+			'value' => 'In cash',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateIncome.Form.Wallet',
-			'value' => 'Pen?�enka:',
+			'value' => 'Peněženka:',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateIncome.Form.Wallet',
+			'value' => 'Wallet:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateItem.AlreadyUpdating',
+			'value' => 'Již se aktualizuje položka',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateItem.AlreadyUpdating',
-			'value' => 'Ji� se aktualizuje polo�ka',
+			'value' => 'Update already in progress',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateItem.Error.Course.Empty',
+			'value' => 'Prázdný kurz',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateItem.Error.Course.Empty',
-			'value' => 'Pr�zdn� kurz',
+			'value' => 'Empty course',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateItem.Error.Date.Empty',
+			'value' => 'Prázdné datum',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateItem.Error.Date.Empty',
-			'value' => 'Pr�zdn� datum',
+			'value' => 'Empty date',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateItem.Error.Name.Empty',
+			'value' => 'Prázdné jméno',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateItem.Error.Name.Empty',
-			'value' => 'Pr�zdn� jm�no',
+			'value' => 'Empty name',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateItem.Error.Price.BadFormat',
+			'value' => 'Špatná cena',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateItem.Error.Price.BadFormat',
-			'value' => '�patn� cena',
+			'value' => 'Wrong price',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateItem.Error.Price.Empty',
+			'value' => 'Prázdná cena',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateItem.Error.Price.Empty',
-			'value' => 'Pr�zdn� cena',
+			'value' => 'Empty price',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateItem.Form.AnotherCurrency',
+			'value' => 'jiná měna',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateItem.Form.AnotherCurrency',
-			'value' => 'jin� m?na',
-			'LanguageCode' => 'CZK',
+			'value' => 'other currency',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateItem.Form.Course',
@@ -1353,9 +2737,19 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateItem.Form.Course',
+			'value' => 'course:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateItem.Form.Currency',
-			'value' => 'M?na:',
+			'value' => 'Měna:',
 			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateItem.Form.Currency',
+			'value' => 'Currency:',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateItem.Form.Date',
@@ -1363,19 +2757,39 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateItem.Form.Date',
+			'value' => 'Date:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateItem.Form.Description',
 			'value' => 'Popis:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateItem.Form.Description',
+			'value' => 'Description:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateItem.Form.Heading',
-			'value' => '�prava polo�ky',
+			'value' => 'Úprava položky',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateItem.Form.Heading',
+			'value' => 'Update item form',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateItem.Form.Name',
+			'value' => 'Název:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateItem.Form.Name',
-			'value' => 'N�zev:',
-			'LanguageCode' => 'CZK',
+			'value' => 'Name:',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateItem.Form.Odepsat',
@@ -1383,14 +2797,29 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateItem.Form.Odepsat',
+			'value' => 'My expense:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateItem.Form.Price',
 			'value' => 'Cena:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateItem.Form.Price',
+			'value' => 'Price:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateItem.Form.Purpose',
-			'value' => 'Pozn�mka:',
+			'value' => 'Druh útraty:',
 			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateItem.Form.Purpose',
+			'value' => 'Note:',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateItem.Form.Save',
@@ -1398,9 +2827,19 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateItem.Form.Save',
+			'value' => 'Update',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateItem.Form.Storno',
 			'value' => 'Storno',
 			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateItem.Form.Storno',
+			'value' => 'Storno',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateItem.Form.Type',
@@ -1408,9 +2847,19 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateItem.Form.Type',
+			'value' => 'Type:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateItem.Form.Type.Card',
 			'value' => 'Karta',
 			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateItem.Form.Type.Card',
+			'value' => 'Card',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateItem.Form.Type.Cash',
@@ -1418,9 +2867,19 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateItem.Form.Type.Cash',
+			'value' => 'Cash',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateItem.Form.Wallet',
-			'value' => 'Pen?�enka:',
+			'value' => 'Peněženka:',
 			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateItem.Form.Wallet',
+			'value' => 'Wallet:',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateItem.Storno',
@@ -1428,29 +2887,59 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateItem.Storno',
+			'value' => 'Storno',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateItem.Update',
-			'value' => 'Ulo�it',
+			'value' => 'Uložit',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'UpdateItem.Update',
+			'value' => 'Save',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Uploading.Error.Again',
+			'value' => 'Chyba při načítání souboru. Zkuste to prosím později',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Uploading.Error.Again',
-			'value' => 'Chyba p?i na?�t�n� souboru. Zkuste to pros�m pozd?ji',
+			'value' => 'Error durning uploading file. Please try it again',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Uploading.Error.NoCSV',
+			'value' => 'Soubor není typu CSV',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Uploading.Error.NoCSV',
-			'value' => 'Soubor nen� typu CSV',
+			'value' => 'The file is not of CSV type',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Uploading.Error.NoFile',
+			'value' => 'Vyberte nějaký soubor',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Uploading.Error.NoFile',
-			'value' => 'Vyberte n?jak� soubor',
+			'value' => 'Must choose some file',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Uploading.Success',
+			'value' => 'Soubor nahrán',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Uploading.Success',
-			'value' => 'Soubor nahr�n',
-			'LanguageCode' => 'CZK',
+			'value' => 'File uploaded',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Uploading.Upload.Button',
@@ -1458,9 +2947,19 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Uploading.Upload.Button',
+			'value' => 'Choose file',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Uvod.DownloadBackUp.ErrorOcured',
 			'value' => 'Vyskytla se chyba',
 			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Uvod.DownloadBackUp.ErrorOcured',
+			'value' => 'Error ocures',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Uvod.Filtering.AndMonth',
@@ -1468,17 +2967,29 @@ Ctrl+B - zp?t na hlavn�',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Uvod.Filtering.AndMonth',
+			'value' => 'and select only',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Uvod.Filtering.HelpTitle',
-			'value' => 'jednotliv� ?et?zce odd?lujte dv?ma mezerama
-pro naps�n� dvou mezer napi�t? \'\\ \\ \'
-\'!\' p?ed ?et?zcem - ?et?zec, kter� se v polo�ce nikde nevyskytuje
-pro naps�n� vyk?i?n�ku pou�ijte v�raz \'\\',
+			'value' => 'jednotlivé řetězce oddělujte dvěma mezerama, pro napsání dvou mezer napiště \'\\ \\ \'.&#010;\'!\' před řetězcem - řetězec, který se v položce nikde nevyskytuje. Pro napsání vykřičníku použijte výraz \'\\!\'',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Uvod.Filtering.HelpTitle',
+			'value' => 'Every string delimite by two spaces, for typing two spaces type \'\\ \\ \'.&#010;\'!\' before string - string which is nowhere in every item for typing exclamation mark use expresion \'\\!\'',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Uvod.Filtering.Month.Default',
+			'value' => '--měsíc--',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Uvod.Filtering.Month.Default',
-			'value' => '--m?s�c--',
-			'LanguageCode' => 'CZK',
+			'value' => '--month--',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Uvod.Filtering.Or',
@@ -1486,19 +2997,39 @@ pro naps�n� vyk?i?n�ku pou�ijte v�raz \'\\',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Uvod.Filtering.Or',
+			'value' => 'or',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Uvod.Filtering.OrderBy',
-			'value' => '?adit podle',
+			'value' => 'Řadit podle',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Uvod.Filtering.OrderBy',
+			'value' => 'Order by',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Uvod.Filtering.OrderBy.Asc',
+			'value' => 'Vzestupně',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Uvod.Filtering.OrderBy.Asc',
-			'value' => 'Vzestupn?',
+			'value' => 'Ascendant',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Uvod.Filtering.OrderBy.Desc',
+			'value' => 'Sestupně',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Uvod.Filtering.OrderBy.Desc',
-			'value' => 'Sestupn?',
-			'LanguageCode' => 'CZK',
+			'value' => 'Descendant',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Uvod.Filtering.OrderBy.ItemDate',
@@ -1506,9 +3037,19 @@ pro naps�n� vyk?i?n�ku pou�ijte v�raz \'\\',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Uvod.Filtering.OrderBy.ItemDate',
+			'value' => 'Date',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Uvod.Filtering.OrderBy.ItemName',
-			'value' => 'N�zev',
+			'value' => 'Název',
 			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Uvod.Filtering.OrderBy.ItemName',
+			'value' => 'Name',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Uvod.Filtering.OrderBy.ItemPrice',
@@ -1516,19 +3057,39 @@ pro naps�n� vyk?i?n�ku pou�ijte v�raz \'\\',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Uvod.Filtering.OrderBy.ItemPrice',
+			'value' => 'Price',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Uvod.Filtering.Pattern',
 			'value' => 'slovo',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Uvod.Filtering.Pattern',
+			'value' => 'pattern',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Uvod.Filtering.SetDefaultTitle',
-			'value' => 'v�choz� filtrov�n�',
+			'value' => 'výchozí filtrování',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Uvod.Filtering.SetDefaultTitle',
+			'value' => 'default filtering',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Uvod.Filtering.Types.Default',
+			'value' => '- druh útraty -',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Uvod.Filtering.Types.Default',
-			'value' => '- pozn�mka -',
-			'LanguageCode' => 'CZK',
+			'value' => '- note -',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Uvod.Filtering.Year',
@@ -1536,54 +3097,109 @@ pro naps�n� vyk?i?n�ku pou�ijte v�raz \'\\',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Uvod.Filtering.Year',
+			'value' => 'year',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Uvod.Heading1',
-			'value' => '�trata :-)',
+			'value' => 'útrata :-)',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Uvod.Heading1',
+			'value' => 'charges :-)',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Wallet.Add.CreateBtn',
+			'value' => 'Vytvořit',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Wallet.Add.CreateBtn',
-			'value' => 'Vytvo?it',
+			'value' => 'Create',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Wallet.Add.Error.Empty',
+			'value' => 'Prázdné jméno',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Wallet.Add.Error.Empty',
-			'value' => 'Pr�zdn� jm�no',
+			'value' => 'Empty name',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Wallet.Add.Name',
+			'value' => 'Název:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Wallet.Add.Name',
-			'value' => 'N�zev:',
+			'value' => 'Name:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Wallet.Add.Name.Placeholder',
+			'value' => 'název',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Wallet.Add.Name.Placeholder',
-			'value' => 'n�zev',
+			'value' => 'name',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Wallet.Add.Title',
+			'value' => 'Přidat novou peněženku',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Wallet.Add.Title',
-			'value' => 'P?idat novou pen?�enku',
+			'value' => 'Add new Wallet',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Wallet.DeleteBtn.Title',
+			'value' => 'Smazat peněženku',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Wallet.DeleteBtn.Title',
-			'value' => 'Smazat pen?�enku',
+			'value' => 'Delete wallet',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Wallet.H2',
+			'value' => 'Výdaje peněženky:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Wallet.H2',
-			'value' => 'V�daje pen?�enky:',
+			'value' => 'Expenses of wallet:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Wallet.H2.OldItems',
+			'value' => 'Archivované výdaje peněženky:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Wallet.H2.OldItems',
-			'value' => 'Zkontrolovan� v�daje pen?�enky:',
+			'value' => 'Archived expenses of wallet:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Wallet.Preview.Card',
+			'value' => 'Na kartě:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Wallet.Preview.Card',
-			'value' => 'Na kart?:',
-			'LanguageCode' => 'CZK',
+			'value' => 'On card:',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Wallet.Preview.Cash',
@@ -1591,24 +3207,49 @@ pro naps�n� vyk?i?n�ku pou�ijte v�raz \'\\',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Wallet.Preview.Cash',
+			'value' => 'In cash:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Wallet.Preview.Items',
-			'value' => 'Polo�ek:',
+			'value' => 'Položek:',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Wallet.Preview.Items',
+			'value' => 'Items:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Wallet.Preview.PerMonth',
+			'value' => 'Tento měsíc:',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Wallet.Preview.PerMonth',
-			'value' => 'Tento m?s�c:',
+			'value' => 'This month:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Wallet.UpdateBtn.Title',
+			'value' => 'Modifikovat peněženku',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Wallet.UpdateBtn.Title',
-			'value' => 'Modifikovat pen?�enku',
-			'LanguageCode' => 'CZK',
+			'value' => 'Update wallet',
+			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Yes',
 			'value' => 'ANO',
 			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Yes',
+			'value' => 'YES',
+			'LanguageCode' => 'ENG',
 		]);
 		*/
 	}
