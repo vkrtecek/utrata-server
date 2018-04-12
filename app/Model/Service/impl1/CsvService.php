@@ -290,7 +290,6 @@ class CsvService implements IFileService
 			$member->getLogin() . ';' .
 			$member->shouldSendMonthly() . ';' .
 			$member->shouldSendByOne() . ';' .
-			$member->getMotherMail() . ';' .
 			$member->getMyMail() . ';' .
 			$member->isFacebook() . ';' .
 			$member->getAccess()->format('Y-m-d H:i:s') . ';' .

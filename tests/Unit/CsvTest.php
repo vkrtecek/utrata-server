@@ -59,7 +59,7 @@ class CsvTest extends TestCase
 
 	protected function setUpFile(array $lines = NULL) {
 		$expected = new File();
-		$expected->appendLine('Štěpán;Krteček;vojta;;;;;;2017-08-26 22:23:38;CZK;1');
+		$expected->appendLine('Štěpán;Krteček;vojta;;;;;2017-08-26 22:23:38;CZK;1');
 		$expected->appendLine('1');
 		$expected->appendLine(';transport;Transport;;CZK;vojta');
 		$expected->appendLine('2');

@@ -36,7 +36,7 @@ class FakeMemberDAO implements IMemberDAO
 
 		$this->member = new Member();
 		$this->member->setFirstName('Štěpán')->setLastName('Krteček')
-			->setLogin('vojta')->setSendMonthly(FALSE)->setMotherMail('example12@mail.com')
+			->setLogin('vojta')->setSendMonthly(FALSE)
 			->setMyMail('example123@mail.com')->setLogged(1)->setToken('some token')
 			->setPassword('$2y$12$TLHfaHdPgYNepUOB6A1Bi.XPh8EunvuzxI0.Cvl8BSGgyNdxdqjua')
 			->setExpiration((new \DateTime('+ 14 days')))->setAccess(new \DateTime('2018-03-29 12:07:23'))
@@ -44,7 +44,7 @@ class FakeMemberDAO implements IMemberDAO
 
 		$this->member2 = new Member();
 		$this->member2->setFirstName('John')->setLastName('Doe')
-			->setLogin('example_login')->setSendMonthly(FALSE)->setMotherMail('example12@mail.com')
+			->setLogin('example_login')->setSendMonthly(FALSE)
 			->setMyMail('example123@mail.com')->setLogged(1)->setToken('some token')
 			->setPassword('$2y$12$TLHfaHdPgYNepUOB6A1Bi.XPh8EunvuzxI0.Cvl8BSGgyNdxdqjua')
 			->setExpiration((new \DateTime('+ 14 days')))->setAccess(new \DateTime('2018-03-29 12:07:23'))

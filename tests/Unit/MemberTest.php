@@ -110,7 +110,6 @@ class MemberTest extends TestCase
 			'login' => 'vojta',
 			'sendMonthly' => FALSE,
 			'sendByOne' => NULL,
-			'mother' => 'example12@mail.com',
 			'me' => 'example123@mail.com',
 			'token' => 'some token',
 			'facebook' => FALSE,
@@ -120,6 +119,7 @@ class MemberTest extends TestCase
 			'notes' => [
 				NULL
 			],
+			'external' => FALSE,
 		];
 		$this->assertEquals($expected, $formatted);
 	}
@@ -154,7 +154,6 @@ class MemberTest extends TestCase
 		$this->assertEquals('Doe', $member->getLastName());
 		$this->assertEquals('123456788', $member->getLogin());
 		$this->assertEquals(MemberService::defaultEmail, $member->getMyMail());
-		$this->assertEquals(MemberService::defaultEmail, $member->getMotherMail());
 		$this->assertEquals('EUR', $member->getCurrency()->getCode());
 		$this->assertEquals('ENG', $member->getLanguage()->getCode());
 		$this->assertTrue($member->isFacebook());
