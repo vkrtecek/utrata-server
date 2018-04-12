@@ -22,7 +22,7 @@ class TranslationSeeder extends Seeder
 		]);
 		DB::table('utrata_translations')->insert([
 		'TranslationCode' => 'AddIncome.Error.Course.Empty',
-			'value' => 'Prázdný kurz',
+			'value' => 'Nevyplněný kurz',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
@@ -30,7 +30,6 @@ class TranslationSeeder extends Seeder
 			'value' => 'Empty course',
 			'LanguageCode' => 'ENG',
 		]);
-		/*
 		DB::table('utrata_translations')->insert([
 		'TranslationCode' => 'AddIncome.Error.Date.Empty',
 			'value' => 'Nevyplněný datum',
@@ -43,7 +42,7 @@ class TranslationSeeder extends Seeder
 		]);
 		DB::table('utrata_translations')->insert([
 		'TranslationCode' => 'AddIncome.Error.Name.Empty',
-			'value' => 'Prázdný název',
+			'value' => 'Nevyplněný název',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
@@ -63,7 +62,7 @@ class TranslationSeeder extends Seeder
 		]);
 		DB::table('utrata_translations')->insert([
 		'TranslationCode' => 'AddIncome.Error.Price.Empty',
-			'value' => 'Prázdná cena',
+			'value' => 'Nevyplněná cena',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
@@ -203,7 +202,7 @@ class TranslationSeeder extends Seeder
 		]);
 		DB::table('utrata_translations')->insert([
 		'TranslationCode' => 'AddItem.Error.Course.Empty',
-			'value' => 'Prázdný kurz',
+			'value' => 'Nevyplněný kurz',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
@@ -213,7 +212,7 @@ class TranslationSeeder extends Seeder
 		]);
 		DB::table('utrata_translations')->insert([
 		'TranslationCode' => 'AddItem.Error.Date.Empty',
-			'value' => 'Prázdné datum',
+			'value' => 'Nevyplněný datum',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
@@ -223,7 +222,7 @@ class TranslationSeeder extends Seeder
 		]);
 		DB::table('utrata_translations')->insert([
 		'TranslationCode' => 'AddItem.Error.Name.Empty',
-			'value' => 'Prázdné jméno',
+			'value' => 'Nevyplněné jméno',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
@@ -253,7 +252,7 @@ class TranslationSeeder extends Seeder
 		]);
 		DB::table('utrata_translations')->insert([
 		'TranslationCode' => 'AddItem.Error.Price.Empty',
-			'value' => 'Prázdná cena',
+			'value' => 'Nevyplněná cena',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
@@ -1813,7 +1812,7 @@ class TranslationSeeder extends Seeder
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.FirstName.Empty',
-			'value' => 'Prázdné jméno',
+			'value' => 'Nevyplněné jméno',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
@@ -1838,7 +1837,7 @@ class TranslationSeeder extends Seeder
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.Form.MyMail.Empty',
-			'value' => 'Prázdná e-mailová adresa',
+			'value' => 'Nevyplněná e-mailová adresa',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
@@ -1873,7 +1872,7 @@ class TranslationSeeder extends Seeder
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.LastName.Empty',
-			'value' => 'Prázdné příjmení',
+			'value' => 'Nevyplněné příjmení',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
@@ -1973,7 +1972,7 @@ class TranslationSeeder extends Seeder
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Settings.Form.NoteAdd.Empty',
-			'value' => 'Prázdný druh útraty',
+			'value' => 'Nevyplněný druh útraty',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
@@ -2483,7 +2482,7 @@ class TranslationSeeder extends Seeder
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateIncome.Error.Course.Empty',
-			'value' => 'Prázdný kurz',
+			'value' => 'Nevyplněný kurz',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
@@ -2503,7 +2502,7 @@ class TranslationSeeder extends Seeder
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateIncome.Error.Name.Empty',
-			'value' => 'Prázdný název',
+			'value' => 'Nevyplněný název',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
@@ -2523,7 +2522,7 @@ class TranslationSeeder extends Seeder
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateIncome.Error.Price.Empty',
-			'value' => 'Prázdná cena',
+			'value' => 'Nevyplněná cena',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
@@ -2673,7 +2672,7 @@ class TranslationSeeder extends Seeder
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateItem.Error.Course.Empty',
-			'value' => 'Prázdný kurz',
+			'value' => 'Nevyplněný kurz',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
@@ -2683,7 +2682,7 @@ class TranslationSeeder extends Seeder
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateItem.Error.Date.Empty',
-			'value' => 'Prázdné datum',
+			'value' => 'Nevyplněné datum',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
@@ -2693,7 +2692,7 @@ class TranslationSeeder extends Seeder
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateItem.Error.Name.Empty',
-			'value' => 'Prázdné jméno',
+			'value' => 'Nevyplněné jméno',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
@@ -2713,7 +2712,7 @@ class TranslationSeeder extends Seeder
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'UpdateItem.Error.Price.Empty',
-			'value' => 'Prázdná cena',
+			'value' => 'Nevyplněná cena',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
@@ -3123,7 +3122,7 @@ class TranslationSeeder extends Seeder
 		]);
 		DB::table('utrata_translations')->insert([
 			'TranslationCode' => 'Wallet.Add.Error.Empty',
-			'value' => 'Prázdné jméno',
+			'value' => 'Nevyplněné jméno',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
@@ -3251,6 +3250,145 @@ class TranslationSeeder extends Seeder
 			'value' => 'YES',
 			'LanguageCode' => 'ENG',
 		]);
-		*/
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Register.H1',
+			'value' => 'Registrace',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Register.H1',
+			'value' => 'Sign in',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Register.Form.Login.Placeholder',
+			'value' => 'login',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Register.Form.Login.Placeholder',
+			'value' => 'login',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Register.Form.Password',
+			'value' => 'Heslo:',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Register.Form.Password',
+			'value' => 'Password:',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Register.Form.Login.Empty',
+			'value' => 'Nevyplněný login',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Register.Form.Login.Empty',
+			'value' => 'Empty login',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Register.Form.Login.Short',
+			'value' => 'Příliš krátký login (< {%d} znaků)',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Register.Form.Login.Short',
+			'value' => 'Login too short (< {%d} chars)',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Register.Form.Login.Exists',
+			'value' => 'Tento login již existuje',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Register.Form.Login.Exists',
+			'value' => 'This login already exists',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Register.Form.Password.Empty',
+			'value' => 'Nevyplněné heslo',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Register.Form.Password.Empty',
+			'value' => 'Empty password',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Register.Form.Password.Short',
+			'value' => 'Heslo příliš krátké (< {%d} znaků)',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Register.Form.Password.Short',
+			'value' => 'Password too short (< {%d} chars)',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Register.Form.Password.NotSame',
+			'value' => 'Hesla nejsou stejné',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Register.Form.Password.NotSame',
+			'value' => 'Passwords are not same',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Register.Form.Email.Empty',
+			'value' => 'Nevyplněný e-mail',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Register.Form.Email.Empty',
+			'value' => 'Empty e-mail',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Register.Form.Email.BadFormat',
+			'value' => 'E-mail ve špatném formátu',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Register.Form.Email.BadFormat',
+			'value' => 'E-mail in bad format',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Register.Form.Emil.Exists',
+			'value' => 'Tento e-mail již existuje',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Form.Emil.Exists',
+			'value' => 'This e-mail already exists',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Register.Button',
+			'value' => 'Registrovat',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Register.Button',
+			'value' => 'Sign in',
+			'LanguageCode' => 'ENG',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Login.Register.Button',
+			'value' => 'Registrovat',
+			'LanguageCode' => 'CZK',
+		]);
+		DB::table('utrata_translations')->insert([
+			'TranslationCode' => 'Login.Register.Button',
+			'value' => 'Sign in',
+			'LanguageCode' => 'ENG',
+		]);
 	}
 }

@@ -46,7 +46,7 @@ class CsvService implements IFileService
 	//avoid to have only one field
 	// couse it could be confused with line describing number of following rows
 	// in bad format of CSV file
-	const MEMBER_FIELDS = 11;
+	const MEMBER_FIELDS = 10;
 	const PURPOSE_FIELDS = 6;
 	const WALLET_FIELDS = 2;
 	const ITEM_FIELDS = 15;
@@ -399,7 +399,6 @@ class CsvService implements IFileService
 			$login,
 			$monthly,
 			$byOne,
-			$mother,
 			$me,
 			$fb,
 			$access,
@@ -420,7 +419,7 @@ class CsvService implements IFileService
 		$_member = new Member();
 		$_member->setFirstName($fName)->setLastName($lName)->setLogin($login)
 			->setSendMonthly($monthly)->setSendByOne($byOne)
-			->setMotherMail($mother)->setMyMail($me)->setFacebook($fb)->setAccess(new \DateTime($access))
+			->setMyMail($me)->setFacebook($fb)->setAccess(new \DateTime($access))
 			->setLanguage($language)->setCurrency($currency);
 
 		try {

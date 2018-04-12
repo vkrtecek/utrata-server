@@ -39,7 +39,6 @@ class CreateWalletsTable extends Migration
 			$table->string('passwordHash');
 			$table->boolean('sendMonthly')->default(true);
 			$table->boolean('sendByOne')->default(false);
-			$table->string('motherMail');
 			$table->string('myMail');
 			$table->boolean('admin')->default(false);
 			$table->integer('logged')->default(0);

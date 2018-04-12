@@ -19,7 +19,9 @@
 /*##################-  Member  -######################*/
 //Route::get('/members', 'MemberController@gets');
 Route::get('/member', 'MemberController@get');
-//Route::post('/member', 'MemberController@create');
+Route::get('/member/login/exists/{login}', 'MemberController@checkLoginExistence');
+Route::get('/member/email/exists/{email}', 'MemberController@checkEmailExistence');
+Route::post('/member', 'MemberController@create');
 Route::post('/member/login', 'MemberController@login');
 Route::post('/member/logout', 'MemberController@logout');
 Route::post('/member/facebook', 'MemberController@interactWithFacebook');

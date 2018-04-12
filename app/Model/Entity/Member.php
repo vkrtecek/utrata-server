@@ -143,22 +143,6 @@ class Member extends Model
 	/**
 	 * @return string
 	 */
-	public function getMotherMail() {
-		return $this->motherMail;
-	}
-
-	/**
-	 * @param string $mail
-	 * @return Member
-	 */
-	public function setMotherMail($mail) {
-		$this->motherMail = $mail;
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
 	public function getMyMail() {
 		return $this->myMail;
 	}

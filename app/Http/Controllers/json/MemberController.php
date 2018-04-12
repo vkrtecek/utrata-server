@@ -8,7 +8,6 @@ use App\Model\Exception\BadParameterException;
 use App\Model\Exception\NotFoundException;
 use App\Model\Exception\SecurityException;
 use App\Model\Service\IMemberService;
-use App\Model\Service\MemberService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -39,6 +38,36 @@ class MemberController extends AbstractController
 		$member = $this->loggedUser($req);
 		$formatted = $this->memberService->format($member);
 		return Response::create($formatted, Response::HTTP_OK);
+	}
+
+
+
+
+	/**
+	 * @param string $login
+	 * @return Response
+	 */
+	public function checkLoginExistence($login) {
+		try {
+			$this->memberService->getMember($login);
+			return Response::create([TRUE], Response::HTTP_OK);
+		} catch (NotFoundException $e) {
+			return Response::create([FALSE], Response::HTTP_OK);
+		}
+	}
+
+
+	/**
+	 * @param string $mail
+	 * @return Response
+	 */
+	public function checkEmailExistence($mail) {
+		try {
+			$this->memberService->getMemberByColumn('myMail', $mail);
+			return Response::create([TRUE], Response::HTTP_OK);
+		} catch (NotFoundException $e) {
+			return Response::create([FALSE], Response::HTTP_OK);
+		}
 	}
 
 
@@ -122,6 +151,22 @@ class MemberController extends AbstractController
 		} catch (AlreadyExistException $e) {
 			return Response::create(['error' => $e->getMessage()], Response::HTTP_CONFLICT);
 		}
+	}
+
+	public function create(Request $req) {
+		$data = $req->get('data');
+		try {
+			$member = $this->memberService->createMember($data);
+			$formatted = $this->memberService->format($member);
+		} catch (AlreadyExistException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_CONFLICT);
+		} catch (BadRequestHttpException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
+		} catch (BadParameterException $ex) {
+			return Response::create(['error' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
+		}
+
+		return Response::create($formatted, Response::HTTP_OK);
 	}
 
 

@@ -120,6 +120,7 @@ class MemberService implements IMemberService
 			throw new AlreadyExistException('MemberService: Member with this login already exists.');
 		} catch (NotFoundException $ex) {
 			$this->setMember($member, $data);
+			$member->setToken($this->createToken());
 			$member = $this->memberDao->create($member);
 			$this->createStartingPurposes($member);
 			return $member;
@@ -193,7 +194,6 @@ class MemberService implements IMemberService
 		$data['lastName'] = $fb_data['lname'];
 		$data['login'] = $fb_data['login'];
 		$data['password'] = self::defaultPassword;
-		$data['mother'] = self::defaultEmail; //$fb_data['email'];
 		$data['me'] = self::defaultEmail; //$fb_data['email'];
 		$data['expiration'] = (new DateTime('+ 14 days'))->format('Y-m-d H:i:s');
 		$data['access'] = (new DateTime())->format('Y-m-d H:i:s');
@@ -251,11 +251,13 @@ class MemberService implements IMemberService
 			if (!isset($data['login']) || $data['login'] == NULL)
 				throw new BadRequestHttpException('MemberService: "login" must be specified.');
 			if (!isset($data['password']) || $data['password'] == NULL)
-				throw new BadRequestHttpException('MemberService: "passwordHash" must be specified.');
-			if (!isset($data['mother']) || $data['mother'] == NULL)
-				throw new BadRequestHttpException('MemberService: "mother" must be specified.');
+				throw new BadRequestHttpException('MemberService: "password" must be specified.');
 			if (!isset($data['me']) || $data['me'] == NULL)
 				throw new BadRequestHttpException('MemberService: "me" must be specified.');
+
+			$member->setToken($this->createToken());
+			if (isset($data['first_name'])) $member->setFirstName($data['first_name']);
+			if (isset($data['last_name'])) $member->setLastName($data['last_name']);
 		}
 
 
@@ -310,11 +312,6 @@ class MemberService implements IMemberService
 					throw new AuthenticationException('Given oldPassword is incorrect');
 			}
 			$member->setPassword(self::getPasswordHash($data['password']));
-		}
-		if (isset($data['mother']) && $data['mother']) {
-			if (!preg_match($emailFormat, $data['mother']))
-				throw new BadParameterException('MemberService: mother mail in bad format');
-			$member->setMotherMail($data['mother']);
 		}
 		if (isset($data['me']) && $data['me']) {
 			if (!preg_match($emailFormat, $data['me']))
@@ -453,7 +450,6 @@ class MemberService implements IMemberService
 		$ret['login'] = $member->getLogin();
 		$ret['sendMonthly'] = $member->shouldSendMonthly();
 		$ret['sendByOne'] = $member->shouldSendByOne();
-		$ret['mother'] = $member->getMotherMail();
 		$ret['me'] = $member->getMyMail();
 		$ret['token'] = $member->getToken();
 		$ret['facebook'] = $member->isFacebook();
@@ -461,6 +457,7 @@ class MemberService implements IMemberService
 		$ret['currencyCode'] = $member->getCurrency()->getCode();
 		$ret['lastLogged'] = $member->getAccess()->format('Y-m-d H:i:s');
 		$ret['notes'] = $this->getFormattedPurposes($member);
+		$ret['external'] = $member->isExternal();
 
 		return $ret;
 	}

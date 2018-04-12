@@ -44,10 +44,9 @@ interface IMemberService
 	/**
 	 * @param $data
 	 * @return Member
-	 * @throws AlreadyExistException
-	 * @throws BadRequestHttpException
+	 * @throws AlreadyExistException for login, email
+	 * @throws BadRequestHttpException missing some value
 	 * @throws BadParameterException
-	 * @throws AlreadyExistException
 	 */
 	public function createMember($data);
 
