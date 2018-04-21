@@ -17,6 +17,7 @@ use App\Model\Entity\Member;
 use App\Model\Entity\MemberPurpose;
 use App\Model\Entity\Purpose;
 use App\Model\Filter\ItemFilter;
+use App\Model\Exception\NotFoundException;
 
 class MemberPurposeService implements IMemberPurposeService
 {

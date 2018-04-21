@@ -12,6 +12,7 @@ namespace Tests\Fake\Service;
 use App\Model\Entity\Member;
 use App\Model\Entity\MemberPurpose;
 use App\Model\Entity\Purpose;
+use App\Model\Exception\NotFoundException;
 use App\Model\Service\IMemberPurposeService;
 
 class FakeMemberPurposeService implements IMemberPurposeService

@@ -69,6 +69,7 @@ Route::delete('/item/{id}', 'ItemController@delete');
 Route::get('/purposes', 'PurposeController@getUserPurposes');
 Route::get('/purposes/language/{code}', 'PurposeController@getLanguagePurposes');
 Route::get('/purposesOfUser', 'PurposeController@getPurposesCreatedByUser');
+Route::get('/purposes/allAvailable', 'PurposeController@getPurposesAvailableForUser');
 //Route::get('/purpose', 'PurposeController@get');
 Route::post('/purpose', 'PurposeController@create');
 //Route::put('/purpose', 'PurposeController@update');

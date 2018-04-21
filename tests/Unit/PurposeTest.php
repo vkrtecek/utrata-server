@@ -111,6 +111,7 @@ class PurposeTest extends TestCase
 			'code' => 'transport',
 			'value' => 'Transport',
 			'deletable' => TRUE,
+			'unselectable' => TRUE,
 		];
 
 		$this->assertEquals($expected, $formatted);

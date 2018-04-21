@@ -10,6 +10,7 @@ namespace App\Model\Service;
 
 
 use App\Model\Dao\IPurposeDAO;
+use App\Model\Entity\Item;
 use App\Model\Entity\Member;
 use App\Model\Entity\Purpose;
 use App\Model\Exception\AlreadyExistException;
@@ -214,7 +215,8 @@ class PurposeService implements IPurposeService
 			'id' => $purpose->getId(),
 			'code' => $purpose->getCode(),
 			'value' => $purpose->getValue(),
-			'deletable' => !$purpose->isBase(),
+			'deletable' => !$purpose->isBase() && count($this->itemsForPurpose($purpose)) == 0,
+			'unselectable' => count($this->itemsForPurpose($purpose)) == 0,
 		];
 	}
 
@@ -229,6 +231,15 @@ class PurposeService implements IPurposeService
 		foreach($purposes as $purpose)
 			$ret[] = self::format($purpose);
 		return $ret;
+	}
+
+	/**
+	 * @param Purpose $purpose
+	 * @return Item[]|NULL
+	 */
+	private function itemsForPurpose(Purpose $purpose) {
+		$items = $this->purposeDao->findItems($purpose);
+		return $items == NULL ? [] : $items;
 	}
 
 

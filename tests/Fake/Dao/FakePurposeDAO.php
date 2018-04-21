@@ -10,6 +10,7 @@ namespace Tests\Fake\Dao;
 
 
 use App\Model\Dao\IPurposeDAO;
+use App\Model\Entity\Item;
 use App\Model\Entity\Language;
 use App\Model\Entity\Purpose;
 use App\Model\Exception\IntegrityException;
@@ -60,6 +61,14 @@ class FakePurposeDAO implements IPurposeDAO
 	 */
 	public function findOne($id) {
 		return $this->findAll()[$id % 3];
+	}
+
+	/**
+	 * @param Purpose $purpose
+	 * @return Item[]|NULL
+	 */
+	public function findItems(Purpose $purpose) {
+		return [];
 	}
 
 	/**

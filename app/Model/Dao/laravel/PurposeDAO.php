@@ -9,6 +9,7 @@
 namespace App\Model\Dao;
 
 
+use App\Model\Entity\Item;
 use App\Model\Entity\Purpose;
 use App\Model\Exception\IntegrityException;
 
@@ -38,6 +39,14 @@ class PurposeDAO implements IPurposeDAO
     public function findOne($id) {
         return Purpose::find($id);
     }
+
+    /**
+	 * @param Purpose $purpose
+	 * @return Item[]|NULL
+	 */
+	public function findItems(Purpose $purpose) {
+		return Item::where('PurposeID', $purpose->getId())->get();
+	}
 
     /**
      * @param Purpose $purpose

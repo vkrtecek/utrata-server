@@ -9,6 +9,7 @@
 namespace App\Model\Dao;
 
 
+use App\Model\Entity\Item;
 use App\Model\Entity\Purpose;
 use App\Model\Exception\IntegrityException;
 
@@ -31,6 +32,12 @@ interface IPurposeDAO
 	 * @return Purpose[]|NULL
 	 */
 	public function findByColumn($key, $val);
+
+	/**
+	 * @param Purpose $purpose
+	 * @return Item[]|NULL
+	 */
+	public function findItems(Purpose $purpose);
 
     /**
      * @param Purpose $purpose
