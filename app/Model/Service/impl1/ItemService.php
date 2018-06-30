@@ -116,8 +116,8 @@ class ItemService implements IItemService
 		}
 
 		$items = $this->itemDao->findByFilter($filters);
-		if (!count($items))
-			throw new NotFoundException('ItemService: No item found.');
+		//if (!count($items))
+		//	throw new NotFoundException('ItemService: No item found.');
 
 		return $items;
 	}

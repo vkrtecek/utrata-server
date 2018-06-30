@@ -63,4 +63,14 @@ class FakeMemberPurposeService implements IMemberPurposeService
 		$this->mp1->setMember($member);
 		return $this->mp1;
 	}
+
+	/**
+	 * @param Member $member
+	 * @param string $ids ID of each purpose separated by comma
+	 * @return void
+	 * @throws NotFoundException
+	 */
+	public function setMemberPurposes(Member $member, $ids){
+
+	}
 }

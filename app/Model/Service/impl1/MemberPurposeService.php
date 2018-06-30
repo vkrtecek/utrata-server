@@ -85,6 +85,18 @@ class MemberPurposeService implements IMemberPurposeService
 		return $this->memberPurposeDao->find($member, $purpose);
 	}
 
+	/**
+	 * @param Member $member
+	 * @param string $ids ID of each purpose separated by comma
+	 * @return void
+	 * @throws NotFoundException
+	 */
+	public function setMemberPurposes(Member $member, $ids) {
+		foreach (explode(',', $ids) as $id) {
+			$purpose = $this->purposeDao->findOne($id);
+		}
+	}
+
 
 
 
