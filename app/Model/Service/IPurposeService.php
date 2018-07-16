@@ -101,13 +101,15 @@ interface IPurposeService
 
 	/**
 	 * @param Purpose $purpose
+	 * @param Member $member
 	 * @return array
 	 */
-	public function format(Purpose $purpose);
+	public function format(Purpose $purpose, Member $member);
 
 	/**
 	 * @param Purpose[] $purposes
+	 * @param Member $member
 	 * @return array
 	 */
-	public function formatEntities($purposes);
+	public function formatEntities($purposes, Member $member);
 }

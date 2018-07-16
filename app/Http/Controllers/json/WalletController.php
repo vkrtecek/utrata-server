@@ -9,8 +9,6 @@ use App\Model\Exception\NotFoundException;
 use App\Model\Exception\UnderEntityNotFoundException;
 use App\Model\Service\IMemberService;
 use App\Model\Service\IWalletService;
-use App\Model\Service\MemberService;
-use App\Model\Service\WalletService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -163,5 +161,18 @@ class WalletController extends AbstractController
 			return Response::create(['error' => $ex->getMessage()], Response::HTTP_FORBIDDEN);
 		}
 		return Response::create($formatted, Response::HTTP_ACCEPTED);
+	}
+
+	/**
+	 * @param int $price
+	 * @return string
+	 */
+	public static function getClassForPrice($price) {
+		if ($price < 0)
+			return "red";
+		else if ($price == 0)
+			return "violet";
+		else
+			return "black";
 	}
 }

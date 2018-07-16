@@ -1,0 +1,70 @@
+* {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+#wholeDiv {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+#loginForm{
+    max-width:20vw;
+    min-width:350px;
+    position:relative;
+    margin:auto;
+    border:grey 4px solid;
+    background-color:#FF9;
+    padding: 5vh 0 3.3vh 0;
+}
+#loginForm > table{
+    margin:auto;
+}
+#loginForm > table td:nth-child(even) {
+    padding-left: 0.8rem;
+}
+#loginForm > table input{
+    max-width:150px;
+    padding: 1px 5px 1px 5px;
+    margin-bottom: 6px;
+}
+#loginForm button {
+    cursor: pointer;
+}
+span#forgottenPasswd, span#signin {
+    font-size: 90%;
+    color: #2e6da4;
+    border-bottom: solid #2e6da4 1px;
+    cursor: pointer;
+}
+span#forgottenPasswd:hover, span#signin:hover {
+    border-bottom: solid red 1px;
+}
+
+
+.badLogin input {
+    border: solid red 1px;
+}
+.badLoginText, .red {
+    color: red;
+}
+
+
+
+/* facebook */
+div#facebook {
+    margin-top: 0.4rem;
+}
+
+#facebookBtn {
+    font-family: "Helvetica", sans-serif;
+    font-size: 1.3rem;
+    background-color: #3F5CA0;
+    color: white;
+    border: solid 1px black;
+    cursor: pointer;
+    margin-top: 0.4rem;
+    padding: 0.2rem 0.5rem 0.2rem 0.5rem;
+}

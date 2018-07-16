@@ -44,6 +44,7 @@ interface IWalletService
 	 * @param Member $member
 	 * @param string $name
 	 * @return Wallet
+	 * @throws BadParameterException
 	 */
 	public function createWallet(Member $member, $name);
 

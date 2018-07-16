@@ -1,0 +1,42 @@
+div#import {
+    padding: 5rem 0 5rem 0;
+    text-align: center;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    background-color: #eee;
+}
+div#logs {
+    margin-top: 0.6rem;
+    height: 1rem;
+    color: green;
+}
+.red {
+    color: red;
+}
+button {
+    margin-left: 1.2rem;
+}
+#file {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+#file + label {
+    font-size: 1.25em;
+    font-weight: 700;
+    color: white;
+    background-color: black;
+    display: inline-block;
+    padding: 0.4rem;
+    text-decoration: underline;
+    margin-right: 0.3rem;
+}
+#file:focus + label, #file + label:hover {
+    background-color: red;
+    cursor: pointer;
+}
+.green {
+    color: green;
+}

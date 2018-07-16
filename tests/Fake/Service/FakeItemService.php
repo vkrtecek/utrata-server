@@ -11,6 +11,7 @@ namespace Tests\Fake\Service;
 
 use App\Model\Entity\Item;
 use App\Model\Entity\Member;
+use App\Model\Enum\ItemState;
 use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\BadParameterException;
@@ -32,12 +33,13 @@ class FakeItemService implements IItemService
 	 * @param string $pattern
 	 * @param string $orderBy
 	 * @param string $orderHow
+	 * @param int $offset
 	 * @return Item[]
 	 * @throws NotFoundException
 	 * @throws BadParameterException
 	 * @throws AuthenticationException
 	 */
-	public function getWalletItems($walletId, Member $member, $state, $month, $notes, $year, $pattern, $orderBy, $orderHow, $offset) {
+	public function getWalletItems($walletId, Member $member, $state = ItemState::UNCHECKED, $month = '', $notes = '', $year = '', $pattern = '', $orderBy = '', $orderHow = '', $offset = 30) {
 		return (new FakeItemDAO())->findAll();
 	}
 
@@ -124,13 +126,15 @@ class FakeItemService implements IItemService
 
 	/**
 	 * @param Item $item
+	 * @param Member $member
 	 * @return array
 	 */
-	public function format(Item $item) {}
+	public function format(Item $item, Member $member) {}
 
 	/**
 	 * @param Item[] $items
+	 * @param Member $member
 	 * @return array
 	 */
-	public function formatEntities($items) {}
+	public function formatEntities($items, Member $member) {}
 }

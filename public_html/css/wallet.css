@@ -1,0 +1,157 @@
+@charset "utf-8";
+*{
+    margin:0;
+    padding:0;
+    font-family:Verdana, Geneva, sans-serif;
+}
+
+#filterYear {
+    width: 60px;
+}
+#questionmark {
+    cursor: help;
+}
+
+h2 {
+    text-align: center;
+    font-family: "Helvetica", sans-serif;
+    font-size: 250%;
+    margin: 1.5rem 0 2.5rem 0;
+}
+h2 > #walletName {
+    color: violet;
+}
+
+#wholeWallet {
+    padding-top: 4rem;
+    width: 90%;
+    margin: auto;
+}
+
+
+
+
+
+.item{
+    margin:1.7%;
+    border-radius:7%;
+    border:solid 2px #0033FF;
+    padding:5px;
+    background-color:#FFC;
+    min-width: 42rem;
+}
+.old {
+    background-color: #FBB;
+}
+.odepsat {
+    background-color: #3FC;
+}
+.income {
+    background-color: #aaa;
+}
+.item button {
+    background-color: #fff;
+}
+.item > p, .item_old > p{
+    text-align:center;
+    font-size:12px;
+    margin-top:2vh;
+}
+#headOfTableContent{
+    margin-right:3vw;
+    margin-left:1vw;
+}
+.red{
+    color:red;
+}
+.buttons{
+    display: inline-block;
+    float: right;
+    margin-left: 0.5rem;
+}
+#itemsWithSearch {
+    margin: auto;
+    width: 90%;
+    min-width: 45rem;
+}
+span#clear { /* clear filtering cross */
+    cursor: pointer;
+}
+td.name {
+    width: 20vw;
+    min-width: 9rem;
+}
+td.description {
+    width: 20vw;
+    min-width: 9rem;
+}
+td.note {
+    width: 10vw;
+    min-width: 4.5rem;
+    text-align: center;
+}
+td.type {
+    text-align:center;
+    width: 8vw;
+    min-width: 3.6rem;
+}
+td.price {
+    width: 13vw;
+    min-width: 5.9rem;
+    text-align:right;
+}
+
+
+
+
+.delete_item, .move_item, .updateItem, .updateButtonStorno, .updateButtonSave {
+    float:right;
+    font-family:Verdana, Geneva, sans-serif;
+    font-size:14px;
+    margin: 13px 10px 0 0;
+    padding:1px;
+    width: 24px;
+    height: 24px;
+}
+.delete_item {
+    color:#F09;
+}
+.move_item{
+    color:green;
+}
+.updateItem {
+    border-color: #ccc;
+    background: url('../img/update.png') no-repeat center;
+}
+.updateButtonStorno {
+    background: url('../img/storno.jpg') no-repeat center;
+}
+.updateButtonSave {
+    background: url('../img/save.png') no-repeat center;
+}
+.delete_item:hover, .move_item:hover, .updateItem:hover, .updateButtonStorno, .updateButtonSave {
+    text-decoration:underline;
+    cursor:pointer;
+}
+
+#sumUnderItems{
+    margin-bottom: 1.3rem;
+}
+#moreButton {
+    font-size: 125%;
+    margin: 0.7rem 0 1rem 0;
+    width: 100%;
+    cursor: pointer;
+}
+span#loading{
+    background: url('../img/loading.gif') center no-repeat;
+    display: block;
+    min-width: 300px;
+    min-height: 300px;
+}
+
+
+
+#_price, #_course {
+    max-width: 7rem;
+}

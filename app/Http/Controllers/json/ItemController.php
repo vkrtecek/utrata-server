@@ -50,7 +50,7 @@ class ItemController extends AbstractController
 
 		try {
 			$items = $this->itemService->getWalletItems($walletId, $member, $state, $month, $notes, $year, $pattern, $orderBy, $orderHow, $limit);
-			$formatted = $this->itemService->formatEntities($items);
+			$formatted = $this->itemService->formatEntities($items, $member);
 		} catch (NotFoundException $ex) {
 			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NO_CONTENT);
 		} catch (BadParameterException $ex) {
@@ -98,7 +98,7 @@ class ItemController extends AbstractController
 
 		try {
 			$item = $this->itemService->createItem($member, $data);
-			$formatted = $this->itemService->format($item);
+			$formatted = $this->itemService->format($item, $member);
 		} catch (AlreadyExistException $e) {
 			return Response::create(['error' => $e->getMessage()], Response::HTTP_CONFLICT);
 		} catch (NotFoundException $e) {
@@ -169,7 +169,7 @@ class ItemController extends AbstractController
 
 		try {
 			$item = $this->itemService->updateItem($member, $data['id'], $data);
-			$formatted = $this->itemService->format($item);
+			$formatted = $this->itemService->format($item, $member);
 		} catch (NotFoundException $e) {
 			return Response::create(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
 		} catch (BadParameterException $e) {

@@ -2,7 +2,6 @@
 
 namespace App\Model\Entity;
 
-use App\Model\Enum\ItemType;
 use Illuminate\Database\Eloquent\Model;
 use DateTime;
 

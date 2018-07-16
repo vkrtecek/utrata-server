@@ -34,16 +34,21 @@ class WalletService implements IWalletService
 	/** @var ICheckStateService */
 	protected $checkStateService;
 
+	/** @var ITranslationService */
+	protected $translationsService;
+
 	/**
 	 * WalletService constructor.
 	 * @param IWalletDAO $walletDao
 	 * @param IMemberService $memberService
 	 * @param ICheckStateService $checkStateService
+	 * @param ITranslationService $translationService
 	 */
-	public function __construct(IWalletDAO $walletDao, IMemberService $memberService, ICheckStateService $checkStateService) {
+	public function __construct(IWalletDAO $walletDao, IMemberService $memberService, ICheckStateService $checkStateService, ITranslationService $translationService) {
 		$this->walletDao = $walletDao;
 		$this->memberService = $memberService;
 		$this->checkStateService = $checkStateService;
+		$this->translationsService = $translationService;
 	}
 
 	/**
@@ -81,8 +86,11 @@ class WalletService implements IWalletService
 	 * @param Member $member
 	 * @param string $name
 	 * @return Wallet
+	 * @throws BadParameterException
 	 */
 	public function createWallet(Member $member, $name) {
+		if (!$name)
+			throw new BadParameterException($this->translationsService->getTranslation('Wallet.Create.Error.Empty.Name', $member->getLanguage()->getCode(), 'Empty name')->getValue());
 		$wallet = new Wallet();
 		$wallet->setMember($member);
 		$wallet->setName($name);
@@ -102,6 +110,8 @@ class WalletService implements IWalletService
 	 * @throws AuthenticationException
 	 */
 	public function updateWallet(Member $member, $id, $name) {
+		if (!$name)
+			throw new BadParameterException($this->translationsService->getTranslation('Wallet.Update.Error.Empty.Name', $member->getLanguage()->getCode(), 'Empty name')->getValue());
 		$wallet = $this->getWallet($id, $member);
 		if ($wallet->getMember()->getId() !== $member->getId())
 			throw new AuthenticationException('WalletService: Member is not owner of this wallet.');
@@ -140,8 +150,8 @@ class WalletService implements IWalletService
 		$ret['activeItemsCnt'] = $this->getItemsCount($wallet, ItemState::UNCHECKED);
 		$ret['nonActiveItemsCnt'] = $this->getItemsCount($wallet, ItemState::CHECKED);
 		$ret['incomeItemsCnt'] = $this->getItemsCount($wallet, ItemState::INCOMES);
-		$ret['cardRest'] = $this->countRest($wallet, ItemType::CARD);
-		$ret['cashRest'] = $this->countRest($wallet, ItemType::CASH);
+		$ret['cardRest'] = number_format($this->countRest($wallet, ItemType::CARD), 2, ',', ' ');
+		$ret['cashRest'] = number_format($this->countRest($wallet, ItemType::CASH), 2, ',', ' ');
 		$ret['checkState'] = [
 			"card" => $this->checkStateService->format($this->getCheckState($wallet, ItemType::CARD)),
 			"cash" => $this->checkStateService->format($this->getCheckState($wallet, ItemType::CASH))

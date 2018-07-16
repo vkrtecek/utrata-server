@@ -8,7 +8,6 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Model\Entity\Member;
 use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\NotFoundException;

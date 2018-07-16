@@ -27,7 +27,8 @@ class LanguageDAO implements ILanguageDAO
      * @return Language|NULL
      */
     public function findOne($code){
-    	return Language::find($code);
+    	$l = Language::find($code);
+		return $l;
     }
 
     /**

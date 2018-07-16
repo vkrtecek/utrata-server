@@ -41,7 +41,7 @@ class PurposeController extends AbstractController
 
 		try {
 			$purposes = $this->purposeService->getUserPurposes($member);
-			$purposes = $this->purposeService->formatEntities($purposes);
+			$purposes = $this->purposeService->formatEntities($purposes, $member);
 		} catch (NotFoundException $ex) {
 			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
 		}
@@ -58,7 +58,7 @@ class PurposeController extends AbstractController
 		$member = $this->loggedUser($req);
 		try {
 			$purposes = $this->purposeService->getUserLanguagePurposes($member, $languageCode);
-			$formatted = $this->purposeService->formatEntities($purposes);
+			$formatted = $this->purposeService->formatEntities($purposes, $member);
 		} catch (NotFoundException $e) {
 			return Response::create(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
 		}
@@ -74,7 +74,7 @@ class PurposeController extends AbstractController
 		$member = $this->loggedUser($req);
 
 		$purposes = $this->purposeService->getPurposesCreatedByUser($member);
-		$formatted = $this->purposeService->formatEntities($purposes);
+		$formatted = $this->purposeService->formatEntities($purposes, $member);
 		return Response::create(['purposes' => $formatted], Response::HTTP_OK);
 
 	}
@@ -93,7 +93,7 @@ class PurposeController extends AbstractController
 		$member = $this->loggedUser($req);
 		try {
 			$purpose = $this->purposeService->createPurpose($member, $note);
-			$formatted = $this->purposeService->format($purpose);
+			$formatted = $this->purposeService->format($purpose, $member);
 		} catch (BadRequestHttpException $e) {
 			return Response::create(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
 		} catch (AlreadyExistException $e) {

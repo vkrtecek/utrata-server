@@ -88,7 +88,7 @@ class ItemService implements IItemService
 	 * @throws BadParameterException
 	 * @throws AuthenticationException
 	 */
-	public function getWalletItems($walletId, Member $member, $state, $month, $notes, $year, $pattern, $orderBy, $orderHow, $limit){
+	public function getWalletItems($walletId, Member $member, $state = ItemState::UNCHECKED, $month = '', $notes = '', $year = '', $pattern = '', $orderBy = '', $orderHow = '', $limit = 30) {
 		if ($state == NULL) $state = ItemState::UNCHECKED;
 		if (!$walletId)
 			throw new BadRequestHttpException('ItemService: "walletId" missing');
@@ -119,7 +119,11 @@ class ItemService implements IItemService
 		//if (!count($items))
 		//	throw new NotFoundException('ItemService: No item found.');
 
-		return $items;
+		$ret = [];
+		foreach ($items as $item) {
+			$ret[] = $item;
+		}
+		return $ret;
 	}
 
 
@@ -275,7 +279,7 @@ class ItemService implements IItemService
 	 * @throws BadRequestHttpException
 	 */
 	public function updateItem(Member $member, $id, $data) {
-		$item = $this->itemDao->findOne($id);
+		$item = $this->getItem($id);
 		$this->setItem($item, $data, FALSE);
 		$item = $this->itemDao->update($item);
 		return $item;
@@ -301,9 +305,10 @@ class ItemService implements IItemService
 
 	/**
 	 * @param Item $item
+	 * @param Member $member
 	 * @return array
 	 */
-	public function format(Item $item) {
+	public function format(Item $item, Member $member) {
 		$ret = [];
 
 		$ret['id'] = $item->getId();
@@ -317,7 +322,7 @@ class ItemService implements IItemService
 		$ret['odepsat'] = $item->isOdepsat();
 		$ret['vyber'] = $item->isVyber();
 		$ret['income'] = $item->isIncome();
-		$ret['note'] = $item->getNote() ? $this->purposeService->format($item->getNote()) : NULL ;
+		$ret['note'] = $item->getNote() ? $this->purposeService->format($item->getNote(), $member) : NULL ;
 		$ret['currency'] = $this->currencyService->format($item->getCurrency());
 		$ret['member'] = $item->getMember()->getLogin();
 		$ret['wallet'] = $item->getWallet()->getId();
@@ -327,12 +332,13 @@ class ItemService implements IItemService
 
 	/**
 	 * @param Item[] $items
+	 * @param Member $member
 	 * @return array
 	 */
-	public function formatEntities($items) {
+	public function formatEntities($items, Member $member) {
 		$ret = [];
 		foreach ($items as $item) {
-			$ret[] = self::format($item);
+			$ret[] = self::format($item, $member);
 		}
 		return $ret;
 	}
@@ -529,5 +535,17 @@ class ItemService implements IItemService
 		$minEx = $minEx['expense'] == PHP_INT_MAX ? ['expense' => 0] : $minEx;
 		$averageEx = count($monthStats) ? $acc / count($monthStats) : 0;
 		return [$minEx, $maxEx, $averageEx, $acc];
+	}
+
+	/**
+	 * @param Item[] $items
+	 * @return double
+	 */
+	public static function getItemsPrice($items) {
+		$ret = 0;
+		foreach ($items as $item) {
+			$ret += $item['price'] * $item['course'];
+		}
+		return $ret;
 	}
 }

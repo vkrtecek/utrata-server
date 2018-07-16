@@ -2,10 +2,13 @@
 
 namespace App\Exceptions;
 
+use App\Model\Exception\AuthenticationMVCException;
+use App\Model\Exception\NotFoundException;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Redirect;
 
 class Handler extends ExceptionHandler
 {
@@ -41,15 +44,17 @@ class Handler extends ExceptionHandler
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Exception  $exception
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|Redirect
      */
     public function render($request, Exception $exception)
     {
-    	if ($exception instanceof \App\Model\Exception\AuthenticationException) {
-			return Response::create(['auth' => $exception->getMessage()], Response::HTTP_UNAUTHORIZED);
-		} elseif ($exception instanceof \App\Model\Exception\NotFoundException) {
-			return Response::create(['not found' => $exception->getMessage()], Response::HTTP_UNAUTHORIZED);
-		}
+        if ($exception instanceof AuthenticationException) {
+            return Response::create(['auth' => $exception->getMessage()], Response::HTTP_UNAUTHORIZED);
+        } elseif ($exception instanceof NotFoundException) {
+            return Response::create(['not found' => $exception->getMessage()], Response::HTTP_UNAUTHORIZED);
+        }
+        if ($exception instanceof AuthenticationMVCException)
+            return redirect(route('login'));
         return parent::render($request, $exception);
     }
 
@@ -63,7 +68,7 @@ class Handler extends ExceptionHandler
     protected function unauthenticated($request, AuthenticationException $exception)
     {
         if ($request->expectsJson()) {
-            return Response::create(['error' => 'Unauthenticated.'], Response::HTTP_UNAUTHORIZED);
+            return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
         return redirect()->guest(route('login'));

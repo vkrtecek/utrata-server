@@ -105,6 +105,8 @@ return [
         ],
     ],
 
+	'old_password' => 'Current password is not correct',
+
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Attributes

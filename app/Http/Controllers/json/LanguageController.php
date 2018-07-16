@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Model\Exception\NotFoundException;
 use App\Model\Service\ILanguageService;
 use App\Model\Service\IMemberService;
-use App\Model\Service\LanguageService;
 use Illuminate\Http\Response;
 
 class LanguageController extends AbstractController

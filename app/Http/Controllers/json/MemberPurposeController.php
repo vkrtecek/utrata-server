@@ -2,12 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Model\Exception\AlreadyExistException;
-use App\Model\Exception\AuthenticationException;
-use App\Model\Exception\BadParameterException;
-use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use App\Model\Service\IMemberPurposeService;
 use App\Model\Service\IMemberService;
 use Illuminate\Http\Request;

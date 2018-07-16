@@ -43,6 +43,9 @@ class MemberService implements IMemberService
 	/** @var IMemberPurposeService */
 	protected $memberPurposeService;
 
+	/** @var ITranslationService */
+	protected $translationService;
+
 	/**
 	 * MemberService constructor.
 	 * @param IMemberDAO $memberDao
@@ -50,19 +53,22 @@ class MemberService implements IMemberService
 	 * @param ICurrencyService $currencyService
 	 * @param IPurposeService $purposeService
 	 * @param IMemberPurposeService $memberPurposeService
+	 * @param ITranslationService $translationService
 	 */
 	public function __construct(
 		IMemberDAO $memberDao,
 		ILanguageService $languageService,
 		ICurrencyService $currencyService,
 		IPurposeService $purposeService,
-		IMemberPurposeService $memberPurposeService
+		IMemberPurposeService $memberPurposeService,
+		ITranslationService $translationService
 	) {
 		$this->memberDao = $memberDao;
 		$this->languageService = $languageService;
 		$this->currencyService = $currencyService;
 		$this->purposeService = $purposeService;
 		$this->memberPurposeService = $memberPurposeService;
+		$this->translationService = $translationService;
 	}
 
 	/**
@@ -96,7 +102,7 @@ class MemberService implements IMemberService
 	 * @throws NotFoundException
 	 */
 	public function getByToken($token) {
-		$member = $this->memberDao->findOneByColumn('token', $token);
+		$member = $this->memberDao->findOneByColumn('remember_token', $token);
 		if ($member == NULL)
 			throw new NotFoundException('Member with this token not found.');
 		return $member;
@@ -237,7 +243,7 @@ class MemberService implements IMemberService
 	 * @throws AlreadyExistException
 	 * @throws AuthenticationException
 	 */
-	protected function setMember(Member $member, array $data, $newEntity = TRUE) {
+	protected function setMember(Member & $member, array $data, $newEntity = TRUE) {
 		$dateFormat = '/^2[0-1][0-9][0-9]-[0-1][0-9]-[0-3][0-9] [0-2][0-9]:[0-5][0-9]:[0-5][0-9].{0,1}[0-9]*$/';
 		$emailFormat = '/^[a-zA-Z0-9,.,_,-][a-zA-Z0-9,.,_,-]*@[a-zA-Z0-9,.,_,-][a-zA-Z0-9,.,_,-]*\.[a-z]{2,5}$/';
 		$changedLanguage = FALSE;
@@ -293,8 +299,8 @@ class MemberService implements IMemberService
 					}
 					$changedLanguage = TRUE;
 				}
-
-				$member->setLanguage($this->languageService->getLanguage($data['languageCode']));
+				$newLanguage = $this->languageService->getLanguage($data['languageCode']);
+				$member->setLanguage($newLanguage);
 			} catch (NotFoundException $ex) {
 				throw new NotFoundException('MemberService: No language found with given code.', 0, $ex);
 			}
@@ -307,9 +313,10 @@ class MemberService implements IMemberService
 		if (isset($data['password']) && $data['password']) {
 			if (!$newEntity) {
 				if (!isset($data['oldPassword']) || $data['oldPassword'] == "")
-					throw new BadRequestHttpException('MemberService: "oldPassword" expected');
-				else if (!self::verifyPasswordHash($member->getPassword(), $data['oldPassword']))
-					throw new AuthenticationException('Given oldPassword is incorrect');
+					throw new BadRequestHttpException($this->translationService->getTranslationDefault('Settings.Form.Error.OldPasswordExpected', $member->getLanguage(), '"oldPassword" expected'));
+				else if (!self::verifyPasswordHash($member->getPassword(), $data['oldPassword'])) {
+					throw new AuthenticationException($this->translationService->getTranslationDefault('Settings.Form.Error.OldPasswordIncorrect', $member->getLanguage(), 'Given oldPassword was incorrect'));
+				}
 			}
 			$member->setPassword(self::getPasswordHash($data['password']));
 		}

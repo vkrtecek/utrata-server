@@ -16,10 +16,11 @@ class CreateWalletsTable extends Migration
 		Schema::create('utrata_languages', function(Blueprint $table) { //OK
 			$table->string('LanguageCode')->primary();
 			$table->string('name');
+			$table->string('locale');
 		});
 		Schema::create('utrata_translations', function(Blueprint $table) {
 			$table->string('TranslationCode');
-			$table->string('value');
+			$table->longText('value');
 			// PRIMARY
 			$table->string('LanguageCode');
 			$table->foreign('LanguageCode')->references('LanguageCode')->on('utrata_languages');
@@ -36,13 +37,13 @@ class CreateWalletsTable extends Migration
 			$table->string('firstName')->nullable();
 			$table->string('lastName')->nullable();
 			$table->string('login')->unique();
-			$table->string('passwordHash');
+			$table->string('password');
 			$table->boolean('sendMonthly')->default(true);
 			$table->boolean('sendByOne')->default(false);
 			$table->string('myMail');
 			$table->boolean('admin')->default(false);
 			$table->integer('logged')->default(0);
-			$table->string('token')->nullable();
+			$table->string('remember_token')->nullable();
 			$table->dateTime('expiration')->nullable();
 			$table->dateTime('created')->default('2015-09-01 00:00:00');
 			$table->boolean('facebook')->default(false);

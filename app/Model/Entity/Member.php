@@ -9,17 +9,22 @@
 namespace App\Model\Entity;
 
 
-use App\Model\Enum\ItemType;
 use DateTime;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Member extends Model
+class Member extends Authenticatable
 {
 	protected $table = 'utrata_members';
-
 	public $primaryKey = 'MemberID';
-
 	public $timestamps = false;
+
+	protected $fillable = [
+		'firstName', 'lastName', 'login', 'password'
+	];
+
+	protected $hidden = [
+		'passwordHash', 'remember_token'
+	];
 
 	/** @var Language */
 	private $language = NULL;
@@ -96,7 +101,7 @@ class Member extends Model
 	 * @return string
 	 */
 	public function getPassword() {
-		return $this->passwordHash;
+		return $this->password;
 	}
 
 	/**
@@ -104,7 +109,7 @@ class Member extends Model
 	 * @return Member
 	 */
 	public function setPassword($password) {
-		$this->passwordHash = $password;
+		$this->password = $password;
 		return $this;
 	}
 
@@ -192,7 +197,7 @@ class Member extends Model
 	 * @return string
 	 */
 	public function getToken() {
-		return $this->token;
+		return $this->remember_token;
 	}
 
 	/**
@@ -200,7 +205,7 @@ class Member extends Model
 	 * @return Member
 	 */
 	public function setToken($token) {
-		$this->token = $token;
+		$this->remember_token = $token;
 		return $this;
 	}
 

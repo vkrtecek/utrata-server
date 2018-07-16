@@ -10,11 +10,13 @@ namespace App\Model\Service;
 
 
 use App\Model\Dao\ITranslationDAO;
+use App\Model\Entity\Language;
 use App\Model\Entity\Translation;
 use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\BadParameterException;
 use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class TranslationService implements ITranslationService
@@ -66,22 +68,45 @@ class TranslationService implements ITranslationService
 	/**
 	 * @param string $code
 	 * @param string $languageCode
+	 * @param string $default
 	 * @return Translation
-	 * @throws NotFoundException
 	 * @throws BadParameterException
 	 */
-	public function getTranslation($code, $languageCode) {
+	public function getTranslation($code, $languageCode, $default = '') {
 		if ($code == NULL || $code == "" || $languageCode == NULL || $languageCode == "")
 			throw new BadParameterException('TranslationService: Identifier "code" or "language" not specified.');
 		$language = $this->languageService->getLanguage($languageCode);
 		$translation = $this->translationDao->findOne($code, $language);
-		if ($translation == NULL)
-			throw new NotFoundException('TranslationService: No Translation found.');
+		if ($translation == NULL) {
+			$translation = new Translation();
+			$translation->setValue($default);
+		}
 		return $translation;
 	}
 
 	/**
-	 * @param $data
+	 * @param string $code
+	 * @param Language $language
+	 * @param string $default
+	 * @return string
+	 * @throws BadParameterException
+	 */
+	public function getTranslationDefault($code, Language $language, $default = '') {
+		return $this->getTranslation($code, $language->getCode(), $default)->getValue();
+	}
+
+	/**
+	 * @param string $code
+	 * @param string $default
+	 * @return string
+	 */
+	public function get($code, $default = '') {
+		$language = Auth::user() ? Auth::user()->getLanguage()->getCode() : 'CZK';
+		return $this->getTranslation($code, $language, $default)->getValue();
+	}
+
+	/**
+	 * @param array $data
 	 * @return Translation
 	 * @throws AlreadyExistException
 	 * @throws BadParameterException

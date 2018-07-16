@@ -9,6 +9,7 @@
 namespace App\Model\Service;
 
 
+use App\Model\Entity\Language;
 use App\Model\Entity\Translation;
 use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\BadParameterException;
@@ -35,11 +36,27 @@ interface ITranslationService
     /**
      * @param string $code
      * @param string $language
+	 * @param string $default
      * @return Translation
-     * @throws NotFoundException
      * @throws BadParameterException
      */
-    public function getTranslation($code, $language);
+    public function getTranslation($code, $language, $default = '');
+
+	/**
+	 * @param string $code
+	 * @param Language $language
+	 * @param string $default
+	 * @return string
+	 * @throws BadParameterException
+	 */
+	public function getTranslationDefault($code, Language $language, $default = '');
+
+	/**
+	 * @param string $code
+	 * @param string $default
+	 * @return string
+	 */
+	public function get($code, $default = '');
 
     /**
      * @param $data

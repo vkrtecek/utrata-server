@@ -1,6 +1,6 @@
 #!/bin/bash
 FILE="tmp.ftp"
-dirs="app bootstrap config public routes storage"
+dirs="app bootstrap config public_html routes storage"
 
 set x # print each command
 

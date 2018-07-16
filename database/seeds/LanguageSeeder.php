@@ -16,15 +16,18 @@ class LanguageSeeder extends Seeder
 	public function run() {
 		DB::table('utrata_languages')->insert([
 			'LanguageCode' => 'CZK',
-			'name' => 'Česky'
+			'name' => 'Česky',
+			'locale' => 'cs',
 		]);
 		DB::table('utrata_languages')->insert([
 			'LanguageCode' => 'ENG',
-			'name' => 'English'
+			'name' => 'English',
+			'locale' => 'en',
 		]);
 		DB::table('utrata_languages')->insert([
 			'LanguageCode' => 'SVK',
-			'name' => 'Slovensky'
+			'name' => 'Slovensky',
+			'locale' => 'sk',
 		]);
 	}
 }

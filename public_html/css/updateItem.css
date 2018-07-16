@@ -1,0 +1,49 @@
+* {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+#updateForm {
+    background-color: #EEE;
+    padding: 3rem;
+}
+#updateForm > table {
+    margin: auto;
+}
+h3 {
+    text-align: center;
+    margin-bottom: 1.4rem;
+}
+td {
+    padding-bottom: 0.2rem;
+}
+input, textarea, select {
+    width: 80%;
+    padding: 0 0.3rem 0 0.3rem;
+}
+input[type="checkbox"] {
+    width: 14px;
+}
+button {
+    cursor: pointer;
+    margin-top: 1.2rem;
+}
+.red {
+    color: red;
+}
+.green {
+    color: green;
+}
+.thirth {
+    width: 27%;
+}
+input#price {
+    width: 50%;
+}
+#otherCurrencySpan {
+    cursor: pointer;
+    text-decoration: underline;
+    color: #1f648b;
+    font-size: 90%;
+}
+strong.red {
+    font-size: 120%;
+}

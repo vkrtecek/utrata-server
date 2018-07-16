@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Model\Exception\NotFoundException;
-use App\Model\Service\CurrencyService;
 use App\Model\Service\ICurrencyService;
 use App\Model\Service\IMemberService;
 use Illuminate\Http\Response;

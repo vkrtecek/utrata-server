@@ -30,7 +30,6 @@ class TranslationSeeder extends Seeder
 			'value' => 'Empty course',
 			'LanguageCode' => 'ENG',
 		]);
-		/*
 		DB::table('utrata_translations')->insert([
 		'TranslationCode' => 'AddIncome.Error.Date.Empty',
 			'value' => 'Nevyplněný datum',
@@ -1232,12 +1231,12 @@ class TranslationSeeder extends Seeder
 			'LanguageCode' => 'ENG',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Menu.MothlyPreview',
+			'TranslationCode' => 'Menu.MonthlyPreview',
 			'value' => 'Měsíční přehled',
 			'LanguageCode' => 'CZK',
 		]);
 		DB::table('utrata_translations')->insert([
-			'TranslationCode' => 'Menu.MothlyPreview',
+			'TranslationCode' => 'Menu.MonthlyPreview',
 			'value' => 'Monthly preview',
 			'LanguageCode' => 'ENG',
 		]);
@@ -3391,6 +3390,5 @@ class TranslationSeeder extends Seeder
 			'value' => 'Sign in',
 			'LanguageCode' => 'ENG',
 		]);
-		*/
 	}
 }

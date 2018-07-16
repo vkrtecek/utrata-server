@@ -11,6 +11,7 @@ namespace App\Model\Service;
 use App\Model\Entity\Item;
 use App\Model\Entity\Member;
 use App\Model\Entity\Purpose;
+use App\Model\Enum\ItemState;
 use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\BadParameterException;
@@ -31,12 +32,13 @@ interface IItemService
 	 * @param string $pattern
 	 * @param string $orderBy
 	 * @param string $orderHow
+	 * @param int $offset
 	 * @return Item[]
 	 * @throws NotFoundException
 	 * @throws BadParameterException
 	 * @throws AuthenticationException
 	 */
-	public function getWalletItems($walletId, Member $member, $state, $month, $notes, $year, $pattern, $orderBy, $orderHow, $offset);
+	public function getWalletItems($walletId, Member $member, $state = ItemState::UNCHECKED, $month = '', $notes = '', $year = '', $pattern = '', $orderBy = '', $orderHow = '', $offset = 30);
 
 
 	/**
@@ -119,13 +121,15 @@ interface IItemService
 
 	/**
 	 * @param Item $item
+	 * @param Member $member
 	 * @return array
 	 */
-	public function format(Item $item);
+	public function format(Item $item, Member $member);
 
 	/**
 	 * @param Item[] $items
+	 * @param Member $member
 	 * @return array
 	 */
-	public function formatEntities($items);
+	public function formatEntities($items, Member $member);
 }

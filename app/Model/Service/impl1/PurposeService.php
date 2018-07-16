@@ -60,7 +60,10 @@ class PurposeService implements IPurposeService
 		$purposes = $this->purposeDao->findByColumn('LanguageCode', $language->getCode());
 		if ($purposes == NULL || count($purposes) == 0)
 			throw new NotFoundException('PurposeService: No purpose found.');
-		return $purposes;
+		$ret = [];
+		foreach ($purposes as $purpose)
+			$ret[] = $purpose;
+		return $ret;
 	}
 
 	/**
@@ -89,11 +92,14 @@ class PurposeService implements IPurposeService
 	 */
 	public function getUserLanguagePurposes(Member $member, $languageCode) {
 		$purposes = $this->getLanguagePurposes($languageCode);
+		$ret = [];
 		foreach ($purposes as $key => $purpose) {
 			if (!$purpose->isBase() && ($purpose->getCreator() === NULL || $purpose->getCreator()->getId() != $member->getId()))
 				unset($purposes[$key]);
+			else
+				$ret[] = $purpose;
 		}
-		return $purposes;
+		return $ret;
 	}
 
 	/**
@@ -116,7 +122,11 @@ class PurposeService implements IPurposeService
 	 * @return Purpose[]
 	 */
 	public function getPurposesCreatedByUser(Member $member) {
-		return $this->purposeDao->findByColumn('CreatorID', $member->getId());
+		$purposes =  $this->purposeDao->findByColumn('CreatorID', $member->getId());
+		$ret = [];
+		foreach ($purposes as $purpose)
+			$ret[] = $purpose;
+		return $ret;
 	}
 
 	/**
@@ -208,28 +218,30 @@ class PurposeService implements IPurposeService
 
 	/**
 	 * @param Purpose $purpose
+	 * @param Member $member
 	 * @return array
 	 */
-	public function format(Purpose $purpose) {
+	public function format(Purpose $purpose, Member $member) {
 		return [
 			'id' => $purpose->getId(),
 			'code' => $purpose->getCode(),
 			'value' => $purpose->getValue(),
-			'deletable' => !$purpose->isBase() && count($this->itemsForPurpose($purpose)) == 0,
+			'deletable' => !$purpose->isBase() && count($this->itemsForPurpose($purpose)) == 0 && $purpose->getCreator() && $purpose->getCreator()->getId() == $member->getId(),
 			'unselectable' => count($this->itemsForPurpose($purpose)) == 0,
 		];
 	}
 
 	/**
 	 * @param Purpose[] $purposes
+	 * @param Member $member
 	 * @return array
 	 */
-	public function formatEntities($purposes) {
+	public function formatEntities($purposes, Member $member) {
 		if (!$purposes)
 			return [];
 		$ret = [];
 		foreach($purposes as $purpose)
-			$ret[] = self::format($purpose);
+			$ret[] = self::format($purpose, $member);
 		return $ret;
 	}
 

@@ -1,0 +1,27 @@
+* {
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 105%;
+    text-align: left;
+}
+h4 {
+    padding-top: 3rem;
+}
+#form {
+    padding: 2rem 9rem 9rem 9rem;
+    background-color: #eee;
+}
+.red {
+    color: red;
+}
+.error {
+    display: block;
+}
+td {
+    padding: 0.3rem;
+}
+input {
+    max-width: 80%;
+}
+button {
+    cursor: pointer;
+}

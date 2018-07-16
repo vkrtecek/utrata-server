@@ -19,7 +19,7 @@ use App\Model\Exception\IntegrityException;
 class MemberDAO implements IMemberDAO
 {
     /**
-     * @return null|Member[]
+     * @return NULL|Member[]
      */
     public function findAll() {
         return Member::all();
