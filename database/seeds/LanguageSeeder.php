@@ -14,20 +14,29 @@ use \Illuminate\Support\Facades\DB;
 class LanguageSeeder extends Seeder
 {
 	public function run() {
-		DB::table('utrata_languages')->insert([
-			'LanguageCode' => 'CZK',
-			'name' => 'Česky',
-			'locale' => 'cs',
-		]);
-		DB::table('utrata_languages')->insert([
-			'LanguageCode' => 'ENG',
-			'name' => 'English',
-			'locale' => 'en',
-		]);
-		DB::table('utrata_languages')->insert([
-			'LanguageCode' => 'SVK',
-			'name' => 'Slovensky',
-			'locale' => 'sk',
-		]);
+		$this->prepareData();
+		DB::table('utrata_languages')->insert($this->data);
+	}
+  
+	private $data = [];
+
+	private function prepareData() {
+		$this->data = [
+			[
+				'LanguageCode' => 'CZK',
+				'name' => 'Česky',
+				'locale' => 'cs',
+			],
+			[
+				'LanguageCode' => 'ENG',
+				'name' => 'English',
+				'locale' => 'en',
+			],
+			[
+				'LanguageCode' => 'SVK',
+				'name' => 'Slovensky',
+				'locale' => 'sk',
+			],
+		];
 	}
 }

@@ -14,23 +14,32 @@ use Illuminate\Support\Facades\DB;
 class CurrencySeeder extends Seeder
 {
 	public function run() {
-		DB::table('utrata_currencies')->insert([
-			'CurrencyID' => 1,
-			'code' => 'CZK',
-			'value' => 'Kč',
-			'name' => 'Česká koruna',
-		]);
-		DB::table('utrata_currencies')->insert([
-			'CurrencyID' => 2,
-			'code' => 'EUR',
-			'value' => '€',
-			'name' => 'Euro',
-		]);
-		DB::table('utrata_currencies')->insert([
-			'CurrencyID' => 3,
-			'code' => 'USD',
-			'value' => '$',
-			'name' => 'Dollar',
-		]);
+		$this->prepareData();
+		DB::table('utrata_currencies')->insert($this->data);
+	}
+  
+	private $data = [];
+
+	private function prepareData() {
+		$this->data = [
+			[
+				'CurrencyID' => 1,
+				'code' => 'CZK',
+				'value' => 'Kč',
+				'name' => 'Česká koruna',
+			],
+			[
+				'CurrencyID' => 2,
+				'code' => 'EUR',
+				'value' => '€',
+				'name' => 'Euro',
+			],
+			[
+				'CurrencyID' => 3,
+				'code' => 'USD',
+				'value' => '$',
+				'name' => 'Dollar',
+			],
+		];
 	}
 }
