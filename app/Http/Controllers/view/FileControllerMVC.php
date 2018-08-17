@@ -12,7 +12,6 @@ namespace App\Http\Controllers;
 use App\Model\Service\IFileService;
 use App\Model\Service\IMemberService;
 use App\Model\Service\IWalletService;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Input;
 use Illuminate\View\View;
@@ -36,25 +35,36 @@ class FileControllerMVC extends AbstractControllerMVC
 		$this->walletService = $walletService;
 	}
 
+	/**
+	 * @return mixed
+	 * @throws \App\Model\Exception\AuthenticationMVCException
+	 * @throws \App\Model\Exception\BadParameterException
+	 * @throws \App\Model\Exception\NotFoundException
+	 * @throws \App\Model\Exception\UnderEntityNotFoundException
+	 */
 	public function backup() {
 		$this->assumeLogged();
-		$member = Auth::user();
-		$wallets = $this->walletService->getWallets($member->getLogin());
+		$wallets = $this->walletService->getWallets($this->member->getLogin());
 		$wallets = $this->walletService->formatEntities($wallets);
-		$file = $this->fileService->getBackup(Auth::user());
+		$file = $this->fileService->getBackup($this->member);
 		return view('pages.home')
 			->with('wallets', $wallets)
-			->with('currency', Auth::user()->getCurrency()->getValue())
+			->with('currency', $this->member->getCurrency()->getValue())
 			->with('backupFile', $file);
 	}
 
+	/**
+	 * @return \Illuminate\Contracts\View\Factory|View
+	 * @throws \App\Model\Exception\AuthenticationMVCException
+	 */
 	public function wantStore() {
 		$this->assumeLogged();
 		return view('pages.loadData');
 	}
 
 	/**
-	 * @return View
+	 * @return \Illuminate\Contracts\View\Factory|View
+	 * @throws \App\Model\Exception\AuthenticationMVCException
 	 */
 	public function store() {
 		$this->assumeLogged();

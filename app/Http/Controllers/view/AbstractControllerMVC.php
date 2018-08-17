@@ -18,6 +18,8 @@ abstract class AbstractControllerMVC extends Controller
 {
 	/** @var IMemberService */
 	protected $memberService;
+	/** @var Member */
+	protected $member;
 
 	/**
 	 * AbstractControllerMVC constructor.
@@ -31,16 +33,16 @@ abstract class AbstractControllerMVC extends Controller
 	 * @throws AuthenticationMVCException
 	 */
 	protected function assumeLogged() {
-		$member = $this->loggedMember();
-		if (!$member)
+		if (!Auth::user())
 			throw new AuthenticationMVCException('Not logged in');
+		$this->member = Auth::user();
 	}
 
 	/**
-	 * @return Member
-	 * @throws AuthenticationMVCException
+	 * @return Member|NULL
 	 */
 	protected function loggedMember() {
-		return Auth::user();
+		$this->member = Auth::user();
+		return $this->member;
 	}
 }

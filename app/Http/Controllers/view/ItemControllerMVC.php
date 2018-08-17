@@ -9,19 +9,22 @@
 namespace App\Http\Controllers;
 
 
-use App\Model\Enum\ItemState;
+use App\Model\Exception\AlreadyExistException;
+use App\Model\Exception\AuthenticationException;
+use App\Model\Exception\AuthenticationMVCException;
+use App\Model\Exception\BadParameterException;
+use App\Model\Exception\NotFoundException;
 use App\Model\Help\DateFormatter;
 use App\Model\Service\ICurrencyService;
 use App\Model\Service\IItemService;
 use App\Model\Service\IMemberService;
 use App\Model\Service\IPurposeService;
-use App\Model\Service\ItemService;
 use App\Model\Service\ITranslationService;
 use App\Model\Service\IWalletService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ItemControllerMVC extends AbstractControllerMVC
 {
@@ -68,6 +71,7 @@ class ItemControllerMVC extends AbstractControllerMVC
 	/**
 	 * @param int $id
 	 * @return Response
+	 * @throws \App\Model\Exception\AuthenticationMVCException
 	 */
 	public function getHTML($id) {
 		$this->assumeLogged();
@@ -86,6 +90,7 @@ class ItemControllerMVC extends AbstractControllerMVC
 	 * @param Request $request
 	 * @param int $walletId
 	 * @return Response
+	 * @throws AuthenticationMVCException
 	 */
 	public function getWalletItems(Request $request, $walletId) {
 		$this->assumeLogged();
@@ -101,8 +106,50 @@ class ItemControllerMVC extends AbstractControllerMVC
 	}
 
 	/**
+	 * @param int $walletId
+	 * @return View
+	 * @throws NotFoundException
+	 * @throws BadParameterException
+	 * @throws AuthenticationException
+	 */
+	public function wantAdd($walletId) {
+		$this->assumeLogged();
+		$wallet = $this->walletService->getWallet($walletId, $this->member);
+		$wallet = $this->walletService->format($wallet, $this->member);
+		return view('pages.addItem')
+			->with('wallet', $wallet);
+	}
+
+	/**
+	 * @param Request $request
+	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+	 * @throws AuthenticationException
+	 * @throws AuthenticationMVCException
+	 * @throws BadParameterException
+	 * @throws NotFoundException
+	 * @throws \App\Model\Exception\UnderEntityNotFoundException
+	 */
+	public function create(Request $request) {
+		$this->assumeLogged();
+		try {
+			$this->itemService->createItem($this->member, $request->all());
+		} catch (\Exception $e) {
+			$wallet = $this->walletService->getWallet($request->get('walletId'), $this->member);
+			$wallet = $this->walletService->format($wallet, $this->member);
+			return view('pages.addItem')
+				->with('wallet', $wallet)
+				->with('message', $e->getMessage());
+		}
+		return redirect(route('get.wallet', ['id' => $request->get('walletId')]));
+	}
+
+	/**
 	 * @param int $id
 	 * @return View
+	 * @throws AuthenticationMVCException
+	 * @throws \App\Model\Exception\BadParameterException
+	 * @throws \App\Model\Exception\NotFoundException
+	 * @throws \App\Model\Exception\UnderEntityNotFoundException
 	 */
 	public function wantUpdate($id) {
 		$this->assumeLogged();
@@ -122,6 +169,11 @@ class ItemControllerMVC extends AbstractControllerMVC
 			->with('wallets', $wallets);
 	}
 
+	/**
+	 * @param Request $request
+	 * @return Response
+	 * @throws AuthenticationMVCException
+	 */
 	public function update(Request $request) {
 		$this->assumeLogged();
 		$member = $this->loggedMember();
@@ -138,6 +190,10 @@ class ItemControllerMVC extends AbstractControllerMVC
 
 	/**
 	 * @param int $id
+	 * @throws AuthenticationMVCException
+	 * @throws \App\Model\Exception\AuthenticationException
+	 * @throws \App\Model\Exception\BadParameterException
+	 * @throws \App\Model\Exception\NotFoundException
 	 */
 	public function check($id) {
 		$this->assumeLogged();
@@ -147,6 +203,10 @@ class ItemControllerMVC extends AbstractControllerMVC
 
 	/**
 	 * @param int $id
+	 * @throws AuthenticationMVCException
+	 * @throws \App\Model\Exception\BadParameterException
+	 * @throws \App\Model\Exception\IntegrityException
+	 * @throws \App\Model\Exception\NotFoundException
 	 */
 	public function delete($id) {
 		$this->assumeLogged();

@@ -16,8 +16,10 @@ use App\Model\Entity\Item;
 use App\Model\Entity\Member;
 use App\Model\Entity\MemberPurpose;
 use App\Model\Entity\Purpose;
+use App\Model\Exception\AlreadyExistException;
 use App\Model\Filter\ItemFilter;
 use App\Model\Exception\NotFoundException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class MemberPurposeService implements IMemberPurposeService
 {
@@ -52,20 +54,27 @@ class MemberPurposeService implements IMemberPurposeService
 	 * @param Member $member
 	 * @param Purpose $purpose
 	 * @return MemberPurpose
+	 * @throws AlreadyExistException
 	 */
 	public function create(Member $member, Purpose $purpose) {
 		$already = $this->memberPurposeDao->find($member, $purpose);
-		return $already ? $already : $this->memberPurposeDao->create($member, $purpose);
+		if ($already)
+			throw new AlreadyExistException('This connection already exists.');
+		return $this->memberPurposeDao->create($member, $purpose);
 	}
 
 	/**
 	 * @param Member $member
 	 * @param Purpose $purpose
 	 * @return void
+	 * @throws BadRequestHttpException
 	 */
 	public function delete(Member $member, Purpose $purpose) {
-		if (count($this->userItemsWithPurpose($member, $purpose)) == 0)
+		if (count($this->userItemsWithPurpose($member, $purpose)) == 0) {
 			$this->memberPurposeDao->delete($member, $purpose);
+		} else {
+			throw new BadRequestHttpException('Cannot delete. You have items connected with this purpose.');
+		}
 	}
 
 	/**

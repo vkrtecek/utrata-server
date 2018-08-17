@@ -8,9 +8,7 @@
 
 namespace App\Model\Exception;
 
-use \Exception;
-
-class AuthenticationMVCException extends Exception
+class AuthenticationMVCException extends AuthenticationException
 {
 
 }

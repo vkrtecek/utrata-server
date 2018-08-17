@@ -18,6 +18,7 @@ use Tests\Fake\Service\FakeCurrencyService;
 use Tests\Fake\Service\FakeLanguageService;
 use Tests\Fake\Service\FakeMemberPurposeService;
 use Tests\Fake\Service\FakePurposeService;
+use Tests\Fake\Service\FakeTranslationService;
 use Tests\TestCase;
 
 class MemberTest extends TestCase
@@ -32,7 +33,8 @@ class MemberTest extends TestCase
 			(new FakeLanguageService()),
 			(new FakeCurrencyService()),
 			(new FakePurposeService()),
-			(new FakeMemberPurposeService())
+			(new FakeMemberPurposeService()),
+			(new FakeTranslationService())
 		);
 	}
 

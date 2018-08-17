@@ -102,10 +102,11 @@ class PurposeTest extends TestCase
 	}
 
 	public function testFormat() {
+		$member = (new FakeMemberService())->getMember('vojta');
 		$purpose = $this->purposeService->getPurpose(1);
 		$this->assertTrue($purpose instanceof Purpose);
 
-		$formatted = $this->purposeService->format($purpose);
+		$formatted = $this->purposeService->format($purpose, $member);
 		$expected = [
 			'id' => NULL,
 			'code' => 'transport',

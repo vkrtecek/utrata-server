@@ -25,6 +25,7 @@ use DateTime;
 
 class MemberService implements IMemberService
 {
+	const TOKEN_STRLEN = 44;
 	const defaultPassword = 'Facebook Password';
 	const defaultEmail = 'someFacebook@example.com';
 
@@ -479,7 +480,7 @@ class MemberService implements IMemberService
 			return $ret;
 
 		foreach ($this->memberDao->getMemberPurposes($member) as $memberPurpose) {
-			$ret[] = $this->purposeService->format($memberPurpose->getPurpose());
+			$ret[] = $this->purposeService->format($memberPurpose->getPurpose(), $member);
 		}
 		return $ret;
 	}
@@ -519,9 +520,8 @@ class MemberService implements IMemberService
 	/**
 	 * @return string
 	 */
-	private function createToken()
-	{
-		return bin2hex(random_bytes(44));
+	protected function createToken() {
+		return bin2hex(random_bytes(self::TOKEN_STRLEN));
 	}
 
 

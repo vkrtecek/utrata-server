@@ -15,7 +15,6 @@ use App\Model\Service\IMemberService;
 use App\Model\Service\IPurposeService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class MemberControllerMVC extends AbstractControllerMVC
@@ -59,6 +58,13 @@ class MemberControllerMVC extends AbstractControllerMVC
 
 	}
 
+	/**
+	 * @param Request $request
+	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+	 * @throws NotFoundException
+	 * @throws \App\Model\Exception\AuthenticationMVCException
+	 * @throws \App\Model\Exception\BadParameterException
+	 */
 	public function update(Request $request) {
 		$this->assumeLogged();
 		$ignore = ['login', 'me'];
@@ -70,12 +76,11 @@ class MemberControllerMVC extends AbstractControllerMVC
 		try {
 			$this->memberService->updateMember($request->get('login'), $request->all());
 		} catch (\Exception $ex) {
-			$member = Auth::user();
 			$currencies = $this->currencyService->getCurrencies();
 			$languages = $this->languageService->getLanguages();
-			$purposes = $this->purposeService->getLanguagePurposes($member->getLanguage()->getCode());
+			$purposes = $this->purposeService->getLanguagePurposes($this->member->getLanguage()->getCode());
 			return view('pages.settings')->with('warning', $ex->getMessage())
-				->with('member', $member)
+				->with('member', $this->member)
 				->with('currencies', $currencies)
 				->with('languages', $languages)
 				->with('notes', $purposes)
@@ -95,18 +100,22 @@ class MemberControllerMVC extends AbstractControllerMVC
 
 	}
 
+	/**
+	 * @return mixed
+	 * @throws NotFoundException
+	 * @throws \App\Model\Exception\AuthenticationMVCException
+	 */
 	public function settings() {
 		$this->assumeLogged();
-		$member = Auth::user();
 		$currencies = $this->currencyService->getCurrencies();
 		$languages = $this->languageService->getLanguages();
 		try {
-			$purposes = $this->purposeService->getLanguagePurposes($member->getLanguage()->getCode());
+			$purposes = $this->purposeService->getLanguagePurposes($this->member->getLanguage()->getCode());
 		} catch (NotFoundException $e) {
 			$purposes = [];
 		}
 		return view('pages.settings')
-			->with('member', $member)
+			->with('member', $this->member)
 			->with('currencies', $currencies)
 			->with('languages', $languages)
 			->with('notes', $purposes)
@@ -129,7 +138,7 @@ class MemberControllerMVC extends AbstractControllerMVC
 			'login' => 'bail|required|string|min:4|unique',
 			'me' => 'bail|required|string|email|max:191|unique',
 			'password' => 'bail|required|string|min:' . self::MIN_PASSWD_LENGTH . '|confirmed',
-			'oldPassword' => 'required|string|oldPassword:' . Auth::user()->getPassword(),
+			'oldPassword' => 'required|string|oldPassword:' . $this->member->getPassword(),
 		];
 		if ($ignore) {
 			foreach ($ignore as $param)

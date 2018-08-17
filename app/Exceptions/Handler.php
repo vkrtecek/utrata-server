@@ -48,13 +48,12 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        if ($exception instanceof AuthenticationException) {
+		if ($exception instanceof AuthenticationMVCException)
+			return redirect(route('login'));
+        if ($exception instanceof \App\Model\Exception\AuthenticationException)
             return Response::create(['auth' => $exception->getMessage()], Response::HTTP_UNAUTHORIZED);
-        } elseif ($exception instanceof NotFoundException) {
+        if ($exception instanceof NotFoundException)
             return Response::create(['not found' => $exception->getMessage()], Response::HTTP_UNAUTHORIZED);
-        }
-        if ($exception instanceof AuthenticationMVCException)
-            return redirect(route('login'));
         return parent::render($request, $exception);
     }
 

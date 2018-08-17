@@ -18,6 +18,7 @@ use Tests\Exception\FirstDeleteForeignException;
 use Tests\Fake\Dao\FakeWalletDAO;
 use Tests\Fake\Service\FakeCheckStateService;
 use Tests\Fake\Service\FakeMemberService;
+use Tests\Fake\Service\FakeTranslationService;
 use Tests\TestCase;
 
 class WalletTest extends TestCase
@@ -36,7 +37,8 @@ class WalletTest extends TestCase
 		$this->walletService = new WalletService(
 			new FakeWalletDAO(),
 			new FakeMemberService(),
-			new FakeCheckStateService()
+			new FakeCheckStateService(),
+			new FakeTranslationService()
 
 		);
 		$this->member = (new FakeMemberService)->getMember('vojta');
@@ -88,8 +90,8 @@ class WalletTest extends TestCase
 			'activeItemsCnt' => 0,
 			'nonActiveItemsCnt' => 0,
 			'incomeItemsCnt' => 0,
-			'cardRest' => 0,
-			'cashRest' => 0,
+			'cardRest' => '0,00',
+			'cashRest' => '0,00',
 			'checkState' => [
 				'card' => [],
 				'cash' => [],

@@ -22,6 +22,11 @@ abstract class AbstractController extends Controller
 	protected $memberService;
 
 	/**
+	 * @var Member
+	 */
+	protected $member;
+
+	/**
 	 * AbstractController constructor.
 	 * @param IMemberService $memberService
 	 */
@@ -35,24 +40,29 @@ abstract class AbstractController extends Controller
 	 */
 	protected function assumeLogged(Request $req) {
 		try {
-			$member = $this->loggedUser($req);
+			$this->member = $this->loggedUser($req);
 		} catch (NotFoundException $ex) {
 			//throw new AuthenticationException("Bad token: " . $ex->getMessage());
 			throw new AuthenticationException("Member not logged.");
 		}
 
-		if ($member->getExpiration() < new \DateTime())
+		if ($this->member->getExpiration() < new \DateTime())
 			throw new AuthenticationException("The token expirated");
 	}
 
 	/**
 	 * @param Request $req
 	 * @throws AuthenticationException
+	 * @throws NotFoundException
 	 */
 	protected function assumeAdmin(Request $req) {
 		$this->assumeLogged($req);
-		$member = $this->loggedUser($req);
-		if (!$member->isAdmin())
+		try {
+			$this->loggedUser($req);
+		} catch (NotFoundException $e) {
+			throw new AuthenticationException($e->getMessage());
+		}
+		if (!$this->member->isAdmin())
 			throw new AuthenticationException('Not admin');
 	}
 

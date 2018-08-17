@@ -9,11 +9,14 @@
 namespace App\Http\Controllers;
 
 
+use App\Model\Exception\AlreadyExistException;
+use App\Model\Exception\AuthenticationException;
 use App\Model\Service\IMemberPurposeService;
 use App\Model\Service\IMemberService;
 use App\Model\Service\IPurposeService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class MemberPurposeControllerMVC extends AbstractControllerMVC
 {
@@ -36,22 +39,41 @@ class MemberPurposeControllerMVC extends AbstractControllerMVC
 	}
 
 	/**
-	 * Creates MemberPurpose
 	 * @param Request $request
+	 * @return Response
+	 * @throws \App\Model\Exception\BadParameterException
+	 * @throws \App\Model\Exception\NotFoundException
+	 * @throws AuthenticationException
 	 */
 	public function create(Request $request) {
-		$member = $this->memberService->getMember($request->get('user'));
+		$this->assumeLogged();
 		$purpose = $this->purposeService->getPurpose($request->get('purpose'));
-		$this->memberPurposeService->create($member, $purpose);
+		try {
+			$ret = $this->memberPurposeService->create($this->member, $purpose);
+		} catch (AlreadyExistException $e) {
+			return Response::create(['error' => $e->getMessage(), Response::HTTP_CONFLICT]);
+		}
+		return Response::create([
+			'success' => true,
+			'created' => $ret,
+		], Response::HTTP_OK);
 	}
 
 	/**
-	 * Deletes MemberPurpose
 	 * @param Request $request
+	 * @return Response
+	 * @throws \App\Model\Exception\BadParameterException
+	 * @throws \App\Model\Exception\NotFoundException
+	 * @throws AuthenticationException
 	 */
 	public function delete(Request $request) {
-		$member = $this->memberService->getMember($request->get('user'));
-		$purpose = $this->purposeService->getPurpose($request->get('purpose'));
-		$this->memberPurposeService->delete($member, $purpose);
+		$this->assumeLogged();
+		try {
+			$purpose = $this->purposeService->getPurpose($request->get('purpose'));
+			$this->memberPurposeService->delete($this->member, $purpose);
+		} catch (BadRequestHttpException $e) {
+			return Response::create(['error' => $e->getMessage()]);
+		}
+		return Response::create(['success' => true]);
 	}
 }

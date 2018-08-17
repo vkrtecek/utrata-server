@@ -131,8 +131,9 @@ class ItemTest extends TestCase
 	}
 
 	public function testFormat() {
+		$member = (new FakeMemberService())->getMember('vojta');
 		$item = (new FakeItemService())->getItem(0);
-		$formatted = $this->itemService->format($item);
+		$formatted = $this->itemService->format($item, $member);
 		$expected = [
 			'id' => 1,
 			'name' => 'some name',

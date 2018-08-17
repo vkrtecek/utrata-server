@@ -1,7 +1,5 @@
 @extends('wallet')
 @inject('trans', 'App\Model\Service\ITranslationService')
-@inject('iservice', 'App\Model\Service\IItemService')
-@inject('dateFormatter', 'App\Model\Help\DateFormatter')
 
 @section('navigation')
     <div class="container">

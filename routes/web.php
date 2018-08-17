@@ -25,9 +25,10 @@ Route::put('member', 'MemberControllerMVC@update')->name('put.member');
 /*##################-  Item  -######################*/
 Route::get('/item/{itemId}', 'ItemControllerMVC@getHTML')->name('get.item.HTML');
 Route::get('/items/wallet/{walletId}', 'ItemControllerMVC@getWalletItems')->name('get.items.wallet');
+Route::get('/wallet/{id}/addItem', 'ItemControllerMVC@wantAdd')->name('get.item.addItem');
 Route::get('/item/update/{itemId}', 'ItemControllerMVC@wantUpdate')->name('get.item.update');
 //Route::get('/items/statistics', 'ItemControllerMVC@statistics')->name('get.items.statistics');
-//Route::post('/item', 'ItemControllerMVC@create')->name('post.item');
+Route::post('/item', 'ItemControllerMVC@create')->name('post.item');
 Route::put('/item', 'ItemControllerMVC@update')->name('put.item');
 Route::put('/item/check/{id}', 'ItemControllerMVC@check')->name('put.item.check');
 //Route::put('/items/check', 'ItemControllerMVC@checkAll')->name('put.items.check');

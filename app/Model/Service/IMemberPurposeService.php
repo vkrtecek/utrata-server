@@ -12,7 +12,9 @@ namespace App\Model\Service;
 use App\Model\Entity\Member;
 use App\Model\Entity\MemberPurpose;
 use App\Model\Entity\Purpose;
+use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\NotFoundException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 interface IMemberPurposeService
 {
@@ -20,6 +22,7 @@ interface IMemberPurposeService
 	 * @param Member $member
 	 * @param Purpose $purpose
 	 * @return MemberPurpose
+	 * @throws AlreadyExistException
 	 */
 	public function create(Member $member, Purpose $purpose);
 
@@ -27,6 +30,7 @@ interface IMemberPurposeService
 	 * @param Member $member
 	 * @param Purpose $purpose
 	 * @return void
+	 * @throws BadRequestHttpException
 	 */
 	public function delete(Member $member, Purpose $purpose);
 

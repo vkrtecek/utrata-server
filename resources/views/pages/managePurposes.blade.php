@@ -24,7 +24,7 @@
         <form method="POST" action="{{ route('post.purpose') }}">
             <label for="addNote">{{ $trans->get('ManageNotes.Form.AddLabel', 'Add:') }}</label>
             <input type="text" id="addNote" placeholder="Transport" name="name" autofocus>
-            <button>{{ $trans->get('ManageNotes.Form.AddButton', 'Add') }}</button>
+            <button type="submit">{{ $trans->get('ManageNotes.Form.AddButton', 'Add') }}</button>
         </form>
 
         <hr />

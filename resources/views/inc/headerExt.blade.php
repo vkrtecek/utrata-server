@@ -9,7 +9,7 @@
 
         <ul class="dropdown-menu" role="menu">
             <li>
-                <a href="#">{{ $trans->get('Menu.AddItem', 'Add item') }}</a>
+                <a href="{{ route('get.item.addItem', ['id' => $wallet['id']]) }}">{{ $trans->get('Menu.AddItem', 'Add item') }}</a>
             </li>
             <li>
                 <a href="#">{{ $trans->get('Menu.Incomes', 'Incomes') }}</a>

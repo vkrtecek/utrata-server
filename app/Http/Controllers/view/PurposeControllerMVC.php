@@ -9,12 +9,13 @@
 namespace App\Http\Controllers;
 
 
+use App\Model\Entity\Purpose;
 use App\Model\Exception\AlreadyExistException;
+use App\Model\Exception\NotFoundException;
 use App\Model\Service\IMemberService;
 use App\Model\Service\IPurposeService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 
 class PurposeControllerMVC extends AbstractControllerMVC
@@ -34,21 +35,22 @@ class PurposeControllerMVC extends AbstractControllerMVC
 
 	/**
 	 * @return View
+	 * @throws \App\Model\Exception\AuthenticationMVCException
+	 * @throws \App\Model\Exception\NotFoundException
 	 */
 	public function manage() {
 		$this->assumeLogged();
-		$member = Auth::user();
-		$purposes = $this->purposeService->getLanguagePurposes($member->getLanguage()->getCode());
-		foreach ($this->purposeService->getPurposesCreatedByUser($member) as $purpose) {
+		$purposes = $this->purposeService->getLanguagePurposes($this->member->getLanguage()->getCode());
+		foreach ($this->purposeService->getPurposesCreatedByUser($this->member) as $purpose) {
 			if (!in_array($purpose, $purposes))
 				array_push($purposes, $purpose);
 		}
-		usort($purposes, function($a, $b) {
+		usort($purposes, function(Purpose $a, Purpose $b) {
 			return $a->getId() > $b->getId() ? 1 : -1;
 		});
-		$purposes = $this->purposeService->formatEntities($purposes, $member);
-		$usingNotes = $this->purposeService->getUserPurposes($member);
-		$usingNotes = array_map(function($val) {
+		$purposes = $this->purposeService->formatEntities($purposes, $this->member);
+		$usingNotes = $this->purposeService->getUserPurposes($this->member);
+		$usingNotes = array_map(function(Purpose $val) {
 			return $val->getId();
 		}, $usingNotes);
 		return view('pages.managePurposes')
@@ -58,25 +60,26 @@ class PurposeControllerMVC extends AbstractControllerMVC
 
 	/**
 	 * @param Request $request
-	 * @return View|Redirect
+	 * @return Redirect|View
+	 * @throws \App\Model\Exception\AuthenticationMVCException
+	 * @throws NotFoundException
 	 */
 	public function create(Request $request) {
 		$this->assumeLogged();
-		$member = Auth::user();
 		try {
-			$this->purposeService->createPurpose($member, $request->all());
+			$this->purposeService->createPurpose($this->member, $request->all());
 		} catch (AlreadyExistException $ex) {
-			$purposes = $this->purposeService->getLanguagePurposes($member->getLanguage()->getCode());
-			foreach ($this->purposeService->getPurposesCreatedByUser($member) as $purpose) {
+			$purposes = $this->purposeService->getLanguagePurposes($this->member->getLanguage()->getCode());
+			foreach ($this->purposeService->getPurposesCreatedByUser($this->member) as $purpose) {
 				if (!in_array($purpose, $purposes))
 					array_push($purposes, $purpose);
 			}
-			usort($purposes, function($a, $b) {
+			usort($purposes, function(Purpose $a, Purpose $b) {
 				return $a->getId() > $b->getId() ? 1 : -1;
 			});
-			$purposes = $this->purposeService->formatEntities($purposes, $member);
-			$usingNotes = $this->purposeService->getUserPurposes($member);
-			$usingNotes = array_map(function($val) {
+			$purposes = $this->purposeService->formatEntities($purposes, $this->member);
+			$usingNotes = $this->purposeService->getUserPurposes($this->member);
+			$usingNotes = array_map(function(Purpose $val) {
 				return $val->getId();
 			}, $usingNotes);
 			return view('pages.managePurposes')
@@ -92,13 +95,16 @@ class PurposeControllerMVC extends AbstractControllerMVC
 	}
 
 	/**
-	 * Deletes purpose by id
 	 * @param int $id
 	 * @return Redirect
+	 * @throws \App\Model\Exception\AuthenticationMVCException
+	 * @throws \App\Model\Exception\BadParameterException
+	 * @throws \App\Model\Exception\IntegrityException
+	 * @throws \App\Model\Exception\NotFoundException
 	 */
 	public function delete($id) {
 		$this->assumeLogged();
-		$this->purposeService->deletePurpose($id, Auth::user());
+		$this->purposeService->deletePurpose($id, $this->member);
 		return redirect(route('get.purposes.manage'));
 	}
 
