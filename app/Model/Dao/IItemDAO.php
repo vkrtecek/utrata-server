@@ -81,4 +81,10 @@ interface IItemDAO
 	 * @return Item|NULL
 	 */
 	public function checkExistence(Item $item);
+
+    /**
+     * @param ItemFilter $filter
+     * @return int
+     */
+	public function count(ItemFilter $filter): int;
 }

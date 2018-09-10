@@ -1,4 +1,4 @@
-@extends('base')
+@extends('wallet')
 @inject('trans', 'App\Model\Service\ITranslationService')
 @inject('dateFormatter', 'App\Model\Help\DateFormatter')
 
@@ -24,7 +24,7 @@
     <div class="container">
         <div id="updateForm">
             <h3>{{ $trans->get('UpdateItem.Form.Heading', 'Update item form') }}</h3>
-            <form method="POST" action="{{ route('put.item') }}">
+            <form method="POST" action="{{ route('put.item', ['id' => $item['id']]) }}">
                 {{ csrf_field() }}
                 <input type="hidden" name="_method" value="put">
                 <input type="hidden" name="id" value="{{ $item['id'] }}">
@@ -115,6 +115,7 @@
                     -->
 
                     <!-- purpose -->
+                    @if($item['income'] !== true)
                     <tr>
                         <td>
                             <label for="purpose">{{ $trans->get('UpdateItem.Form.Purpose', 'Note:') }}</label>
@@ -129,6 +130,7 @@
                             </select>
                         </td>
                     </tr>
+                    @endif
 
                     <!-- wallet -->
                     <tr>
@@ -151,12 +153,19 @@
                             <button type="submit" class="green">{{ $trans->get('UpdateItem.Form.Save', 'Update') }}</button>
                         </td>
                         <td>
-                            <button class="red"><a href="{{ route('get.wallet', ['id' => $item['wallet']]) }}">{{ $trans->get('UpdateItem.Form.Storno', 'Strono') }}</a></button>
+                            <button class="red"><a href="{{ old('previousURL') ?? $previousURL }}">{{ $trans->get('UpdateItem.Form.Storno', 'Strono') }}</a></button>
                             <span class="red">* {{ $trans->get('Item.Form.Required', 'Required fields') }}</span>
                         </td>
                     </tr>
+                    <input type="hidden" name="previousURL" value="{{ old('previousURL') ?? $previousURL }}" />
                 </table>
             </form>
+
+            @if(isset($message))
+                <div class="red message">
+                    {{ $message }}
+                </div>
+            @endif
         </div>
     </div>
 @endsection

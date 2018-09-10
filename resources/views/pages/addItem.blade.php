@@ -32,7 +32,7 @@
                         <!-- name -->
                         <tr>
                             <td>
-                                <label for="name">{{ $trans->get('AddItem.Form.Name', 'Name:') }}</label>
+                                <label for="name">{{ $trans->get('AddItem.Form.Name', 'Name:') }} {{ old('name') }}</label>
                             </td>
                             <td>
                                 <input type="text" name="name" id="name" value="{{ old('name') }}" placeholder="{{ $trans->get('AddItem.Form.Name.Placeholder', 'name') }}" autofocus /><strong class="red"> *</strong>
@@ -68,7 +68,7 @@
                             <td>
                                 <select id="currency" name="currencyId" class="thirth" onchange="recountCourse('{{ Auth::user()->getCurrency()->getCode() }}', 'course')">
                                     @foreach($CService->getCurrencies() as $curr)
-                                        <option {{ $curr['id'] == Auth::user()->getCurrency()->getId() ? 'selected' : '' }} value="{{ $curr['id'] }}">
+                                        <option {{ $curr['CurrencyID'] == Auth::user()->getCurrency()->getId() ? 'selected' : '' }} value="{{ $curr['code'] }}">
                                             {{ $curr['value'] }}
                                         </option>
                                     @endforeach
@@ -123,7 +123,7 @@
                             <td>
                                 <select id="purpose" name="noteId">
                                     @foreach($PService->getUserPurposes(Auth::user()) as $note)
-                                        <option value="{{ $note['id'] }}">{{ $note['value'] }}</option>
+                                        <option value="{{ $note['PurposeID'] }}">{{ $note['value'] }}</option>
                                     @endforeach
                                 </select>
                             </td>
@@ -134,10 +134,10 @@
                             <button type="submit" class="green">{{ $trans->get('AddItem.Form.Save', 'Store') }}</button>
                         </td>
                         <td>
-                            <form method="GET" action="{{ route('get.wallet', ['id' => $wallet['id']]) }}">
-                                <button type="submit" class="red">{{ $trans->get('AddItem.Form.Storno', 'Strono') }}</button>
-                                <span class="red">* {{ $trans->get('Item.Form.Required', 'Required fields') }}</span>
-                            </form>
+                            <button type="submit" class="red">
+                                <a href="{{ route('get.wallet', ['id' => $wallet['id']]) }}">{{ $trans->get('AddItem.Form.Storno', 'Strono') }}</a>
+                            </button>
+                            <span class="red">* {{ $trans->get('Item.Form.Required', 'Required fields') }}</span>
                         </td>
                     </tr>
                 </table>

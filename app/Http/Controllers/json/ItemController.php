@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Pagination;
 use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\BadParameterException;
@@ -36,21 +37,16 @@ class ItemController extends AbstractController
 	 * @param Request $req
 	 * @param int $walletId
 	 * @return Response
+     * @throws AuthenticationException
 	 */
 	public function getWalletItems(Request $req, $walletId) {
-		$member = $this->loggedUser($req);
-		$state = $req->get('state');
-		$month = $req->get('month');
-		$notes = $req->get('notes');
-		$year = $req->get('year');
-		$pattern = $req->get('pattern');
-		$orderBy = $req->get('orderBy');
-		$orderHow = $req->get('orderHow');
-		$limit = $req->get('limit');
+	    $this->assumeLogged($req);
 
 		try {
-			$items = $this->itemService->getWalletItems($walletId, $member, $state, $month, $notes, $year, $pattern, $orderBy, $orderHow, $limit);
-			$formatted = $this->itemService->formatEntities($items, $member);
+		    $filter = Pagination::create($req, 'Item');
+		    $filter->setWalletId($walletId)->setMember($this->member);
+			$items = $this->itemService->getWalletItems($walletId, $this->member, $filter);
+			$formatted = $this->itemService->formatEntities($items, $this->member);
 		} catch (NotFoundException $ex) {
 			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NO_CONTENT);
 		} catch (BadParameterException $ex) {
@@ -65,14 +61,14 @@ class ItemController extends AbstractController
 	/**
 	 * @param Request $req
 	 * @return Response
+     * @throws AuthenticationException
 	 */
 	public function statistics(Request $req) {
 		$this->assumeLogged($req);
-		$member = $this->loggedUser($req);
 		$walletId = $req->get('id');
 		$purposes = $req->get('notes');
 		try {
-			$statistics = $this->itemService->getMonthStatistics($member, $walletId, $purposes);
+			$statistics = $this->itemService->getMonthStatistics($this->member, $walletId, $purposes);
 		} catch (NotFoundException $ex) {
 			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NO_CONTENT);
 		} catch (BadParameterException $ex) {
@@ -90,15 +86,15 @@ class ItemController extends AbstractController
 	/**
 	 * @param Request $req
 	 * @return Response
+     * @throws AuthenticationException
 	 */
 	public function create(Request $req) {
 		$this->assumeLogged($req);
-		$member = $this->loggedUser($req);
 		$data = $req->get('item');
 
 		try {
-			$item = $this->itemService->createItem($member, $data);
-			$formatted = $this->itemService->format($item, $member);
+			$item = $this->itemService->createItem($this->member, $data);
+			$formatted = $this->itemService->format($item, $this->member);
 		} catch (AlreadyExistException $e) {
 			return Response::create(['error' => $e->getMessage()], Response::HTTP_CONFLICT);
 		} catch (NotFoundException $e) {
@@ -114,13 +110,14 @@ class ItemController extends AbstractController
 	 * @param Request $req
 	 * @param int $id
 	 * @return Response
+     * @throws AuthenticationException
+     * @throws BadParameterException
 	 */
 	public function check(Request $req, $id) {
 		$this->assumeLogged($req);
-		$member = $this->loggedUser($req);
 
 		try {
-			$this->itemService->checkItem($member, $id);
+			$this->itemService->checkItem($this->member, $id);
 		} catch (NotFoundException $ex) {
 			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
 		} catch (AuthenticationException $ex) {
@@ -132,19 +129,14 @@ class ItemController extends AbstractController
 	/**
 	 * @param Request $req
 	 * @return Response
+     * @throws AuthenticationException
 	 */
 	public function checkAll(Request $req) {
-		$member = $this->loggedUser($req);
-		$walletId = $req->get('wallet');
-		$month = $req->get('month');
-		$notes = $req->get('notes');
-		$year = $req->get('year');
-		$pattern = $req->get('pattern');
-		$orderBy = $req->get('orderBy');
-		$orderHow = $req->get('orderHow');
-		$limit = $req->get('limit');
+		$this->assumeLogged($req);
 		try {
-			$res = $this->itemService->checkAll($walletId, $member, $month, $notes, $year, $pattern, $orderBy, $orderHow, $limit);
+            $filter = Pagination::create($req, 'Item');
+            $filter->setWalletId($req->get('wallet'))->setMember($this->member);
+			$res = $this->itemService->checkAll($req->get('wallet'), $this->member, $filter);
 		} catch (NotFoundException $e) {
 			return Response::create(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
 		} catch (BadParameterException $e) {
@@ -159,17 +151,17 @@ class ItemController extends AbstractController
 	/**
 	 * @param Request $req
 	 * @return Response
+     * @throws AuthenticationException
 	 */
 	public function update(Request $req) {
 		$this->assumeLogged($req);
-		$member = $this->loggedUser($req);
 		$data = $req->get('item');
 		if (!$data || !isset($data['id']))
 			return Response::create(['error' => 'Item missing'], Response::HTTP_BAD_REQUEST);
 
 		try {
-			$item = $this->itemService->updateItem($member, $data['id'], $data);
-			$formatted = $this->itemService->format($item, $member);
+			$item = $this->itemService->updateItem($this->member, $data['id'], $data);
+			$formatted = $this->itemService->format($item, $this->member);
 		} catch (NotFoundException $e) {
 			return Response::create(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
 		} catch (BadParameterException $e) {
@@ -184,15 +176,15 @@ class ItemController extends AbstractController
 
 	/**
 	 * @param Request $req
-	 * @param $id
+	 * @param int $id
 	 * @return Response
+     * @throws AuthenticationException
 	 */
 	protected function delete(Request $req, $id) {
 		$this->assumeLogged($req);
-		$member = $this->loggedUser($req);
 
 		try {
-			$this->itemService->deleteItem($member, $id);
+			$this->itemService->deleteItem($this->member, $id);
 		} catch (NotFoundException $ex) {
 			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
 		} catch (BadParameterException $ex) {

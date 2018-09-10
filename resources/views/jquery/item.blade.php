@@ -6,7 +6,7 @@
 
 <div id="buttons">
 	<button onclick="stornoUpdating(' {{ route('get.items.wallet', ['id' => $item['wallet']]) }} ', ' {{ App\Model\Enum\ItemState::UNCHECKED }} ')" class="updateButtonStorno"></button>
-	<button onclick="acceptUpdating(' {{ route('put.item') }} ', ' {{ route('get.items.wallet', ['id' => $item['wallet']]) }} ', ' {{ App\Model\Enum\ItemState::UNCHECKED }} ')" class="updateButtonSave"></button>
+	<button onclick="acceptUpdating(' {{ route('put.item') }} ', ' {{ route('get.items.wallet', ['id' => $item['wallet']]) }} ', '{{ App\Model\Enum\ItemState::UNCHECKED }}')" class="updateButtonSave"></button>
 </div>
 
 <table rules="none">

@@ -54,12 +54,11 @@ class MemberPurposeService implements IMemberPurposeService
 	 * @param Member $member
 	 * @param Purpose $purpose
 	 * @return MemberPurpose
-	 * @throws AlreadyExistException
 	 */
 	public function create(Member $member, Purpose $purpose) {
 		$already = $this->memberPurposeDao->find($member, $purpose);
 		if ($already)
-			throw new AlreadyExistException('This connection already exists.');
+			return null;
 		return $this->memberPurposeDao->create($member, $purpose);
 	}
 
@@ -72,8 +71,6 @@ class MemberPurposeService implements IMemberPurposeService
 	public function delete(Member $member, Purpose $purpose) {
 		if (count($this->userItemsWithPurpose($member, $purpose)) == 0) {
 			$this->memberPurposeDao->delete($member, $purpose);
-		} else {
-			throw new BadRequestHttpException('Cannot delete. You have items connected with this purpose.');
 		}
 	}
 

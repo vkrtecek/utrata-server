@@ -12,7 +12,6 @@ namespace App\Model\Service;
 use App\Model\Dao\IItemDAO;
 use App\Model\Entity\Item;
 use App\Model\Entity\Member;
-use App\Model\Enum\ItemState;
 use App\Model\Enum\ItemType;
 use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\AuthenticationException;
@@ -20,8 +19,8 @@ use App\Model\Exception\BadParameterException;
 use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
 use App\Model\Filter\ItemFilter;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use DateTime;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ItemService implements IItemService
 {
@@ -75,55 +74,20 @@ class ItemService implements IItemService
 	/**
 	 * @param int $walletId
 	 * @param Member $member
-	 * @param int $state
-	 * @param string $month
-	 * @param string $notes
-	 * @param string $year
-	 * @param string $pattern
-	 * @param string $orderBy
-	 * @param string $orderHow
-	 * @param int $limit
+     * @param ItemFilter $filter
 	 * @return Item[]
 	 * @throws NotFoundException
 	 * @throws BadParameterException
 	 * @throws AuthenticationException
 	 */
-	public function getWalletItems($walletId, Member $member, $state = ItemState::UNCHECKED, $month = '', $notes = '', $year = '', $pattern = '', $orderBy = '', $orderHow = '', $limit = 30) {
-		if ($state == NULL) $state = ItemState::UNCHECKED;
-		if (!$walletId)
-			throw new BadRequestHttpException('ItemService: "walletId" missing');
+	public function getWalletItems(int $walletId, Member $member, ?ItemFilter $filter = NULL): array {
 		//test if member is owner
 		$this->walletService->getWallet($walletId, $member);
 
-		$filters = (new ItemFilter())->setWalletId($walletId)->setMonth($month)
-			->setNotes($notes)->setYear($year)->setPattern($pattern)
-			->setOrderBy($orderBy)->setOrderHow($orderHow)->setLimit($limit);
-		switch ($state) {
-			case ItemState::UNCHECKED:
-				$filters->setActive(TRUE)->setVyber(FALSE)->setIncome(FALSE);
-				break;
-			case ItemState::CHECKED:
-				$filters->setActive(FALSE)->setVyber(FALSE)->setIncome(FALSE);
-				break;
-			case ItemState::INCOMES:
-				$filters->setIncome(TRUE);//->setVyber(FALSE);
-				break;
-			case ItemState::ALL:
-				$filters->setVyber(FALSE);
-				break;
-			default:
-				throw new BadParameterException('ItemService: Bad ItemState.');
-		}
-
-		$items = $this->itemDao->findByFilter($filters);
-		//if (!count($items))
-		//	throw new NotFoundException('ItemService: No item found.');
-
-		$ret = [];
-		foreach ($items as $item) {
-			$ret[] = $item;
-		}
-		return $ret;
+		if ($filter === null) {
+		    $filter = (new ItemFilter())->setWalletId($walletId)->setMember($member);
+        }
+		return $this->itemDao->findByFilter($filter);
 	}
 
 
@@ -136,7 +100,7 @@ class ItemService implements IItemService
 	 * @throws BadParameterException
 	 * @throws AuthenticationException
 	 */
-	public function getMonthStatistics(Member $member, $walletId, $purposes = NULL) {
+	public function getMonthStatistics(Member $member, int $walletId, $purposes = NULL): array {
 		$wallet = $this->walletService->getWallet($walletId, $member);
 		$startYear = $wallet->getCreated()->format('Y');
 		$startMonth = $wallet->getCreated()->format('m');
@@ -179,7 +143,7 @@ class ItemService implements IItemService
 	 * @throws BadParameterException
 	 * @throws NotFoundException
 	 */
-	public function getItem($id) {
+	public function getItem(int $id): Item {
 		if ((string)((int)$id) != $id || (int)$id < 1)
 			throw new BadParameterException('ItemService: Identifier not Integer or smaller than 1');
 		$item = $this->itemDao->findOne($id);
@@ -195,8 +159,10 @@ class ItemService implements IItemService
 	 * @throws BadRequestHttpException
 	 * @throws AlreadyExistException
 	 * @throws NotFoundException
+     * @throws BadParameterException
+     * @throws AuthenticationException
 	 */
-	public function createItem(Member $member, $data) {
+	public function createItem(Member $member, array $data): Item {
 		$item = new Item();
 		$this->setItem($item, $data);
 		$this->checkForItemExistence($item);
@@ -216,7 +182,7 @@ class ItemService implements IItemService
 	 * @throws BadParameterException
 	 * @throws AuthenticationException
 	 */
-	public function checkItem(Member $member, $id) {
+	public function checkItem(Member $member, int $id): int {
 		try {
 			$item = $this->getItem($id);
 			if ($item->getMember()->getId() != $member->getId())
@@ -233,34 +199,21 @@ class ItemService implements IItemService
 	/**
 	 * @param int $walletId
 	 * @param Member $member
-	 * @param string $month
-	 * @param string $notes
-	 * @param string $year
-	 * @param string $pattern
-	 * @param string $orderBy
-	 * @param string $orderHow
-	 * @param int $limit
+     * @param ItemFilter $filter
 	 * @return int
 	 * @throws NotFoundException
 	 * @throws BadParameterException
 	 * @throws AuthenticationException
 	 */
-	public function checkAll($walletId, Member $member, $month, $notes, $year, $pattern, $orderBy, $orderHow, $limit) {
-		if (!$walletId)
-			throw new BadRequestHttpException('ItemService: "walletId" missing');
+	public function checkAll(int $walletId, Member $member, ItemFilter $filter): int {
 		//checks if member is owner of wallet
 		$this->walletService->getWallet($walletId, $member);
-		$notes = array_filter($notes, function($a){
-			return $a != "";
-		});
-		$filters = (new ItemFilter())->setWalletId($walletId)->setMonth($month)
-			->setNotes($notes)->setYear($year)->setPattern($pattern)
-			->setOrderBy($orderBy)->setOrderHow($orderHow)->setLimit($limit)
-			->setVyber(FALSE)->setIncome(FALSE)->setActive(TRUE);
+//		$notes = array_filter($notes, function($a){
+//			return $a != "";
+//		});
+		$filter->setVyber(FALSE)->setIncome(FALSE)->setActive(TRUE);
 
-		$items = $this->itemDao->findByFilter($filters);
-		if (!count($items))
-			throw new NotFoundException('ItemService: No item found.');
+		$items = $this->itemDao->findByFilter($filter);
 
 		foreach ($items as $item) {
 			$item->setActive(FALSE);
@@ -277,8 +230,9 @@ class ItemService implements IItemService
 	 * @throws NotFoundException
 	 * @throws BadParameterException
 	 * @throws BadRequestHttpException
+     * @throws AuthenticationException
 	 */
-	public function updateItem(Member $member, $id, $data) {
+	public function updateItem(Member $member, int $id, array $data): Item {
 		$item = $this->getItem($id);
 		$this->setItem($item, $data, FALSE);
 		$item = $this->itemDao->update($item);
@@ -293,7 +247,7 @@ class ItemService implements IItemService
 	 * @throws BadParameterException
 	 * @throws IntegrityException
 	 */
-	public function deleteItem(Member $member, $id) {
+	public function deleteItem(Member $member, int $id): int {
 		try {
 			$item = $this->getItem($id);
 			$this->itemDao->delete($item);
@@ -308,7 +262,7 @@ class ItemService implements IItemService
 	 * @param Member $member
 	 * @return array
 	 */
-	public function format(Item $item, Member $member) {
+	public function format(Item $item, Member $member): array {
 		$ret = [];
 
 		$ret['id'] = $item->getId();
@@ -335,7 +289,7 @@ class ItemService implements IItemService
 	 * @param Member $member
 	 * @return array
 	 */
-	public function formatEntities($items, Member $member) {
+	public function formatEntities(array $items, Member $member): array {
 		$ret = [];
 		foreach ($items as $item) {
 			$ret[] = self::format($item, $member);
@@ -355,8 +309,10 @@ class ItemService implements IItemService
 	 * @param bool $newEntity setting new entity
 	 * @throws BadRequestHttpException
 	 * @throws NotFoundException
+     * @throws BadParameterException
+     * @throws AuthenticationException
 	 */
-	protected function setItem(Item $entity, $data, $newEntity = TRUE) {
+	protected function setItem(Item $entity, array $data, ?bool $newEntity = TRUE) {
 
 		if (!isset($data['name']) || $data['name'] == NULL)
 			throw new BadRequestHttpException('ItemService: "name" must be specified.');
@@ -370,10 +326,10 @@ class ItemService implements IItemService
 
 		if ($newEntity) {
 			if (!isset($data['member']) || $data['member'] == NULL)
-				throw new BadRequestHttpException('ItemService: Member("login") must be specified.');
+			    throw new BadRequestHttpException('ItemService: Member("login") must be specified.');
 
 			if (!isset($data['currency']) || $data['currency'] == NULL || !isset($data['currency']['code']) || $data['currency']['code'] == "")
-				throw new BadRequestHttpException('ItemService: Currency("currencyCode") must be specified.');
+				throw new BadRequestHttpException('ItemService: Currency("code") must be specified.');
 
 			if (
 				(!isset($data['note']) || $data['note'] == NULL || !isset($data['note']['id']) || $data['note']['id'] == "")
@@ -435,7 +391,8 @@ class ItemService implements IItemService
 
 	/**
 	 * @param Item $item
-	 * @throws AlreadyExistException
+     * @throws AlreadyExistException
+     * @throws BadParameterException
 	 */
 	protected function checkForItemExistence(Item $item) {
 		$member = $item->getMember();
@@ -443,7 +400,7 @@ class ItemService implements IItemService
 		if (!$i) return;
 
 		$message = $this->translationService->getTranslation('AddItem.Form.Duplicity', $member->getLanguage()->getCode())->getValue();
-		$message = $message == "" ? 'Item already exists' : $message;
+		$message = $message ?: 'Item already exists';
 		if ($i->getName() == $item->getName()
 			&& $i->getDescription() == $item->getDescription()
 			&& $i->getPrice() == $item->getPrice()
@@ -469,7 +426,7 @@ class ItemService implements IItemService
 	 * @param bool $wholeMonth
 	 * @return array
 	 */
-	private function fillMonths($walletId, $purposes, $startYear, $startMonth, $thisYear, $thisMonth, $wholeMonth = TRUE) {
+	private function fillMonths(int $walletId, string $purposes, int $startYear, string $startMonth, int $thisYear, string $thisMonth, bool $wholeMonth = TRUE): array {
 		$monthStats = [];
 		$_monthStat = null;
 		for ($_year = $startYear; $_year <= $thisYear; $_year++) {
@@ -523,7 +480,7 @@ class ItemService implements IItemService
 	 * @param array $monthStats
 	 * @return array
 	 */
-	private function getMonthExtremes($monthStats) {
+	private function getMonthExtremes(array $monthStats): array {
 		//get min, max and average
 		$minEx['expense'] = PHP_INT_MAX;
 		$maxEx['expense'] = $acc = 0;
@@ -541,11 +498,19 @@ class ItemService implements IItemService
 	 * @param Item[] $items
 	 * @return double
 	 */
-	public static function getItemsPrice($items) {
+	public static function getItemsPrice(array $items): float {
 		$ret = 0;
 		foreach ($items as $item) {
 			$ret += $item['price'] * $item['course'];
 		}
 		return $ret;
 	}
+
+    /**
+     * @param ItemFilter $filter
+     * @return int
+     */
+    public function count(ItemFilter $filter): int {
+        return $this->itemDao->count($filter);
+    }
 }

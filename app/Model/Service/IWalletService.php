@@ -38,7 +38,7 @@ interface IWalletService
 	 * @throws BadParameterException
 	 * @throws AuthenticationException
 	 */
-	public function getWallet($id, Member $member);
+	public function getWallet(int $id, Member $member);
 
 	/**
 	 * @param Member $member

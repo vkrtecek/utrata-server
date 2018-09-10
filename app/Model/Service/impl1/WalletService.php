@@ -71,7 +71,7 @@ class WalletService implements IWalletService
 	 * @throws BadParameterException
 	 * @throws AuthenticationException
 	 */
-	public function getWallet($id, Member $member) {
+	public function getWallet(int $id, Member $member) {
 		if (!preg_match('/^[1-9][0-9]*[ ]*$/', $id))
 			throw new BadParameterException('WalletService: Not INTEGER or smaller than 1. -> ' . $id);
 		$wallet = $this->walletDao->findOne($id);

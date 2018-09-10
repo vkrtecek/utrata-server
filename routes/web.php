@@ -26,12 +26,13 @@ Route::put('member', 'MemberControllerMVC@update')->name('put.member');
 Route::get('/item/{itemId}', 'ItemControllerMVC@getHTML')->name('get.item.HTML');
 Route::get('/items/wallet/{walletId}', 'ItemControllerMVC@getWalletItems')->name('get.items.wallet');
 Route::get('/wallet/{id}/addItem', 'ItemControllerMVC@wantAdd')->name('get.item.addItem');
+Route::get('/wallet/{id}/addIncome', 'ItemControllerMVC@addIncome')->name('get.item.addIncome');
 Route::get('/item/update/{itemId}', 'ItemControllerMVC@wantUpdate')->name('get.item.update');
 //Route::get('/items/statistics', 'ItemControllerMVC@statistics')->name('get.items.statistics');
 Route::post('/item', 'ItemControllerMVC@create')->name('post.item');
-Route::put('/item', 'ItemControllerMVC@update')->name('put.item');
+Route::put('/item/{id}', 'ItemControllerMVC@update')->name('put.item');
 Route::put('/item/check/{id}', 'ItemControllerMVC@check')->name('put.item.check');
-//Route::put('/items/check', 'ItemControllerMVC@checkAll')->name('put.items.check');
+Route::put('/items/check/{walletId}', 'ItemControllerMVC@checkAll')->name('put.items.check');
 Route::delete('/item/{id}', 'ItemControllerMVC@delete')->name('delete.item');
 
 
@@ -56,6 +57,8 @@ Route::get('/home', 'WalletControllerMVC@getUserWallets')->name('get.wallets');
 Route::get('/wallet/add', 'WalletControllerMVC@wantCreate')->name('get.wallet.add');
 Route::get('/wallet/update/{id}', 'WalletControllerMVC@wantUpdate')->name('get.wallet.update');
 Route::get('/wallet/{id}', 'WalletControllerMVC@get')->name('get.wallet');
+Route::get('wallet/{id}/incomes', 'WalletControllerMVC@incomes')->name('get.wallet.incomes');
+Route::get('wallet/{id}/archive', 'WalletControllerMVC@archive')->name('get.wallet.archive');
 Route::post('/wallet', 'WalletControllerMVC@create')->name('post.wallet');
 //Route::put('/wallet/checkState/{walletId}', 'WalletControllerMVC@updateCheckState')->name('put.wallet.checkState');
 Route::put('/wallet/{id}', 'WalletControllerMVC@update')->name('put.wallet');

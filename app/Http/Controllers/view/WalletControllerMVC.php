@@ -11,8 +11,11 @@ namespace App\Http\Controllers;
 
 use App\Model\Enum\ItemState;
 use App\Model\Exception\AuthenticationException;
+use App\Model\Exception\AuthenticationMVCException;
 use App\Model\Exception\BadParameterException;
+use App\Model\Exception\NotFoundException;
 use App\Model\Exception\UnderEntityNotFoundException;
+use App\Model\Filter\ItemFilter;
 use App\Model\Help\DateFormatter;
 use App\Model\Service\IItemService;
 use App\Model\Service\IMemberService;
@@ -66,7 +69,7 @@ class WalletControllerMVC extends AbstractControllerMVC
 	}
 
 	/**
-	 * @param $id
+	 * @param int $id
 	 * @return View|Redirect
 	 * @throws AuthenticationException
 	 * @throws BadParameterException
@@ -76,15 +79,14 @@ class WalletControllerMVC extends AbstractControllerMVC
 	 */
 	public function get($id) {
 		$this->assumeLogged();
-		$member = $this->loggedMember();
 		try {
-			$wallet = $this->walletService->getWallet($id, $member);
+			$wallet = $this->walletService->getWallet($id, $this->member);
 		} catch (AuthenticationException $ex) {
 			return redirect(route('get.wallets'));
 		}
 		$wallet = $this->walletService->format($wallet);
-		$items = $this->itemService->getWalletItems($id, $member);
-		$items = $this->itemService->formatEntities($items, $member);
+		$items = $this->itemService->getWalletItems($id, $this->member);
+		$items = $this->itemService->formatEntities($items, $this->member);
 		$notes = $this->purposeService->getUserPurposes($this->member);
 		$notes = $this->purposeService->formatEntities($notes, $this->member);
 		return view('pages.wallet')
@@ -105,8 +107,10 @@ class WalletControllerMVC extends AbstractControllerMVC
 	/**
 	 * @param Request $request
 	 * @return Redirect|View
+     * @throws AuthenticationMVCException
 	 */
 	public function create(Request $request) {
+	    $this->assumeLogged();
 		try {
 			$wallet = $this->walletService->createWallet($this->member, $request->get('name'));
 		} catch (BadParameterException $ex) {
@@ -124,6 +128,7 @@ class WalletControllerMVC extends AbstractControllerMVC
 	 * @throws \App\Model\Exception\NotFoundException
 	 */
 	public function wantUpdate($id) {
+        $this->assumeLogged();
 		$wallet = $this->walletService->getWallet($id, $this->member);
 		$wallet = $this->walletService->format($wallet);
 		return view('pages.updateWallet')->with('wallet', $wallet);
@@ -139,6 +144,7 @@ class WalletControllerMVC extends AbstractControllerMVC
 	 * @throws \App\Model\Exception\NotFoundException
 	 */
 	public function update(Request $request, $id) {
+        $this->assumeLogged();
 		try {
 			$this->walletService->updateWallet($this->member, $id, $request->get('name'));
 		} catch (BadParameterException $ex) {
@@ -160,7 +166,70 @@ class WalletControllerMVC extends AbstractControllerMVC
 	 * @throws \App\Model\Exception\NotFoundException
 	 */
 	public function delete($id) {
+        $this->assumeLogged();
 		$this->walletService->deleteWallet($id, $this->member);
 		return redirect(route('get.wallets'));
 	}
+
+    /**
+     * @param int $walletId
+     * @return View
+     * @throws AuthenticationException
+     * @throws AuthenticationMVCException
+     * @throws BadParameterException
+     * @throws UnderEntityNotFoundException
+     * @throws NotFoundException
+     */
+    public function incomes($walletId) {
+        $this->assumeLogged();
+        try {
+            $wallet = $this->walletService->getWallet($walletId, $this->member);
+        } catch (AuthenticationException $ex) {
+            return redirect(route('get.wallets'));
+        }
+        $filter = (new ItemFilter())->setState(ItemState::INCOMES);
+
+        $wallet = $this->walletService->format($wallet);
+        $items = $this->itemService->getWalletItems($walletId, $this->member, $filter);
+        $items = $this->itemService->formatEntities($items, $this->member);
+        $notes = $this->purposeService->getUserPurposes($this->member);
+        $notes = $this->purposeService->formatEntities($notes, $this->member);
+        return view('pages.incomes')
+            ->with('wallet', $wallet)
+            ->with('months', DateFormatter::$months) //id, code, value
+            ->with('notes', $notes) //id, value
+            ->with('items', $items)
+            ->with('state', ItemState::INCOMES);
+    }
+
+    /**
+     * @param int $walletId
+     * @return View
+     * @throws AuthenticationException
+     * @throws AuthenticationMVCException
+     * @throws BadParameterException
+     * @throws UnderEntityNotFoundException
+     * @throws NotFoundException
+     */
+    public function archive($walletId) {
+        $this->assumeLogged();
+        try {
+            $wallet = $this->walletService->getWallet($walletId, $this->member);
+        } catch (AuthenticationException $ex) {
+            return redirect(route('get.wallets'));
+        }
+        $filter = (new ItemFilter())->setState(ItemState::CHECKED);
+
+        $wallet = $this->walletService->format($wallet);
+        $items = $this->itemService->getWalletItems($walletId, $this->member, $filter);
+        $items = $this->itemService->formatEntities($items, $this->member);
+        $notes = $this->purposeService->getUserPurposes($this->member);
+        $notes = $this->purposeService->formatEntities($notes, $this->member);
+        return view('pages.archive')
+            ->with('wallet', $wallet)
+            ->with('months', DateFormatter::$months) //id, code, value
+            ->with('notes', $notes) //id, value
+            ->with('items', $items)
+            ->with('state', ItemState::CHECKED);
+    }
 }

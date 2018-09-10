@@ -49,8 +49,6 @@ interface ICurrencyDAO
 	 * @param string $key
 	 * @param mixed $val
 	 * @return Currency
-	 * @throws BadParameterException
-	 * @throws NotFoundException
 	 */
 	public function findOneByColumn($key, $val);
 }

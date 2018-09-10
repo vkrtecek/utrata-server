@@ -4,18 +4,44 @@
 
 var inUpdate = false;
 
-function clearSearch() {
+function getUrlParameter(sParam) {
+    var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
 
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : sParameterName[1];
+        }
+    }
 }
 
-function resizeNotes() {
-
+function updateAllItems(url, urlPrintItems, state, conf = 'Do you really want to move this items to archive?') {
+    if (!confirm(conf))
+        return;
+    var body = {
+        state: state,
+        month: $('#month').val(),
+        notes: $('#notesList').val(),
+        year: $('#filterYear').val(),
+        pattern: $('#filterPattern').val(),
+        orderBy: $('#orderBy').val(),
+        orderHow: $('#orderHow').val()
+    };
+    $.ajax({
+        url: url,
+        method: 'put',
+        data: body,
+        error: function(e) {
+            console.log(e);
+        }
+    });
+    printItems(urlPrintItems, state);
 }
-
-function updateAllItems() {
-    alert('coming soon');
-}
-
+/*
 function updateItemMakeForm(itemId, url) {
     if(inUpdate)
         return;
@@ -62,24 +88,26 @@ function acceptUpdating(url, urlPrintItems, state) {
             inUpdate = false;
         }
     });
-}
+}*/
 
-function updateItemRead(itemId, url) {
+function updateItemRead(itemId, url, printUrl, state) {
     $.ajax({
         url: url,
         method: 'put',
         success: function() {
-            document.getElementById('itemDiv_' + itemId).style.display = 'none';
+            printItems(printUrl, state);
         }
     });
 }
 
-function deleteItem(itemId, url) {
+function deleteItem(itemId, url, conf = 'Do you really want to delete this item?', printUrl, state) {
+    if (!confirm(conf))
+        return;
     $.ajax({
         url: url,
         method: 'delete',
         success: function() {
-            document.getElementById('itemDiv_' + itemId).style.display = 'none';
+            printItems(printUrl, state);
         }
     });
 }
@@ -94,7 +122,9 @@ function printItems(url, state) {
         year: $('#filterYear').val(),
         pattern: $('#filterPattern').val(),
         orderBy: $('#orderBy').val(),
-        orderHow: $('#orderHow').val()
+        orderHow: $('#orderHow').val(),
+        limit: getUrlParameter('limit'),
+        page: getUrlParameter('page'),
     };
 
     $.ajax({

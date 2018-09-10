@@ -8,6 +8,7 @@
  */
 namespace App\Http\Controllers;
 
+use App\Model\Exception\AuthenticationMVCException;
 use App\Model\Exception\NotFoundException;
 use App\Model\Service\ICurrencyService;
 use App\Model\Service\ILanguageService;
@@ -42,6 +43,10 @@ class MemberControllerMVC extends AbstractControllerMVC
 		$this->purposeService = $purposeService;
 	}
 
+    /**
+     * @param Request $request
+     * @throws AuthenticationMVCException
+     */
 	public function get(Request $request) {
 		$this->assumeLogged();
 	}

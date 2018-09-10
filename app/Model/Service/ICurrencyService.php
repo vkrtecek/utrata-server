@@ -35,6 +35,7 @@ interface ICurrencyService
      * @param string $column column in database
      * @param mixed $value
      * @return Currency
+     * @throws NotFoundException
      */
     public function getCurrencyByColumn($column, $value);
 

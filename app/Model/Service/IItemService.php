@@ -10,14 +10,12 @@ namespace App\Model\Service;
 
 use App\Model\Entity\Item;
 use App\Model\Entity\Member;
-use App\Model\Entity\Purpose;
-use App\Model\Enum\ItemState;
 use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\BadParameterException;
 use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
-use Nette\Application\BadRequestException;
+use App\Model\Filter\ItemFilter;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 interface IItemService
@@ -25,20 +23,13 @@ interface IItemService
 	/**
 	 * @param int $walletId
 	 * @param Member $member
-	 * @param int $state
-	 * @param string $month
-	 * @param string $notes
-	 * @param string $year
-	 * @param string $pattern
-	 * @param string $orderBy
-	 * @param string $orderHow
-	 * @param int $offset
+	 * @param ItemFilter $filter
 	 * @return Item[]
 	 * @throws NotFoundException
 	 * @throws BadParameterException
 	 * @throws AuthenticationException
 	 */
-	public function getWalletItems($walletId, Member $member, $state = ItemState::UNCHECKED, $month = '', $notes = '', $year = '', $pattern = '', $orderBy = '', $orderHow = '', $offset = 30);
+	public function getWalletItems(int $walletId, Member $member, ?ItemFilter $filter = NULL): array;
 
 
 	/**
@@ -50,7 +41,7 @@ interface IItemService
 	 * @throws BadParameterException
 	 * @throws AuthenticationException
 	 */
-	public function getMonthStatistics(Member $member, $walletId, $purposes = NULL);
+	public function getMonthStatistics(Member $member, int $walletId, $purposes = NULL): array;
 
 	/**
 	 * @param int $id
@@ -58,7 +49,7 @@ interface IItemService
 	 * @throws BadParameterException
 	 * @throws NotFoundException
 	 */
-	public function getItem($id);
+	public function getItem(int $id): Item;
 
 	/**
 	 * @param Member $member
@@ -68,7 +59,7 @@ interface IItemService
 	 * @throws AlreadyExistException
 	 * @throws NotFoundException
 	 */
-	public function createItem(Member $member, $data);
+	public function createItem(Member $member, array $data): Item;
 
 	/**
 	 * @param Member $member
@@ -78,24 +69,18 @@ interface IItemService
 	 * @throws BadParameterException
 	 * @throws AuthenticationException
 	 */
-	public function checkItem(Member $member, $id);
+	public function checkItem(Member $member, int $id): int;
 
 	/**
 	 * @param int $walletId
 	 * @param Member $member
-	 * @param string $month
-	 * @param string $notes
-	 * @param string $year
-	 * @param string $pattern
-	 * @param string $orderBy
-	 * @param string $orderHow
-	 * @param int $limit
+     * @param ItemFilter $filter
 	 * @return int
 	 * @throws NotFoundException
 	 * @throws BadParameterException
 	 * @throws AuthenticationException
 	 */
-	public function checkAll($walletId, Member $member, $month, $notes, $year, $pattern, $orderBy, $orderHow, $limit);
+	public function checkAll(int $walletId, Member $member, ItemFilter $filter): int;
 
 
 	/**
@@ -107,7 +92,7 @@ interface IItemService
 	 * @throws BadParameterException
 	 * @throws BadRequestHttpException
 	 */
-	public function updateItem(Member $member, $id, $data);
+	public function updateItem(Member $member, int $id, array $data): Item;
 
 	/**
 	 * @param Member $member
@@ -117,19 +102,25 @@ interface IItemService
 	 * @throws BadParameterException
 	 * @throws IntegrityException
 	 */
-	public function deleteItem(Member $member, $id);
+	public function deleteItem(Member $member, int $id): int;
 
 	/**
 	 * @param Item $item
 	 * @param Member $member
 	 * @return array
 	 */
-	public function format(Item $item, Member $member);
+	public function format(Item $item, Member $member): array;
 
 	/**
 	 * @param Item[] $items
 	 * @param Member $member
 	 * @return array
 	 */
-	public function formatEntities($items, Member $member);
+	public function formatEntities(array $items, Member $member): array;
+
+    /**
+     * @param ItemFilter $filter
+     * @return int
+     */
+	public function count(ItemFilter $filter): int;
 }

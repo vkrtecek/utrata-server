@@ -27,6 +27,7 @@ abstract class AbstractControllerMVC extends Controller
 	 */
 	public function __construct(IMemberService $memberService) {
 		$this->memberService = $memberService;
+		$this->member = $this->loggedMember();
 	}
 
 	/**
@@ -42,7 +43,6 @@ abstract class AbstractControllerMVC extends Controller
 	 * @return Member|NULL
 	 */
 	protected function loggedMember() {
-		$this->member = Auth::user();
-		return $this->member;
+		return Auth::user();
 	}
 }

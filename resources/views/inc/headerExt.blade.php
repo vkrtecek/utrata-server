@@ -9,13 +9,16 @@
 
         <ul class="dropdown-menu" role="menu">
             <li>
+                <a href="{{ route('get.wallet', ['id' => $wallet['id']]) }}">{{ $trans->get('Menu.Wallet', 'Expenses') }}</a>
+            </li>
+            <li>
                 <a href="{{ route('get.item.addItem', ['id' => $wallet['id']]) }}">{{ $trans->get('Menu.AddItem', 'Add item') }}</a>
             </li>
             <li>
-                <a href="#">{{ $trans->get('Menu.Incomes', 'Incomes') }}</a>
+                <a href="{{ route('get.wallet.incomes', ['id' => $wallet['id']]) }}">{{ $trans->get('Menu.Incomes', 'Incomes') }}</a>
             </li>
             <li>
-                <a href="#">{{ $trans->get('Menu.OldItems', 'Archive') }}</a>
+                <a href="{{ route('get.wallet.archive', ['id' => $wallet['id']]) }}">{{ $trans->get('Menu.OldItems', 'Archive') }}</a>
             </li>
             <li>
                 <a href="#">{{ $trans->get('Menu.MonthlyPreview', 'Monthly preview') }}</a>

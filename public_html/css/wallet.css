@@ -102,21 +102,23 @@ td.price {
 }
 
 
-
-
-.delete_item, .move_item, .updateItem, .updateButtonStorno, .updateButtonSave {
-    float:right;
+.delete_item, .move_item, .move_items, .updateItem, .updateButtonStorno, .updateButtonSave {
+    float: right;
     font-family:Verdana, Geneva, sans-serif;
     font-size:14px;
     margin: 13px 10px 0 0;
     padding:1px;
     width: 24px;
     height: 24px;
+    border: solid grey 1px;
 }
 .delete_item {
     color:#F09;
 }
-.move_item{
+.move_items {
+    float: right;
+}
+.move_item, .move_items {
     color:green;
 }
 .updateItem {

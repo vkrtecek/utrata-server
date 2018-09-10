@@ -87,7 +87,6 @@ class MemberService implements IMemberService
 	/**
 	 * @param string $login
 	 * @return Member
-	 * @throws BadParameterException
 	 * @throws NotFoundException
 	 */
 	public function getMember($login) {

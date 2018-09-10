@@ -13,8 +13,9 @@ use App\Model\Entity\Item;
 use App\Model\Entity\Member;
 use App\Model\Exception\IntegrityException;
 use App\Model\Filter\ItemFilter;
+use Illuminate\Database\Eloquent\Builder;
 
-class ItemDAO implements IItemDAO
+class ItemDAO extends AbstractDAO implements IItemDAO
 {
 	/**
      * @return Item[]|NULL
@@ -45,40 +46,8 @@ class ItemDAO implements IItemDAO
 	 * @return Item[]
 	 */
 	public function findByFilter(ItemFilter $filters) {
-		$items = Item::where('WalletID', $filters->getWalletId());
-		if ($filters->getMonth() != "") $items->where('date', 'LIKE', '%-'.$filters->getMonth().'-%');
-		if ($filters->getYear() != "") $items->where('date', 'LIKE', $filters->getYear().'-%');
-		if (count($filters->getNotes())) {
-			$statement = '(PurposeID = ' . $filters->getNotes()[0];
-			for ($i = 1; $i < count($filters->getNotes()); $i++)
-				$statement .= ' OR PurposeID = ' . $filters->getNotes()[$i];
-			$statement .= ')';
-			$items->whereRaw($statement);
-		}
-		if ($filters->getPattern() != "") {
-			$patterns = explode(ItemFilter::WORD_SEPARATOR, $filters->getPattern());
-			foreach ($patterns as $pattern) {
-				if ($pattern[0] == '!') {
-					$pattern = substr($pattern, 1);
-					$pattern = str_replace('\\ \\ ', '  ', $pattern);
-					$pattern = str_replace('\\!', '!', $pattern);
-					$items->whereRaw("( mainName NOT LIKE '%" . $pattern . "%' AND description NOT LIKE '%" . $pattern . "%' AND type != '" . $pattern . "' )");
-				}
-				else {
-					$pattern = str_replace('\\ \\ ', '  ', $pattern);
-					$pattern = str_replace('\\!', '!', $pattern);
-					$items->whereRaw("( mainName LIKE '%" . $pattern . "%' OR description LIKE '%" . $pattern . "%' OR type = '" . $pattern . "' )");
-				}
-			}
-		}
-		if ($filters->isVyber() !== NULL) $items->where('vyber', $filters->isVyber());
-		if ($filters->isActive() !== NULL) $items->where('active', $filters->isActive());
-		$items->where('income', $filters->isIncome());
-		$items->orderBy($filters->getOrderBy(), $filters->getOrderHow());
-
-		if ($filters->getLimit()) $items->limit($filters->getLimit());
-
-		return $items->get();
+		$items = $this->getBuilderByFilter($filters);
+		return $this->convertToArray($items->get());
 	}
 
 	/**
@@ -155,4 +124,51 @@ class ItemDAO implements IItemDAO
 			->first();
 		return !$item ? NULL : $item;
 	}
+
+    /** @inheritdoc */
+    public function count(ItemFilter $filter): int {
+        return $this->getBuilderByFilter($filter)->count();
+    }
+
+    /**
+     * @param ItemFilter $filter
+     * @return Builder
+     */
+    private function getBuilderByFilter(ItemFilter $filter): Builder {
+        $items = Item::where('WalletID', $filter->getWalletId());
+        if ($filter->getMonth() != "") $items->where('date', 'LIKE', '%-'.$filter->getMonth().'-%');
+        if ($filter->getYear() != "") $items->where('date', 'LIKE', $filter->getYear().'-%');
+        if (count($filter->getNotes())) {
+            $statement = '(PurposeID = ' . $filter->getNotes()[0];
+            for ($i = 1; $i < count($filter->getNotes()); $i++)
+                $statement .= ' OR PurposeID = ' . $filter->getNotes()[$i];
+            $statement .= ')';
+            $items->whereRaw($statement);
+        }
+        if ($filter->getPattern() != "") {
+            $patterns = explode(ItemFilter::WORD_SEPARATOR, $filter->getPattern());
+            foreach ($patterns as $pattern) {
+                if ($pattern[0] == '!') {
+                    $pattern = substr($pattern, 1);
+                    $pattern = str_replace('\\ \\ ', '  ', $pattern);
+                    $pattern = str_replace('\\!', '!', $pattern);
+                    $items->whereRaw("( mainName NOT LIKE '%" . $pattern . "%' AND description NOT LIKE '%" . $pattern . "%' AND type != '" . $pattern . "' )");
+                }
+                else {
+                    $pattern = str_replace('\\ \\ ', '  ', $pattern);
+                    $pattern = str_replace('\\!', '!', $pattern);
+                    $items->whereRaw("( mainName LIKE '%" . $pattern . "%' OR description LIKE '%" . $pattern . "%' OR type = '" . $pattern . "' )");
+                }
+            }
+        }
+        if ($filter->isVyber() !== NULL) $items->where('vyber', $filter->isVyber());
+        if ($filter->isActive() !== NULL) $items->where('active', $filter->isActive());
+        $items->where('income', $filter->isIncome());
+        $items->orderBy($filter->getOrderBy(), $filter->getOrderHow());
+
+        if ($filter->getLimit()) $items->limit($filter->getLimit());
+        if ($filter->getPage()) $items->offset(($filter->getPage()-1) * $filter->getLimit());
+
+        return $items;
+    }
 }
