@@ -17,6 +17,7 @@ use App\Model\Service\IFileService;
 use App\Model\Service\IMemberService;
 use App\Model\Service\ITranslationService;
 use App\Model\Service\IWalletService;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Input;
 use Illuminate\View\View;
@@ -44,17 +45,11 @@ class FileControllerMVC extends AbstractControllerMVC
 	/**
 	 * @return mixed
 	 * @throws AuthenticationMVCException
-	 * @throws NotFoundException
 	 */
 	public function backup() {
 		$this->assumeLogged();
-		$wallets = $this->walletService->getWallets($this->member->getLogin());
-		$wallets = $this->walletService->formatEntities($wallets);
 		$file = $this->fileService->getBackup($this->member);
-		return view('pages.home')
-			->with('wallets', $wallets)
-			->with('currency', $this->member->getCurrency()->getValue())
-			->with('backupFile', $file);
+		return Response::create($file, Response::HTTP_OK)->header('Content-Type', 'attachment/csv');
 	}
 
 	/**

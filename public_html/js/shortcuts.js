@@ -17,32 +17,38 @@ $(document).keydown(function(e) {
 
         if (e.which === 66) {//Ctrl + B
             var input = document.getElementById("_button_base");
-            if (input)
+            if (input) {
+                e.preventDefault();
                 input.click();
+            }
         }
         if (e.which === 73) {//Ctrl + I
-            e.preventDefault();
             var input = document.getElementById("_button_incomes");
-            if (input)
+            if (input) {
+                e.preventDefault();
                 input.click();
+            }
         }
         if (e.which === 77) {//Ctrl + M
-            e.preventDefault();
             var input = document.getElementById("_button_monthly_preview");
-            if (input)
+            if (input) {
+                e.preventDefault();
                 input.click();
+            }
         }
         if (e.which === 79) {//Ctrl + O
-            e.preventDefault();
             var input = document.getElementById("_button_archive");
-            if (input)
+            if (input) {
+                e.preventDefault();
                 input.click();
+            }
         }
         if (e.which === 188) {//Ctrl + ,
-            e.preventDefault();
             var input = document.getElementById("_button_new_item");
-            if (input)
+            if (input) {
+                e.preventDefault();
                 input.click();
+            }
         }
         // if (e.which === 85) {//Ctrl + U
         //     e.preventDefault();

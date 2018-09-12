@@ -42,7 +42,7 @@
                                 <a id="_button_settings" href="{{ route('get.member.settings') }}">{{ $trans->get('Menu.Settings', 'Settings') }}</a>
                             </li>
                             <li>
-                                <a href="{{ route('get.backup') }}">{{ $trans->get('Menu.DownloadBackUp', 'Download backup') }}</a>
+                                <a href="#" onclick="downloadBackup('{{ route('get.backup') }}', '{{ Auth::user()->getLogin() }}')">{{ $trans->get('Menu.DownloadBackUp', 'Download backup') }}</a>
                             </li>
                             <li>
                                 <a href="{{ route('get.import') }}">{{ $trans->get('Menu.LoadImport', 'Load data') }}</a>

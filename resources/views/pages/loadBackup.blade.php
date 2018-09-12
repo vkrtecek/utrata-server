@@ -8,7 +8,7 @@
 @endsection
 
 @section('scripts')
-    <script type="text/javascript" src="{{ asset('js/loadBackup.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/backup.js') }}"></script>
 @endsection
 
 @section('navigation')
