@@ -21,7 +21,7 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
-    {{ app()->getLocale() }}
+    {{-- app()->getLocale() --}}
     <div id="app">
         @include('inc.header')
         @yield('navigation')

@@ -12,6 +12,8 @@
     <link href="{{ asset('css/addWallet.css') }}" rel="stylesheet">
 @endsection
 
+@section('title', $trans->get('Title.AddWallet', 'Add wallet'))
+
 @section('content')
     <div class="container">
         <div id="form">

@@ -8,7 +8,7 @@
     <div class="container">
         <a href="{{ route('get.wallets') }}">{{ env('APP_NAME', 'Laravel') }}</a> &gt;
         <a href="{{ route('get.wallet', ['id' => $wallet['id']]) }}">{{ $trans->get('Navigation.Wallet', 'Wallet') }} {{ $wallet['name'] }}</a> &gt;
-        <a href="{{ route('get.wallet.incomes', ['id' => $wallet['id']]) }}">{{ $trans->get('Navigation.Incomes', 'Incomes') }}</a> &gt;
+        <a href="{{ route('get.wallet.incomes', ['id' => $wallet['id']]) }}">{{ $trans->get('Navigation.Wallet.Incomes', 'Incomes') }}</a> &gt;
         <a href="#">{{ $trans->get('Income.Add.Title', 'Add new income') }}</a>
     </div>
 @endsection

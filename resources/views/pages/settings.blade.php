@@ -5,7 +5,7 @@
 
 @section('navigation')
     <div class="container">
-        <a href="{{ route('get.wallets') }}">{{ env('APP_NAME', 'Laravel') }}</a> >
+        <a href="{{ route('get.wallets') }}">{{ env('APP_NAME', 'Laravel') }}</a> &gt;
         <a href="#">{{ $trans->get('Member.Settings', 'Settings') }}</a>
     </div>
 @endsection

@@ -1,6 +1,8 @@
 @extends('base')
 @inject('trans', 'App\Model\Service\ITranslationService')
 
+@section('title', $trans->get('Wallet.Update.Title', 'Change wallet'))
+
 @section('navigation')
     <div class="container">
         <a href="{{ route('get.wallets') }}">{{ env('APP_NAME', 'Laravel') }}</a> >
