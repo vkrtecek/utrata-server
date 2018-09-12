@@ -12,22 +12,27 @@ namespace App\Http\Controllers;
 use App\Model\Entity\Member;
 use App\Model\Exception\AuthenticationMVCException;
 use App\Model\Service\IMemberService;
+use App\Model\Service\ITranslationService;
 use Illuminate\Support\Facades\Auth;
 
 abstract class AbstractControllerMVC extends Controller
 {
 	/** @var IMemberService */
 	protected $memberService;
+	/** @var ITranslationService */
+	protected $trans;
 	/** @var Member */
 	protected $member;
 
-	/**
-	 * AbstractControllerMVC constructor.
-	 * @param IMemberService $memberService
-	 */
-	public function __construct(IMemberService $memberService) {
+    /**
+     * AbstractControllerMVC constructor.
+     * @param IMemberService $memberService
+     * @param ITranslationService $translationService
+     */
+	public function __construct(IMemberService $memberService, ITranslationService $translationService) {
 		$this->memberService = $memberService;
 		$this->member = $this->loggedMember();
+		$this->trans = $translationService;
 	}
 
 	/**
@@ -35,7 +40,7 @@ abstract class AbstractControllerMVC extends Controller
 	 */
 	protected function assumeLogged() {
 		if (!Auth::user())
-			throw new AuthenticationMVCException('Not logged in');
+			throw (new AuthenticationMVCException('Exception.NotLogged', 'Not logged in'));
 		$this->member = Auth::user();
 	}
 

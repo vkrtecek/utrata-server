@@ -8,11 +8,14 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Model\Exception\AuthenticationException;
+use App\Model\Exception\BadParameterException;
 use App\Model\Exception\EOFException;
 use App\Model\Exception\FileParseException;
+use App\Model\Exception\NotFoundException;
 use App\Model\Service\IFileService;
 use App\Model\Service\IMemberService;
+use App\Model\Service\ITranslationService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -21,13 +24,14 @@ class FileController extends AbstractController
 	/** @var IFileService */
 	protected $fileService;
 
-	/**
-	 * FileController constructor.
-	 * @param IMemberService $memberService
-	 * @param IFileService $fileService
-	 */
-	public function __construct(IMemberService $memberService, IFileService $fileService) {
-		parent::__construct($memberService);
+    /**
+     * FileController constructor.
+     * @param IMemberService $memberService
+     * @param ITranslationService $translationService
+     * @param IFileService $fileService
+     */
+	public function __construct(IMemberService $memberService, ITranslationService $translationService, IFileService $fileService) {
+		parent::__construct($memberService, $translationService);
 		$this->fileService = $fileService;
 	}
 
@@ -35,15 +39,11 @@ class FileController extends AbstractController
 	/**
 	 * @param Request $req
 	 * @return Response
+     * @throws AuthenticationException
 	 */
 	public function backup(Request $req) {
 		$this->assumeLogged($req);
-		$member = $this->loggedUser($req);
-		try {
-			$file = $this->fileService->getBackup($member);
-		} catch (\Exception $ex) {
-			return Response::create($ex->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
-		}
+        $file = $this->fileService->getBackup($this->member);
 		return Response::create(['content' => $file], Response::HTTP_OK);
 	}
 
@@ -52,17 +52,21 @@ class FileController extends AbstractController
 	/**
 	 * @param Request $req
 	 * @return Response
+     * @throws AuthenticationException
+     * @throws NotFoundException
+     * @throws BadParameterException
 	 */
 	public function store(Request $req) {
 		$this->assumeLogged($req);
-		$member = $this->loggedUser($req);
 		$content = $req->get('data');
 		try {
-			$bool = $this->fileService->storeBackup($member, $content);
+			$bool = $this->fileService->storeBackup($this->member, $content);
 		} catch (FileParseException $ex) {
-			return Response::create(['error' => $ex->getMessage()], Response::HTTP_EXPECTATION_FAILED);
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+			return Response::create(['error' => $ex->bind($message)], Response::HTTP_EXPECTATION_FAILED);
 		} catch (EOFException $ex) {
-			return Response::create(['error' => $ex->getMessage()], Response::HTTP_CONFLICT);
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+			return Response::create(['error' => $ex->bind($message)], Response::HTTP_CONFLICT);
 		}
 		return Response::create(['success' => $bool], Response::HTTP_OK);
 	}

@@ -41,8 +41,6 @@ class ItemControllerMVC extends AbstractControllerMVC
 	protected $purposeService;
 	/** @var IWalletService */
 	protected $walletService;
-	/** @var ITranslationService */
-	protected $translationService;
 	/** @var DateFormatter */
 	protected $dateFormatter;
 
@@ -64,26 +62,28 @@ class ItemControllerMVC extends AbstractControllerMVC
 								ITranslationService $translationService,
 								DateFormatter $dateFormatter
 	) {
-		parent::__construct($memberService);
+		parent::__construct($memberService, $translationService);
 		$this->itemService = $itemService;
 		$this->currencyService = $currencyService;
 		$this->purposeService = $purposeService;
 		$this->walletService = $walletService;
-		$this->translationService = $translationService;
 		$this->dateFormatter = $dateFormatter;
 	}
 
 	/**
 	 * @param int $id
 	 * @return Response
-	 * @throws \App\Model\Exception\AuthenticationMVCException
+	 * @throws AuthenticationMVCException
+     * @throws NotFoundException
+     * @throws BadParameterException
 	 */
 	public function getHTML($id) {
 		$this->assumeLogged();
 		try {
 			$item = $this->itemService->getItem($id);
-		} catch (\Exception $ex) {
-			return Response::create(['error' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
+		} catch (ApplicationException $ex) {
+            $message = $this->trans->get($ex->getMessage(), $ex->getDefault());
+			return Response::create(['error' => $ex->bind($message)], Response::HTTP_BAD_REQUEST);
 		}
 		$item = $this->itemService->format($item, $this->member);
 		$item = $this->makeHTML($item);
@@ -94,8 +94,9 @@ class ItemControllerMVC extends AbstractControllerMVC
 	 * @param Request $request
 	 * @param int $walletId
 	 * @return Response
-	 * @throws AuthenticationMVCException
+	 * @throws AuthenticationException
      * @throws BadParameterException
+     * @throws NotFoundException
 	 */
 	public function getWalletItems(Request $request, $walletId) {
 		$this->assumeLogged();
@@ -103,8 +104,9 @@ class ItemControllerMVC extends AbstractControllerMVC
             $filter = Pagination::create($request, 'Item');
             $filter->setWalletId($walletId)->setMember($this->member);
             $items = $this->itemService->getWalletItems($walletId, $this->member, $filter);
-		} catch (\Exception $ex) {
-			return Response::create(['error' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
+		} catch (ApplicationException $ex) {
+            $message = $this->trans->get($ex->getMessage(), $ex->getDefault());
+			return Response::create(['error' => $ex->bind($message)], Response::HTTP_BAD_REQUEST);
 		}
 
 		$response = $this->makeHTMLs($items, $request->get('state'), $walletId);
@@ -144,7 +146,7 @@ class ItemControllerMVC extends AbstractControllerMVC
 		} catch (ApplicationException $e) {
 			$wallet = $this->walletService->getWallet($request->get('walletId'), $this->member);
 			$wallet = $this->walletService->format($wallet);
-			$message = $this->translationService->get($e->getMessage(), $e->getDefault());
+			$message = $this->trans->get($e->getMessage(), $e->getDefault());
 			return view('pages.addItem')
 				->with('wallet', $wallet)
 				->with('message', $e->bind($message));
@@ -177,10 +179,11 @@ class ItemControllerMVC extends AbstractControllerMVC
             $data['currency']['code'] = $request->get('currencyId');
             $data['wallet'] = $request->get('walletId');
             $this->itemService->createItem($this->member, $data);
-        } catch (\Exception $e) {
+        } catch (ApplicationException $ex) {
+            $message = $this->trans->get($ex->getMessage(), $ex->getDefault());
             return view('pages.addIncome')
                 ->with('wallet', $wallet)
-                ->with('message', $e->getMessage());
+                ->with('message', $ex->bind($message));
         }
 
         return redirect(route('get.wallet.incomes', ['id' => $wallet['id']]));
@@ -221,14 +224,15 @@ class ItemControllerMVC extends AbstractControllerMVC
 		$data = $request->all();
 		try {
 			$this->itemService->updateItem($this->member, $request->get('id'), $data);
-		} catch (\Exception $ex) {
+		} catch (ApplicationException $ex) {
+            $message = $this->trans->get($ex->getMessage(), $ex->getDefault());
             return view('pages.updateItem')
                 ->with('item', $item)
                 ->with('currencies', $currencies)
                 ->with('notes', $purposes)
                 ->with('wallets', $wallets)
                 ->with('previousURL', url()->previous())
-                ->with('message', $ex->getMessage());
+                ->with('message', $ex->bind($message));
 		}
 		//return redirect(route('get.wallet', ['id' => $request->get('wallet')]));
 		return redirect($request->get('previousURL'));
@@ -261,7 +265,7 @@ class ItemControllerMVC extends AbstractControllerMVC
             $filter = Pagination::create($request, 'Item');
             $filter->setWalletId($walletId)->setMember($this->member);
             $items = $this->itemService->getWalletItems($walletId, $this->member, $filter);
-        } catch (\Exception $ex) {
+        } catch (ApplicationException $ex) {
             // do nothing
             return;
         }
@@ -293,30 +297,30 @@ class ItemControllerMVC extends AbstractControllerMVC
 	 */
 	private function makeHTMLs(array $items, int $state, int $walletID): string {
         $table = Table::create($items, env('FILTERING_LIST_LIMIT', 15), true);
-        $table->addColumn($this->translationService->get('PrintItems.Name', 'Item name'), 'mainName')->setContent('name');
-        $table->addColumn($this->translationService->get('PrintItems.Description', 'Description'))->setContent('description');
+        $table->addColumn($this->trans->get('PrintItems.Name', 'Item name'), 'mainName')->setContent('name');
+        $table->addColumn($this->trans->get('PrintItems.Description', 'Description'))->setContent('description');
         if ($state !== ItemState::INCOMES)
-            $table->addColumn($this->translationService->get('PrintItems.Note', 'Note'))->setContent(function (Item $item) {
+            $table->addColumn($this->trans->get('PrintItems.Note', 'Note'))->setContent(function (Item $item) {
                 return $item->getNote()->getValue();
             });
-        $table->addColumn($this->translationService->get('PrintItems.Type', 'Type'))->setContent('type');
-        $table->addColumn($this->translationService->get('PrintItems.Date', 'Date'), 'date')->setContent(function (Item $item) {
+        $table->addColumn($this->trans->get('PrintItems.Type', 'Type'))->setContent('type');
+        $table->addColumn($this->trans->get('PrintItems.Date', 'Date'), 'date')->setContent(function (Item $item) {
             return strftime(env('DATETIME_FORMAT',"%e. %b %y, %H:%M"), $item->getDate()->getTimestamp());
         });
-        $table->addColumn($this->translationService->get('PrintItems.Price', 'Price'), 'price')->setContent(function (Item $item) {
+        $table->addColumn($this->trans->get('PrintItems.Price', 'Price'), 'price')->setContent(function (Item $item) {
             return '<strong>' . number_format($item->getPrice() * $item->getCourse(), 2, ',', ' ') .
                 ' ' . $this->member->getCurrency()->getValue() . '</strong>';
         });
-        $table->addColumn($this->translationService->get('PrintItems.Actions', 'Actions'))->setClass('actions_col')->setContent(function (Item $item) use ($state) {
-            $str = '<span title="' . $this->translationService->get('PrintItems.DeleteItemTitle', 'Delete') . '" class="delete_item"' .
-                ' onclick="deleteItem(\'' . $item->getId() . '\', \'' . route('delete.item', ['id' => $item->getId()]) . '\', \'' . $this->translationService->get('PrintItems.DeleteItem.Confirm', 'Do you really want to delete this item?') . '\', \'' . route('get.items.wallet', ['id' => $item->getWallet()->getId()]) . '\', \'' . $state . '\')"><b>&times;</b></span>';
+        $table->addColumn($this->trans->get('PrintItems.Actions', 'Actions'))->setClass('actions_col')->setContent(function (Item $item) use ($state) {
+            $str = '<span title="' . $this->trans->get('PrintItems.DeleteItemTitle', 'Delete') . '" class="delete_item"' .
+                ' onclick="deleteItem(\'' . $item->getId() . '\', \'' . route('delete.item', ['id' => $item->getId()]) . '\', \'' . $this->trans->get('PrintItems.DeleteItem.Confirm', 'Do you really want to delete this item?') . '\', \'' . route('get.items.wallet', ['id' => $item->getWallet()->getId()]) . '\', \'' . $state . '\')"><b>&times;</b></span>';
             if ($state == ItemState::UNCHECKED) {
-                $str .= '<span title="' . $this->translationService->get('PrintItems.CheckedItemTitle', 'Move to archive') . '" class="move_item"' .
+                $str .= '<span title="' . $this->trans->get('PrintItems.CheckedItemTitle', 'Move to archive') . '" class="move_item"' .
                     ' onclick="updateItemRead(\'' . $item->getId() . '\', \'' . route('put.item.check', ['id' => $item->getId()]) . '\', \'' . route('get.items.wallet', ['id' => $item->getWallet()->getId()]) . '\', \'' . $state . '\')"><b>&#10004;</b></span>';
             }
             if ($state !== ItemState::CHECKED) {
                 $str .= '<a href="' . route('get.item.update', ['itemId' => $item->getId()]) . '">' .
-                        '<span title="' . $this->translationService->get('PrintItems.UpdateItemTitle') . '" class="updateItem"></span>' .
+                        '<span title="' . $this->trans->get('PrintItems.UpdateItemTitle') . '" class="updateItem"></span>' .
                     '</a>';
             }
             return $str;

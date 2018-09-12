@@ -16,7 +16,7 @@ use App\Model\Entity\Member;
 use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\BadParameterException;
-use App\Model\Exception\IntegrityException;
+use App\Model\Exception\BadRequestException;
 use App\Model\Exception\NotFoundException;
 use App\Model\Exception\SecurityException;
 use Illuminate\Support\Facades\Hash;
@@ -76,7 +76,7 @@ class MemberService implements IMemberService
 	public function getMembers(): array {
 		$members = $this->memberDao->findAll();
 		if (count($members) == 0)
-			throw new NotFoundException('MemberService: No result.');
+			throw (new NotFoundException('Exception.NotFound', 'No :entity found'))->setBind(['entity' => 'Member']);
 		return $members;
 	}
 
@@ -85,7 +85,7 @@ class MemberService implements IMemberService
     public function getMember(string $login): Member {
 		$member = $this->memberDao->findOne($login);
 		if ($member == NULL)
-			throw new NotFoundException('Member with this login not found.');
+            throw (new NotFoundException('Exception.NotFound', 'No :entity found'))->setBind(['entity' => 'Member']);
 		return $member;
 	}
 
@@ -93,7 +93,7 @@ class MemberService implements IMemberService
     public function getByToken(string $token): Member {
 		$member = $this->memberDao->findOneByColumn('remember_token', $token);
 		if ($member == NULL)
-			throw new NotFoundException('Member with this token not found.');
+            throw (new NotFoundException('Exception.NotFound', 'No :entity found'))->setBind(['entity' => 'Member']);
 		return $member;
 	}
 
@@ -101,10 +101,10 @@ class MemberService implements IMemberService
     public function createMember(array $data): Member {
 		$member = new Member();
 		if (!isset($data['login']))
-			throw new BadParameterException('MemberService: "login" not specified.');
+			throw (new BadParameterException('Exception.Parameter.Missing', ':parameter missing'))->setBind(['parameter' => 'login']);
 		try {
 			$this->getMember($data['login']);
-			throw new AlreadyExistException('MemberService: Member with this login already exists.');
+			throw (new AlreadyExistException('Exception.AlreadyExists', ':entity with this :parameter already exists'))->setBind(['entity' => 'Member', 'parameter' => 'login']);
 		} catch (NotFoundException $ex) {
 			$this->setMember($member, $data);
 			$member->setToken($this->createToken());
@@ -119,7 +119,7 @@ class MemberService implements IMemberService
 		try {
 			$member = $this->getMember($login);
 		} catch (NotFoundException $ex) {
-			throw new NotFoundException('MemberService: No member with this login.', 0, $ex);
+            throw (new NotFoundException('Exception.NotFound', 'No :entity found'))->setBind(['entity' => 'Member']);
 		}
 		$this->setMember($member, $data, FALSE);
 		return $this->memberDao->update($member);
@@ -127,16 +127,12 @@ class MemberService implements IMemberService
 
     /** @inheritdoc */
     public function deleteMember(string $login) {
-		try {
-			//test if member exists
-			$member = $this->getMember($login);
-			$memberPurposes = $this->memberPurposeService->getMemberPurposes($member);
-			foreach ($memberPurposes as $memberPurpose)
-				$this->memberPurposeService->delete($member, $memberPurpose->getPurpose());
-			return $this->memberDao->delete($member);
-		} catch (NotFoundException $ex) {
-			throw new NotFoundException('MemberService: No member with this login.', 0, $ex);
-		}
+        //test if member exists
+        $member = $this->getMember($login);
+        $memberPurposes = $this->memberPurposeService->getMemberPurposes($member);
+        foreach ($memberPurposes as $memberPurpose)
+            $this->memberPurposeService->delete($member, $memberPurpose->getPurpose());
+        return $this->memberDao->delete($member);
 	}
 
     /** @inheritdoc */
@@ -147,11 +143,11 @@ class MemberService implements IMemberService
 		$inputsKeys = [ 'fname', 'lname', 'login', /*'email',*/ 'locale' ];
 		foreach ($inputsKeys as $key) {
 			if (!isset($fb_data[$key]) || $fb_data[$key] == '')
-				throw new BadParameterException('MemberService: "' . $key . '" must be specified.');
+				throw (new BadParameterException('Exception.Parameter.Missing', ':parameter missing'))->setBind(['parameter' => $key]);
 		}
 
 		if (!preg_match('/[1-9][0-9]*/', $fb_data['login']))
-			throw new BadParameterException('MemberService: Login is not INTEGER or smaller than 1.');
+			throw new BadParameterException('Exception.BadParameter.SmallerThan1', 'Identifier smaller than 1');
 
 		$data = [];
 		$data['firstName'] = $fb_data['fname'];
@@ -191,10 +187,10 @@ class MemberService implements IMemberService
     public function getMemberByColumn(string $column, string $value): Member {
         $columns = [ 'login', 'token', 'MemberID', 'myMail' ];
         if (!in_array($column, $columns))
-            throw new BadParameterException('MemberService: This column (' . $column . ') not allowed.');
+            throw (new BadParameterException('Exception.ColumnNotAllowed', 'This column (:column) not allowed.'))->setBind(['column' => $column]);
         $member = $this->memberDao->findOneByColumn($column, $value);
         if ($member == NULL)
-            throw new NotFoundException('Member with this ' . $column . ' not found.');
+            throw (new NotFoundException('Exception.NotFound', 'No :entity found'))->setBind(['entity' => 'Member']);
         return $member;
     }
 
@@ -203,7 +199,7 @@ class MemberService implements IMemberService
         try {
             $member = $this->getMemberByColumn('login', $login);
             if (!self::verifyPasswordHash($member->getPassword(), $password))
-                throw new SecurityException('Bad password');
+                throw new SecurityException('Exception.Security.BadPassword', 'Bad password');
             $logged = $member->getLogged();
             if (!$logged || $member->getExpiration() < new DateTime()) {
                 $token = $this->createToken();
@@ -217,7 +213,7 @@ class MemberService implements IMemberService
             $this->memberDao->update($member);
             return $member;
         } catch (NotFoundException $ex) {
-            throw new SecurityException($ex->getMessage());
+            throw (new SecurityException($ex->getMessage(), $ex->getDefault()))->setBind($ex->getBinds());
         }
     }
 
@@ -279,7 +275,7 @@ class MemberService implements IMemberService
 	 * @param bool $newEntity
 	 * @throws BadParameterException
 	 * @throws NotFoundException
-	 * @throws BadRequestHttpException
+	 * @throws BadRequestException
 	 * @throws AlreadyExistException
 	 * @throws AuthenticationException
 	 */
@@ -291,15 +287,15 @@ class MemberService implements IMemberService
 		//povinné položky
 		if ($newEntity) {
 			if (!isset($data['currencyCode']) || $data['currencyCode'] == NULL)
-				throw new BadRequestHttpException('MemberService: Currency must be specified.');
+				throw (new BadRequestException('Exception.Parameter.Missing', ':parameter missing'))->setBind(['parameter' => 'Currency']);
 			if (!isset($data['languageCode']) || $data['languageCode'] == NULL)
-				throw new BadRequestHttpException('MemberService: Language must be specified.');
+				throw (new BadRequestException('Exception.Parameter.Missing', ':parameter missing'))->setBind(['parameter' => 'Language']);
 			if (!isset($data['login']) || $data['login'] == NULL)
-				throw new BadRequestHttpException('MemberService: "login" must be specified.');
+				throw (new BadRequestException('Exception.Parameter.Missing', ':parameter missing'))->setBind(['parameter' => 'login']);
 			if (!isset($data['password']) || $data['password'] == NULL)
-				throw new BadRequestHttpException('MemberService: "password" must be specified.');
+				throw (new BadRequestException('Exception.Parameter.Missing', ':parameter missing'))->setBind(['parameter' => 'password']);
 			if (!isset($data['me']) || $data['me'] == NULL)
-				throw new BadRequestHttpException('MemberService: "me" must be specified.');
+				throw (new BadRequestException('Exception.Parameter.Missing', ':parameter missing'))->setBind(['parameter' => 'me']);
 
 			$member->setToken($this->createToken());
 			if (isset($data['first_name'])) $member->setFirstName($data['first_name']);
@@ -311,60 +307,52 @@ class MemberService implements IMemberService
 
 
 		if (isset($data['currencyCode']) && $data['currencyCode']) {
-			try {
-				$member->setCurrency($this->currencyService->getCurrencyByColumn('code', $data['currencyCode']));
-			} catch (NotFoundException $ex) {
-				throw new NotFoundException('MemberService: No Currency found with given id.', 0, $ex);
-			}
+            $member->setCurrency($this->currencyService->getCurrencyByColumn('code', $data['currencyCode']));
 		}
 		if (isset($data['languageCode']) && $data['languageCode'] != '') {
-			try {
-				if (!$newEntity && $data['languageCode'] != $member->getLanguage()->getCode()) {
-					/*
-					 * delete all purposes of old language which user don't use
-					 * add all purposes with new language and base=true
-					 */
-					foreach ($this->memberPurposeService->getMemberPurposes($member) as $memberPurpose)
-						$this->memberPurposeService->delete($member, $memberPurpose->getPurpose());
+            if (!$newEntity && $data['languageCode'] != $member->getLanguage()->getCode()) {
+                /*
+                 * delete all purposes of old language which user don't use
+                 * add all purposes with new language and base=true
+                 */
+                foreach ($this->memberPurposeService->getMemberPurposes($member) as $memberPurpose)
+                    $this->memberPurposeService->delete($member, $memberPurpose->getPurpose());
 
-					if (isset($data['notes']) && $data['notes'] && count($data['notes'])) {
-						//deletes less and adds more
-						$this->setNotes($member, $data['notes']);
-					} else {
-						$newLanguageCode = $data['languageCode'];
-						$languagePurposes = $this->purposeService->getLanguageBasePurposes($newLanguageCode);
-						foreach ($languagePurposes as $purpose) {
-							$this->memberPurposeService->create($member, $purpose);
-						}
-					}
-					$changedLanguage = TRUE;
-				}
-				$newLanguage = $this->languageService->getLanguage($data['languageCode']);
-				$member->setLanguage($newLanguage);
-			} catch (NotFoundException $ex) {
-				throw new NotFoundException('MemberService: No language found with given code.', 0, $ex);
-			}
+                if (isset($data['notes']) && $data['notes'] && count($data['notes'])) {
+                    //deletes less and adds more
+                    $this->setNotes($member, $data['notes']);
+                } else {
+                    $newLanguageCode = $data['languageCode'];
+                    $languagePurposes = $this->purposeService->getLanguageBasePurposes($newLanguageCode);
+                    foreach ($languagePurposes as $purpose) {
+                        $this->memberPurposeService->create($member, $purpose);
+                    }
+                }
+                $changedLanguage = TRUE;
+            }
+            $newLanguage = $this->languageService->getLanguage($data['languageCode']);
+            $member->setLanguage($newLanguage);
 		}
 		if (isset($data['login']) && $data['login']) {
 			if ($member->getLogin() != $data['login'] && !$this->uniqueLogin($data['login']))
-				throw new AlreadyExistException('MemberService: This login already exists');
+				throw (new AlreadyExistException('Exception.AlreadyExists', ':entity with this :parameter already exists'))->setBind(['entity' => 'Member', 'parameter' => 'login']);
 			$member->setLogin($data['login']);
 		}
 		if (isset($data['password']) && $data['password']) {
 			if (!$newEntity) {
 				if (!isset($data['oldPassword']) || $data['oldPassword'] == "")
-					throw new BadRequestHttpException($this->translationService->getTranslationDefault('Settings.Form.Error.OldPasswordExpected', $member->getLanguage(), '"oldPassword" expected'));
+					throw (new BadRequestException('Settings.Form.Error.OldPasswordExpected', '"oldPassword" expected'));
 				else if (!self::verifyPasswordHash($member->getPassword(), $data['oldPassword'])) {
-					throw new AuthenticationException($this->translationService->getTranslationDefault('Settings.Form.Error.OldPasswordIncorrect', $member->getLanguage(), 'Given oldPassword was incorrect'));
+					throw (new AuthenticationException('Exception.Parameter.Incorrect', 'Given :parameter is incorrect'))->setBind(['parameter' => 'oldPassword']);
 				}
 			}
 			$member->setPassword(self::getPasswordHash($data['password']));
 		}
 		if (isset($data['me']) && $data['me']) {
 			if (!preg_match($emailFormat, $data['me']))
-				throw new BadParameterException('MemberService: your mail in bad format');
+				throw (new BadParameterException('Exception.Parameter.BadFormat', ':parameter in bad format'))->setBind(['parameter' => 'your mail']);
 			if ($member->getMyMail() != $data['me'] && !$member->isExternal() && !$this->uniqueMail($data['me']))
-				throw new AlreadyExistException('MemberService: This mail already exists');
+                throw (new AlreadyExistException('Exception.AlreadyExists', ':entity with this :parameter already exists'))->setBind(['entity' => 'Member', 'parameter' => 'mail']);
 			$member->setMyMail($data['me']);
 		}
 		if (isset($data['notes']) && $data['notes'] && !$changedLanguage) {
@@ -378,13 +366,13 @@ class MemberService implements IMemberService
 		if (isset($data['logged'])) $member->setLogged($data['logged']);
 		if (isset($data['access'])) {
 			if (!preg_match($dateFormat, $data['access']))
-				throw new BadRequestHttpException('MemberService: field "access" has bad format >' . $data['access'] . '<');
+                throw (new BadRequestException('Exception.Parameter.BadFormat', ':parameter in bad format'))->setBind(['parameter' => 'access']);
 			$member->setAccess(new DateTime($data['access']));
 		}
 		if (isset($data['facebook'])) $member->setFacebook($data['facebook']);
 		if (isset($data['expiration'])) {
 			if (!($data['expiration'] instanceof \DateTime) && !preg_match($dateFormat, $data['expiration']))
-				throw new BadRequestHttpException('MemberService: field "expiration" has bad format');
+				throw (new BadRequestException('Exception.Parameter.BadFormat', ':parameter in bad format'))->setBind(['parameter' => 'expiration']);
 			$member->setExpiration(new DateTime($data['expiration']));
 		}
 		if (isset($data['firstName'])) $member->setFirstName($data['firstName']);
@@ -483,6 +471,7 @@ class MemberService implements IMemberService
 	 * @param array $notes
      * @throws NotFoundException
      * @throws BadParameterException
+     * @throws BadRequestException
 	 */
 	private function setNotes(Member $member, array $notes) {
 		$originNoteIds = [];
@@ -494,7 +483,7 @@ class MemberService implements IMemberService
 		$tmp = [];
 		foreach ($notes as $note) {
 			if (!isset($note['id']))
-				throw new BadRequestHttpException("MemberService: Note hasn't id");
+				throw (new BadRequestException('Exception.Parameter.Missing', ':parameter missing'))->setBind(['parameter' => 'Note("id")']);
 			$noteIds[] = $note['id'];
 			$tmp[] = $this->purposeService->getPurpose($note['id']);
 		}

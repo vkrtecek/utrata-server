@@ -21,7 +21,7 @@ use App\Model\Entity\Member;
 use App\Model\Entity\Purpose;
 use App\Model\Entity\Wallet;
 use App\Model\Enum\ItemType;
-use App\Model\Exception\AuthenticationException;
+use App\Model\Exception\ApplicationException;
 use App\Model\Exception\BadParameterException;
 use App\Model\Exception\FileParseException;
 use App\Model\Exception\NotFoundException;
@@ -388,7 +388,7 @@ class CsvService implements IFileService
 	private function getMember(string $string): Member
 	{
 		if (count(explode(';', $string)) != self::MEMBER_FIELDS)
-			throw (new FileParseException('Exception.FileParse.', 'Parse:entity: ' . self::MEMBER_FIELDS . ' fields expected, ' . count(explode(';', $string)) . ' given.'))->setBind(['entity' => 'Member']);
+			throw (new FileParseException('Exception.FileParse.CountExpected', 'Parse: :entity count expected: :expected, got :got'))->setBind(['entity' => 'Member', 'expected' => self::MEMBER_FIELDS, 'got' => count(explode(';', $string))]);
 		list($fName,
 			$lName,
 			$login,
@@ -403,12 +403,12 @@ class CsvService implements IFileService
 		try {
 			$language = $this->languageService->getLanguage($_language);
 		} catch (\Exception $e) {
-			throw new FileParseException('ParseMember: LanguageCode not found');
+			throw (new FileParseException('Exception.FileParse.Parameter.Missing', 'Parse:entity: :parameter not found'))->setBind(['entity' => 'Member', 'parameter' => 'LanguageCode']);
 		}
 		try {
 			$currency = $this->currencyService->getCurrency($_currency);
 		} catch (\Exception $e) {
-			throw new FileParseException('ParseMember: Bad currencyId');
+			throw (new FileParseException('Exception.FileParse.Parameter.Missing', 'Parse:entity: :parameter not found'))->setBind(['entity' => 'Member', 'parameter' => 'currencyId']);
 		}
 
 		$_member = new Member();
@@ -420,7 +420,7 @@ class CsvService implements IFileService
 		try {
 			$member = $this->memberService->getMember($login);
 		} catch (\Exception $ex) {
-			throw new FileParseException('ParseMember: member not found.');
+			throw (new FileParseException('Exception.FileParse.Parameter.Bad', 'Parse:entity: bad :parameter'))->setBind(['entity' => 'Member', 'parameter' => 'member']);
 		}
 
 		return $member;
@@ -435,7 +435,7 @@ class CsvService implements IFileService
 	 */
 	private function getPurpose(string $string): Purpose {
 		if (count(explode(';', $string)) != self::PURPOSE_FIELDS)
-			throw new FileParseException(self::PURPOSE_FIELDS . ' fields expected, ' . count(explode(';', $string)) . ' given.');
+            throw (new FileParseException('Exception.FileParse.CountExpected', 'Parse: :entity count expected: :expected, got :got'))->setBind(['entity' => 'Purpose', 'expected' => self::PURPOSE_FIELDS, 'got' => count(explode(';', $string))]);
 		list($id, $code, $val, $base, $_language, $_creator) = explode(';', $string);
 
 		try {
@@ -446,18 +446,18 @@ class CsvService implements IFileService
 				$language = $this->languageService->getLanguage($_language);
 				$creator = $this->memberService->getMember($_creator);
 			} catch (\Exception $e) {
-				throw new FileParseException('Bad LanguageCode or CreatrorID');
+                throw (new FileParseException('Exception.FileParse.Parameter.Missing', 'Parse:entity: :parameter not found'))->setBind(['entity' => 'Purpose', 'parameter' => 'LanguageCode or CreatorID']);
 			}
 			if ($code == ""
 				|| $val == ""
-			) throw new FileParseException('Some field is empty');
+			) throw (new FileParseException('Exception.Parameter.Empty', 'Empty :parameter'))->setBind(['parameter' => 'code or value']);
 
 			$base = $base == "1" || $base == "0" ? $base : false;
 			$purpose = new Purpose();
 			$purpose->setCode($code)->setValue($val)->setBase($base)->setLanguage($language)->setCreator($creator);
 			$purpose = $this->purposeDao->create($purpose);
 		} catch (\Exception $ex) {
-			throw new FileParseException('Bad PurposeID');
+            throw (new FileParseException('Exception.FileParse.Parameter.Bad', 'Parse:entity: bad :parameter'))->setBind(['entity' => 'Purpose', 'parameter' => 'PurposeID']);
 		}
 		return $purpose;
 	}
@@ -472,7 +472,7 @@ class CsvService implements IFileService
 	 */
 	private function getWallet(string $string, Member $member): Wallet {
 		if (count(explode(';', $string)) != self::WALLET_FIELDS)
-			throw new FileParseException(self::WALLET_FIELDS . ' fields expected, ' . count(explode(';', $string)) . ' given.');
+            throw (new FileParseException('Exception.FileParse.CountExpected', 'Parse: :entity count expected: :expected, got :got'))->setBind(['entity' => 'Wallet', 'expected' => self::WALLET_FIELDS, 'got' => count(explode(';', $string))]);
 		list($id, $name) = explode(';', $string);
 		try {
 			$wallet = $this->walletService->getWallet($id, $member);
@@ -481,10 +481,10 @@ class CsvService implements IFileService
 				$wallet = $this->walletDao->update($wallet);
 			}
 		} catch (BadParameterException $e) {
-			throw new FileParseException('WalletID not INTEGER or smaller than 1.');
+			throw (new FileParseException('Exception.FileParse.BadParameter.SmallerThan1', 'Parse:entity: Identifier smaller than 1'))->setBind(['entity' => 'Wallet']);
 		} catch (\Exception $e) {
 			if ($name == "")
-				throw new FileParseException('Empty name');
+                throw (new FileParseException('Exception.Parameter.Empty', 'Empty :parameter'))->setBind(['parameter' => 'name']);
 
 			$wallet = new Wallet();
 			$wallet->setName($name);
@@ -504,7 +504,7 @@ class CsvService implements IFileService
 	 */
 	private function getItem(string $string, Member $member): Item {
 		if (count(explode(';', $string)) != self::ITEM_FIELDS)
-			throw new FileParseException(self::ITEM_FIELDS . ' fields expected, ' . count(explode(';', $string)) . ' given.');
+            throw (new FileParseException('Exception.FileParse.CountExpected', 'Parse: :entity count expected: :expected, got :got'))->setBind(['entity' => 'Item', 'expected' => self::ITEM_FIELDS, 'got' => count(explode(';', $string))]);
 		list($id,
 			$name,
 			$desc,
@@ -522,7 +522,8 @@ class CsvService implements IFileService
 			$_wallet
 			) = explode(';', $string);
 		try {
-			if (!trim($id)) throw new NotFoundException();
+			if (!trim($id))
+                throw (new FileParseException('Exception.Parameter.Empty', 'Empty :parameter'))->setBind(['parameter' => 'id']);
 			$item = $this->itemService->getItem($id);
 			self::checkBeforeSettingItem($id, $name, $price, $course, $date, $created, $type, $active, $income, $vyber, $odepsat, $_note, $_currency, $_wallet);
 			//needs the item to be updated?
@@ -545,12 +546,12 @@ class CsvService implements IFileService
 				$item = $this->itemDao->update($item);
 			}
 		} catch (BadParameterException $e) {
-			throw new FileParseException('ItemID not INTEGER or smaller than 1.' . $e->getMessage());
+			throw (new FileParseException('Exception.FileParse.BadParameter.SmallerThan1', 'Parse:entity: Identifier smaller than 1'))->setBind(['entity' => 'Item']);
 		} catch (FileParseException $e) {
-			throw new FileParseException($e->getMessage());
+			throw (new FileParseException($e->getMessage(), $e->getDefault()))->setBind($e->getBinds());
 		} catch (NotFoundException $e) {
 			if ($name == "")
-				throw new FileParseException('Empty name');
+				throw (new FileParseException('Exception.Parameter.Empty', 'Empty :parameter'))->setBind(['parameter' => 'name']);
 
 			//create new Item
 			self::checkBeforeSettingItem($id, $name, $price, $course, $date, $created, $type, $active, $income, $vyber, $odepsat, $_note, $_currency, $_wallet);
@@ -564,8 +565,6 @@ class CsvService implements IFileService
 			} else {
 				//item exists with other ItemID (has same data and FKs) so cannot create new one
 			}
-		} catch (\Exception $e) {
-			throw new FileParseException($e->getMessage());
 		}
 		return $item;
 	}
@@ -579,24 +578,24 @@ class CsvService implements IFileService
 	 */
 	private function getCheckState(string $string, Wallet $wallet): CheckState {
 		if (count(explode(';', $string)) != self::CHECK_STATE_FIELDS)
-			throw new FileParseException(self::CHECK_STATE_FIELDS . ' fields expected, ' . count(explode(';', $string)) . ' given.');
+            throw (new FileParseException('Exception.FileParse.CountExpected', 'Parse: :entity count expected: :expected, got :got'))->setBind(['entity' => 'CheckState', 'expected' => self::CHECK_STATE_FIELDS, 'got' => count(explode(';', $string))]);
 		list($id, $walletId, $type, $checked, $value) = explode(';', $string);
 		if (!ctype_digit($id)
 			|| !ctype_digit($walletId)
 			|| !ItemType::isType($type)
 			|| (new \DateTime($checked))->format('Y-m-d H:i:s') != $checked
 			|| !is_numeric($value)
-		) throw new FileParseException('Some field is in bad format.');
+		) throw (new FileParseException('Exception.Parameter.BadFormat', ':parameter in bad format'))->setBind(['parameter' => 'some field(s)']);
 
 		try {
 			$checkState = $this->checkStateService->getCheckState($id);
 			if ($checkState->getWallet()->getId() != $wallet->getId())
-				throw new FileParseException("CheckState's ID refers to other owner");
+				throw (new FileParseException('Exception.UserNotOwner', 'User is not owner of this :entity'))->setBind(['entity' => 'CheckState']);
 
 			$checkState->setType($type)->setChecked(new \DateTime($checked))->setValue($value);
 			$this->checkStateDao->update($checkState);
-		} catch (\Exception $e) {
-			throw new FileParseException($e->getMessage());
+		} catch (ApplicationException $e) {
+			throw (new FileParseException($e->getMessage(), $e->getDefault()))->setBind($e->getBinds());
 		}
 
 		return $checkState;
@@ -652,7 +651,7 @@ class CsvService implements IFileService
 			//|| (!ctype_digit($_note) && !$vyber && !$income)
 			|| $_currency == ""
 			//|| !ctype_digit($_wallet)
-		) throw new FileParseException('Some field has bad format');
+		) throw (new FileParseException('Exception.Parameter.BadFormat', ':parameter in bad format'))->setBind(['parameter' => 'some field(s)']);
 	}
 
 
@@ -673,22 +672,22 @@ class CsvService implements IFileService
 	 * @param int $_currency
 	 * @param int $_wallet
 	 * @throws FileParseException
-     * @throws BadParameterException
 	 */
 	private function setItem(Item $item, Member $member, string $name, string $desc, float $price, float $course, string $date, string $type, bool $active, bool $income, bool $vyber, bool $odepsat, int $_note, int $_currency, int $_wallet) {
 		try {
 			$note = $_note ? $this->purposeService->getPurpose($_note) : NULL;
 			$currency = $this->currencyService->getCurrencyByColumn('code', $_currency);
 			$wallet = $this->walletService->getWallet($_wallet, $member);
+
+            $item->setName($name)->setDescription($desc)->setPrice($price)->setCourse($course)
+                ->setDate(new \DateTime($date))->setType($type)->setActive($active)->setIncome($income)
+                ->setVyber($vyber)->setOdepsat($odepsat)->setNote($note)->setCurrency($currency)->setWallet($wallet);
 		} catch (NotFoundException $e) {
-			throw new FileParseException("Note, Currency or Wallet with given ID doesn't exist");
-		} catch (AuthenticationException $e) {
-			throw new FileParseException($e->getMessage());
+			throw (new FileParseException('Exception.NotFoundByParameter', 'No :entity with given :parameter'))->setBind(['entity' => 'Note, Currency or Wallet', 'parameter' => 'ID']);
+		} catch (ApplicationException $e) {
+			throw (new FileParseException($e->getMessage(), $e->getDefault()))->setBind($e->getBinds());
 		}
 
-		$item->setName($name)->setDescription($desc)->setPrice($price)->setCourse($course)
-			->setDate(new \DateTime($date))->setType($type)->setActive($active)->setIncome($income)
-			->setVyber($vyber)->setOdepsat($odepsat)->setNote($note)->setCurrency($currency)->setWallet($wallet);
 	}
 
 }

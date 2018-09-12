@@ -13,10 +13,10 @@ use App\Model\Entity\Member;
 use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\BadParameterException;
+use App\Model\Exception\BadRequestException;
 use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
 use App\Model\Exception\SecurityException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 interface IMemberService
 {
@@ -44,7 +44,7 @@ interface IMemberService
 	 * @param $data
 	 * @return Member
 	 * @throws AlreadyExistException for login, email
-	 * @throws BadRequestHttpException missing some value
+	 * @throws BadRequestException missing some value
 	 * @throws BadParameterException
      * @throws NotFoundException
      * @throws AuthenticationException
@@ -56,7 +56,7 @@ interface IMemberService
 	 * @param $data
 	 * @return Member
 	 * @throws NotFoundException
-	 * @throws BadRequestHttpException
+	 * @throws BadRequestException
 	 * @throws BadParameterException
 	 * @throws AlreadyExistException for e-mails
 	 * @throws AuthenticationException
@@ -77,7 +77,7 @@ interface IMemberService
 	 * @return Member
 	 * @throws BadParameterException
 	 * @throws NotFoundException
-	 * @throws BadRequestHttpException
+	 * @throws BadRequestException
 	 * @throws AlreadyExistException
      * @throws AuthenticationException
 	 */

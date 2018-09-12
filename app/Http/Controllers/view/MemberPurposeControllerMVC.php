@@ -9,14 +9,15 @@
 namespace App\Http\Controllers;
 
 
-use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\AuthenticationException;
+use App\Model\Exception\BadParameterException;
+use App\Model\Exception\NotFoundException;
 use App\Model\Service\IMemberPurposeService;
 use App\Model\Service\IMemberService;
 use App\Model\Service\IPurposeService;
+use App\Model\Service\ITranslationService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class MemberPurposeControllerMVC extends AbstractControllerMVC
 {
@@ -26,14 +27,15 @@ class MemberPurposeControllerMVC extends AbstractControllerMVC
 	/** @var IPurposeService */
 	protected $purposeService;
 
-	/**
-	 * MemberPurposeControllerMVC constructor.
-	 * @param IMemberService $memberService
-	 * @param IMemberPurposeService $memberPurposeService
-	 * @param IPurposeService $purposeService
-	 */
-	public function __construct(IMemberService $memberService, IMemberPurposeService $memberPurposeService, IPurposeService $purposeService) {
-		parent::__construct($memberService);
+    /**
+     * MemberPurposeControllerMVC constructor.
+     * @param IMemberService $memberService
+     * @param ITranslationService $translationService
+     * @param IMemberPurposeService $memberPurposeService
+     * @param IPurposeService $purposeService
+     */
+	public function __construct(IMemberService $memberService, ITranslationService $translationService, IMemberPurposeService $memberPurposeService, IPurposeService $purposeService) {
+		parent::__construct($memberService, $translationService);
 		$this->memberPurposeService = $memberPurposeService;
 		$this->purposeService = $purposeService;
 	}
@@ -41,18 +43,14 @@ class MemberPurposeControllerMVC extends AbstractControllerMVC
 	/**
 	 * @param Request $request
 	 * @return Response
-	 * @throws \App\Model\Exception\BadParameterException
-	 * @throws \App\Model\Exception\NotFoundException
+	 * @throws BadParameterException
+	 * @throws NotFoundException
 	 * @throws AuthenticationException
 	 */
 	public function create(Request $request) {
 		$this->assumeLogged();
 		$purpose = $this->purposeService->getPurpose($request->get('purpose'));
-		try {
-			$ret = $this->memberPurposeService->create($this->member, $purpose);
-		} catch (AlreadyExistException $e) {
-			return Response::create(['error' => $e->getMessage(), Response::HTTP_CONFLICT]);
-		}
+        $ret = $this->memberPurposeService->create($this->member, $purpose);
 		return Response::create([
 			'success' => true,
 			'created' => $ret,
@@ -62,18 +60,14 @@ class MemberPurposeControllerMVC extends AbstractControllerMVC
 	/**
 	 * @param Request $request
 	 * @return Response
-	 * @throws \App\Model\Exception\BadParameterException
-	 * @throws \App\Model\Exception\NotFoundException
+	 * @throws BadParameterException
+	 * @throws NotFoundException
 	 * @throws AuthenticationException
 	 */
 	public function delete(Request $request) {
 		$this->assumeLogged();
-		try {
-			$purpose = $this->purposeService->getPurpose($request->get('purpose'));
-			$this->memberPurposeService->delete($this->member, $purpose);
-		} catch (BadRequestHttpException $e) {
-			return Response::create(['error' => $e->getMessage()]);
-		}
+        $purpose = $this->purposeService->getPurpose($request->get('purpose'));
+        $this->memberPurposeService->delete($this->member, $purpose);
 		return Response::create(['success' => true]);
 	}
 }

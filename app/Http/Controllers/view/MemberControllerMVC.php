@@ -8,13 +8,18 @@
  */
 namespace App\Http\Controllers;
 
+use App\Model\Exception\ApplicationException;
+use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\AuthenticationMVCException;
+use App\Model\Exception\BadParameterException;
 use App\Model\Exception\NotFoundException;
 use App\Model\Service\ICurrencyService;
 use App\Model\Service\ILanguageService;
 use App\Model\Service\IMemberService;
 use App\Model\Service\IPurposeService;
+use App\Model\Service\ITranslationService;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Validator;
 
@@ -29,15 +34,16 @@ class MemberControllerMVC extends AbstractControllerMVC
 	/** @var IPurposeService */
 	protected $purposeService;
 
-	/**
-	 * MemberControllerMVC constructor.
-	 * @param IMemberService $memberService
-	 * @param ICurrencyService $currencyService
-	 * @param ILanguageService $languageService
-	 * @param IPurposeService $purposeService
-	 */
-	public function __construct(IMemberService $memberService, ICurrencyService $currencyService, ILanguageService $languageService, IPurposeService $purposeService) {
-		parent::__construct($memberService);
+    /**
+     * MemberControllerMVC constructor.
+     * @param IMemberService $memberService
+     * @param ITranslationService $translationService
+     * @param ICurrencyService $currencyService
+     * @param ILanguageService $languageService
+     * @param IPurposeService $purposeService
+     */
+	public function __construct(IMemberService $memberService, ITranslationService $translationService, ICurrencyService $currencyService, ILanguageService $languageService, IPurposeService $purposeService) {
+		parent::__construct($memberService, $translationService);
 		$this->currencyService = $currencyService;
 		$this->languageService = $languageService;
 		$this->purposeService = $purposeService;
@@ -65,10 +71,10 @@ class MemberControllerMVC extends AbstractControllerMVC
 
 	/**
 	 * @param Request $request
-	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+	 * @return Redirector
 	 * @throws NotFoundException
-	 * @throws \App\Model\Exception\AuthenticationMVCException
-	 * @throws \App\Model\Exception\BadParameterException
+	 * @throws AuthenticationMVCException
+	 * @throws BadParameterException
 	 */
 	public function update(Request $request) {
 		$this->assumeLogged();
@@ -80,7 +86,8 @@ class MemberControllerMVC extends AbstractControllerMVC
 		$this->validator($request->all(), $ignore)->validate();
 		try {
 			$this->memberService->updateMember($request->get('login'), $request->all());
-		} catch (\Exception $ex) {
+		} catch (ApplicationException $ex) {
+            $message = $this->trans->get($ex->getMessage(), $ex->getDefault());
 			$currencies = $this->currencyService->getCurrencies();
 			$languages = $this->languageService->getLanguages();
 			$purposes = $this->purposeService->getLanguagePurposes($this->member->getLanguage()->getCode());
@@ -89,7 +96,7 @@ class MemberControllerMVC extends AbstractControllerMVC
 				->with('currencies', $currencies)
 				->with('languages', $languages)
 				->with('notes', $purposes)
-				->with('warning', $ex->getMessage())
+				->with('warning', $ex->bind($message))
 				->with('changePassword', $request->get('changePassword'));
 		}
 		if ($request->get('languageCode')) {
@@ -108,7 +115,8 @@ class MemberControllerMVC extends AbstractControllerMVC
 	/**
 	 * @return mixed
 	 * @throws NotFoundException
-	 * @throws \App\Model\Exception\AuthenticationMVCException
+     * @throws BadParameterException
+	 * @throws AuthenticationException
 	 */
 	public function settings() {
 		$this->assumeLogged();

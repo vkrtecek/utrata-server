@@ -10,9 +10,12 @@ namespace App\Http\Controllers;
 
 
 use App\Model\Enum\ItemState;
+use App\Model\Exception\ApplicationException;
 use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\AuthenticationMVCException;
 use App\Model\Exception\BadParameterException;
+use App\Model\Exception\BadRequestException;
+use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
 use App\Model\Exception\UnderEntityNotFoundException;
 use App\Model\Filter\ItemFilter;
@@ -20,6 +23,7 @@ use App\Model\Help\DateFormatter;
 use App\Model\Service\IItemService;
 use App\Model\Service\IMemberService;
 use App\Model\Service\IPurposeService;
+use App\Model\Service\ITranslationService;
 use App\Model\Service\IWalletService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
@@ -37,25 +41,25 @@ class WalletControllerMVC extends AbstractControllerMVC
 	/** @var IPurposeService */
 	protected $purposeService;
 
-	/**
-	 * WalletControllerMVC constructor.
-	 * @param IMemberService $memberService
-	 * @param IWalletService $walletService
-	 * @param IItemService $itemService
-	 * @param IPurposeService $purposeService
-	 */
-	public function __construct(IMemberService $memberService, IWalletService $walletService, IItemService $itemService, IPurposeService $purposeService) {
-		parent::__construct($memberService);
+    /**
+     * WalletControllerMVC constructor.
+     * @param IMemberService $memberService
+     * @param ITranslationService $translationService
+     * @param IWalletService $walletService
+     * @param IItemService $itemService
+     * @param IPurposeService $purposeService
+     */
+	public function __construct(IMemberService $memberService, ITranslationService $translationService, IWalletService $walletService, IItemService $itemService, IPurposeService $purposeService) {
+		parent::__construct($memberService, $translationService);
 		$this->walletService = $walletService;
 		$this->itemService = $itemService;
 		$this->purposeService = $purposeService;
 	}
 
 	/**
-	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-	 * @throws BadParameterException
-	 * @throws \App\Model\Exception\AuthenticationMVCException
-	 * @throws \App\Model\Exception\NotFoundException
+	 * @return View
+	 * @throws AuthenticationMVCException
+	 * @throws NotFoundException
 	 */
 	public function getUserWallets() {
 		$this->assumeLogged();
@@ -75,8 +79,8 @@ class WalletControllerMVC extends AbstractControllerMVC
 	 * @throws AuthenticationException
 	 * @throws BadParameterException
 	 * @throws UnderEntityNotFoundException
-	 * @throws \App\Model\Exception\AuthenticationMVCException
-	 * @throws \App\Model\Exception\NotFoundException
+	 * @throws AuthenticationMVCException
+	 * @throws NotFoundException
 	 */
 	public function get($id) {
 		$this->assumeLogged();
@@ -102,6 +106,8 @@ class WalletControllerMVC extends AbstractControllerMVC
 	 * @param Request $request
 	 * @return Redirect|View
      * @throws AuthenticationMVCException
+     * @throws NotFoundException
+     * @throws BadParameterException
 	 */
 	public function create(Request $request) {
 	    $this->assumeLogged();
@@ -114,19 +120,21 @@ class WalletControllerMVC extends AbstractControllerMVC
 		try {
 			$wallet = $this->walletService->createWallet($this->member, $request->get('name'));
 		} catch (BadParameterException $ex) {
-			return view('pages.addWallet')->with('warning', $ex->getMessage());
+            $message = $this->trans->get($ex->getMessage(), $ex->getDefault());
+			return view('pages.addWallet')->with('warning', $ex->bind($message));
 		}
 		return redirect(route('get.wallet', ['id' => $wallet->getId()]));
 	}
 
 	/**
 	 * @param Request $request
-	 * @param $id
-	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|\Illuminate\View\View
+	 * @param int $id
+	 * @return Redirect|View
 	 * @throws AuthenticationException
 	 * @throws BadParameterException
 	 * @throws UnderEntityNotFoundException
-	 * @throws \App\Model\Exception\NotFoundException
+	 * @throws NotFoundException
+     * @throws BadRequestException
 	 */
 	public function update(Request $request, $id) {
         $this->assumeLogged();
@@ -142,20 +150,21 @@ class WalletControllerMVC extends AbstractControllerMVC
 		try {
 			$this->walletService->updateWallet($this->member, $id, $request->get('name'));
 		} catch (BadParameterException $ex) {
+            $message = $this->trans->get($ex->getMessage(), $ex->getDefault());
 			return view('pages.updateWallet')
 				->with('wallet', $wallet)
-				->with('warning', $ex->getMessage());
+				->with('warning', $ex->bind($message));
 		}
 		return redirect(route('get.wallets'));
 	}
 
 	/**
-	 * @param $id
-	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+	 * @param int $id
+	 * @return Redirect
 	 * @throws AuthenticationException
 	 * @throws BadParameterException
-	 * @throws \App\Model\Exception\IntegrityException
-	 * @throws \App\Model\Exception\NotFoundException
+	 * @throws IntegrityException
+	 * @throws NotFoundException
 	 */
 	public function delete($id) {
         $this->assumeLogged();
@@ -230,6 +239,8 @@ class WalletControllerMVC extends AbstractControllerMVC
      * @param int $id of wallet
      * @return Response
      * @throws AuthenticationException
+     * @throws NotFoundException
+     * @throws BadParameterException
      */
     public function updateCheckState(Request $request, $id) {
         $this->assumeLogged();
@@ -241,8 +252,9 @@ class WalletControllerMVC extends AbstractControllerMVC
 
         try {
             $this->walletService->updateCheckState($this->member, $id, $type, $value);
-        } catch (\Exception $e) {
-            return Response::create($e->getMessage(), Response::HTTP_BAD_REQUEST);
+        } catch (ApplicationException $ex) {
+            $message = $this->trans->get($ex->getMessage(), $ex->getDefault());
+            return Response::create($ex->bind($message), Response::HTTP_BAD_REQUEST);
         }
         return Response::create('ok');
     }

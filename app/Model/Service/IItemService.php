@@ -13,10 +13,10 @@ use App\Model\Entity\Member;
 use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\BadParameterException;
+use App\Model\Exception\BadRequestException;
 use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
 use App\Model\Filter\ItemFilter;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 interface IItemService
 {
@@ -71,7 +71,7 @@ interface IItemService
 	 * @param Member $member
 	 * @param $data
 	 * @return Item
-	 * @throws BadRequestHttpException
+	 * @throws BadRequestException
 	 * @throws AlreadyExistException
 	 * @throws NotFoundException
      * @throws BadParameterException
@@ -108,7 +108,7 @@ interface IItemService
 	 * @return Item
 	 * @throws NotFoundException
 	 * @throws BadParameterException
-	 * @throws BadRequestHttpException
+	 * @throws BadRequestException
      * @throws AuthenticationException
 	 */
 	public function updateItem(Member $member, int $id, array $data): Item;

@@ -13,9 +13,9 @@ use App\Model\Entity\Member;
 use App\Model\Entity\Purpose;
 use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\BadParameterException;
+use App\Model\Exception\BadRequestException;
 use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 interface IPurposeService
 {
@@ -75,7 +75,7 @@ interface IPurposeService
 	 * @param Member $member
      * @param $data
      * @return Purpose
-     * @throws BadRequestHttpException
+     * @throws BadParameterException
 	 * @throws AlreadyExistException
      * @throws NotFoundException
      */
@@ -86,7 +86,6 @@ interface IPurposeService
      * @param $data
      * @return Purpose
      * @throws NotFoundException
-     * @throws BadRequestHttpException
      * @throws BadParameterException
      */
     public function updatePurpose(int $id, array $data): Purpose;

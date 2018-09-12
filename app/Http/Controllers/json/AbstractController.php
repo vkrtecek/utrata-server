@@ -12,26 +12,26 @@ use App\Model\Entity\Member;
 use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\NotFoundException;
 use App\Model\Service\IMemberService;
+use App\Model\Service\ITranslationService;
 use Illuminate\Http\Request;
 
 abstract class AbstractController extends Controller
 {
-	/**
-	 * @var IMemberService
-	 */
+	/** @var IMemberService */
 	protected $memberService;
-
-	/**
-	 * @var Member
-	 */
+	/** @var ITranslationService */
+	protected $trans;
+	/** @var Member */
 	protected $member;
 
-	/**
-	 * AbstractController constructor.
-	 * @param IMemberService $memberService
-	 */
-	public function __construct(IMemberService $memberService) {
+    /**
+     * AbstractController constructor.
+     * @param IMemberService $memberService
+     * @param ITranslationService $translationService
+     */
+	public function __construct(IMemberService $memberService, ITranslationService $translationService) {
 		$this->memberService = $memberService;
+		$this->trans = $translationService;
 	}
 
 	/**
@@ -39,13 +39,7 @@ abstract class AbstractController extends Controller
 	 * @throws AuthenticationException
 	 */
 	protected function assumeLogged(Request $req) {
-		try {
-			$this->member = $this->loggedUser($req);
-		} catch (NotFoundException $ex) {
-			//throw new AuthenticationException("Bad token: " . $ex->getMessage());
-			throw new AuthenticationException("Member not logged.");
-		}
-
+        $this->member = $this->loggedUser($req);
 		if ($this->member->getExpiration() < new \DateTime())
 			throw new AuthenticationException("The token expirated");
 	}
@@ -53,15 +47,9 @@ abstract class AbstractController extends Controller
 	/**
 	 * @param Request $req
 	 * @throws AuthenticationException
-	 * @throws NotFoundException
 	 */
 	protected function assumeAdmin(Request $req) {
 		$this->assumeLogged($req);
-		try {
-			$this->loggedUser($req);
-		} catch (NotFoundException $e) {
-			throw new AuthenticationException($e->getMessage());
-		}
 		if (!$this->member->isAdmin())
 			throw new AuthenticationException('Not admin');
 	}
@@ -69,17 +57,21 @@ abstract class AbstractController extends Controller
 	/**
 	 * @param Request $req
 	 * @return Member
-	 * @throws NotFoundException
+	 * @throws AuthenticationException
 	 */
-	protected function loggedUser(Request $req) {
+	private function loggedUser(Request $req) {
 		$token = $this->getToken($req);
-		return $this->memberService->getByToken($token);
+		try {
+            return $this->memberService->getByToken($token);
+        } catch (NotFoundException $ex) {
+            throw (new AuthenticationException($ex->getMessage(), $ex->getDefault()))->setBind($ex->getBinds());
+        }
 	}
 
 	/**
 	 * @param Request $req
 	 * @return string
-	 * @throws NotFoundException
+	 * @throws AuthenticationException
 	 */
 	private function getToken(Request $req) {
 		$token = $req->header('Authorization');
@@ -90,7 +82,7 @@ abstract class AbstractController extends Controller
 		/* end of testing section */
 
 		if (!$token || $token == "")
-			throw new NotFoundException('Token not found');
+			throw new AuthenticationException('no-code', 'Token not found');
 
 		return $token;
 	}

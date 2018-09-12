@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\BadParameterException;
+use App\Model\Exception\BadRequestException;
 use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
-use App\Model\Exception\UnderEntityNotFoundException;
 use App\Model\Service\IMemberService;
+use App\Model\Service\ITranslationService;
 use App\Model\Service\IWalletService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class WalletController extends AbstractController
 {
@@ -20,30 +20,34 @@ class WalletController extends AbstractController
 	 */
 	protected $walletService;
 
-	/**
-	 * WalletController constructor.
-	 * @param IMemberService $memberService
-	 * @param IWalletService $walletService
-	 */
-	public function __construct(IMemberService $memberService, IWalletService $walletService) {
-		parent::__construct($memberService);
+    /**
+     * WalletController constructor.
+     * @param IMemberService $memberService
+     * @param ITranslationService $translationService
+     * @param IWalletService $walletService
+     */
+	public function __construct(IMemberService $memberService, ITranslationService $translationService, IWalletService $walletService) {
+		parent::__construct($memberService, $translationService);
 		$this->walletService = $walletService;
 	}
 
+    /**
+     * @param Request $req
+     * @return Response
+     * @throws AuthenticationException
+     * @throws NotFoundException
+     * @throws BadParameterException
+     */
 	public function getUserWallets(Request $req) {
 		$this->assumeLogged($req);
-		$member = $this->loggedUser($req);
 
-		$login = $member->getLogin();
+		$login = $this->member->getLogin();
 		try {
 			$wallets = $this->walletService->getWallets($login);
 			$wallets = $this->walletService->formatEntities($wallets);
-		} catch (BadParameterException $ex) {
-			return Response::create(['error' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
 		} catch (NotFoundException $ex) {
-			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NO_CONTENT);
-		} catch (UnderEntityNotFoundException $ex) {
-			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+			return Response::create(['error' => $ex->bind($message)], Response::HTTP_NO_CONTENT);
 		}
 
 		return Response::create($wallets, Response::HTTP_OK);
@@ -53,21 +57,24 @@ class WalletController extends AbstractController
 	 * @param Request $req
 	 * @param int $walletId
 	 * @return Response
+     * @throws AuthenticationException
+     * @throws NotFoundException
+     * @throws BadParameterException
 	 */
 	public function get(Request $req, $walletId) {
 		$this->assumeLogged($req);
 		try {
-			$member = $this->loggedUser($req);
-			$wallet = $this->walletService->getWallet($walletId, $member);
+			$wallet = $this->walletService->getWallet($walletId, $this->member);
 			$formatted = $this->walletService->format($wallet);
 		} catch (NotFoundException $ex) {
-			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NO_CONTENT);
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+			return Response::create(['error' => $ex->bind($message)], Response::HTTP_NO_CONTENT);
 		} catch (BadParameterException $ex) {
-			return Response::create(['error' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+			return Response::create(['error' => $ex->bind($message)], Response::HTTP_BAD_REQUEST);
 		} catch (AuthenticationException $ex) {
-			return Response::create(['error' => $ex->getMessage()], Response::HTTP_FORBIDDEN);
-		} catch (UnderEntityNotFoundException $ex) {
-			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+			return Response::create(['error' => $ex->bind($message)], Response::HTTP_FORBIDDEN);
 		}
 
 		return Response::create($formatted, Response::HTTP_OK);
@@ -77,13 +84,20 @@ class WalletController extends AbstractController
 	/**
 	 * @param Request $req
 	 * @return Response
+     * @throws AuthenticationException
+     * @throws NotFoundException
+     * @throws BadParameterException
 	 */
 	public function create(Request $req) {
 		$this->assumeLogged($req);
-		$member = $this->loggedUser($req);
 		$name = $req->get('name');
 
-		$wallet = $this->walletService->createWallet($member, $name);
+		try {
+            $wallet = $this->walletService->createWallet($this->member, $name);
+        } catch (BadParameterException $ex) {
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            return Response::create(['error' => $ex->bind($message)], Response::HTTP_BAD_REQUEST);
+        }
 		return Response::create($wallet->getId(), Response::HTTP_CREATED);
 	}
 
@@ -92,25 +106,29 @@ class WalletController extends AbstractController
 	 * @param Request $req
 	 * @param int $id
 	 * @return Response
+     * @throws AuthenticationException
+     * @throws NotFoundException
+     * @throws BadParameterException
 	 */
 	public function update(Request $req, $id) {
 		$this->assumeLogged($req);
-		$member = $this->loggedUser($req);
 		$name = $req->get('name');
 
 		try {
-			$wallet = $this->walletService->updateWallet($member, $id, $name);
+			$wallet = $this->walletService->updateWallet($this->member, $id, $name);
 			$wallet = $this->walletService->format($wallet);
 		} catch (NotFoundException $ex) {
-			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+			return Response::create(['error' => $ex->bind($message)], Response::HTTP_NOT_FOUND);
 		} catch (BadParameterException $ex) {
-			return Response::create(['error' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
-		} catch (BadRequestHttpException $ex) {
-			return Response::create(['error' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+			return Response::create(['error' => $ex->bind($message)], Response::HTTP_BAD_REQUEST);
+		} catch (BadRequestException $ex) {
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+			return Response::create(['error' => $ex->bind($message)], Response::HTTP_BAD_REQUEST);
 		} catch (AuthenticationException $ex) {
-			return Response::create(['error' => $ex->getMessage()], Response::HTTP_FORBIDDEN);
-		} catch (UnderEntityNotFoundException $ex) {
-			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+			return Response::create(['error' => $ex->bind($message)], Response::HTTP_FORBIDDEN);
 		}
 		return Response::create($wallet, Response::HTTP_ACCEPTED);
 	}
@@ -119,20 +137,26 @@ class WalletController extends AbstractController
 	 * @param Request $req
 	 * @param int $id
 	 * @return Response
+     * @throws AuthenticationException
+     * @throws NotFoundException
+     * @throws BadParameterException
 	 */
 	public function delete(Request $req, $id) {
 		$this->assumeLogged($req);
-		$member = $this->loggedUser($req);
 		try {
-			$retID = $this->walletService->deleteWallet($id, $member);
+			$retID = $this->walletService->deleteWallet($id, $this->member);
 		} catch (NotFoundException $ex) {
-			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NO_CONTENT);
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+			return Response::create(['error' => $ex->bind($message)], Response::HTTP_NO_CONTENT);
 		} catch (BadParameterException $ex) {
-			return Response::create(['error' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+			return Response::create(['error' => $ex->bind($message)], Response::HTTP_BAD_REQUEST);
 		} catch (IntegrityException $ex) {
-			return Response::create(['error' => $ex->getMessage()], Response::HTTP_FORBIDDEN);
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+			return Response::create(['error' => $ex->bind($message)], Response::HTTP_FORBIDDEN);
 		} catch (AuthenticationException $ex) {
-			return Response::create(['error' => $ex->getMessage()], Response::HTTP_FORBIDDEN);
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+			return Response::create(['error' => $ex->bind($message)], Response::HTTP_FORBIDDEN);
 		}
 		return Response::create($retID, Response::HTTP_OK);
 	}
@@ -142,23 +166,28 @@ class WalletController extends AbstractController
 	 * @param Request $req
 	 * @param int $walletId
 	 * @return Response
+     * @throws AuthenticationException
+     * @throws NotFoundException
+     * @throws BadParameterException
 	 */
 	public function updateCheckState(Request $req, $walletId) {
 		$this->assumeLogged($req);
-		$member = $this->loggedUser($req);
 		$type = $req->get('type');
 		$value = $req->get('value');
 		if (!strlen($walletId) || !strlen($type) || !strlen($value))
 			return Response::create(['error' => 'missing id, type or value'], Response::HTTP_BAD_REQUEST);
 
 		try {
-			$formatted = $this->walletService->updateCheckState($member, $walletId, $type, $value);
+			$formatted = $this->walletService->updateCheckState($this->member, $walletId, $type, $value);
 		} catch (NotFoundException $ex) {
-			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NO_CONTENT);
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+			return Response::create(['error' => $ex->bind($message)], Response::HTTP_NO_CONTENT);
 		} catch (BadParameterException $ex) {
-			return Response::create(['error' => $ex->getMessage()], Response::HTTP_BAD_REQUEST);
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+			return Response::create(['error' => $ex->bind($message)], Response::HTTP_BAD_REQUEST);
 		} catch (AuthenticationException $ex) {
-			return Response::create(['error' => $ex->getMessage()], Response::HTTP_FORBIDDEN);
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+			return Response::create(['error' => $ex->bind($message)], Response::HTTP_FORBIDDEN);
 		}
 		return Response::create($formatted, Response::HTTP_ACCEPTED);
 	}
