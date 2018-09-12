@@ -39,6 +39,6 @@
             </select>
         </div>
 
-        <div id="statistics"><span id="statistics-loading"></span></div>
     </div>
+    <div id="statistics"><span id="statistics-loading"></span></div>
 @endsection

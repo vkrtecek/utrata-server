@@ -4,8 +4,8 @@ span#statistics-loading{
     min-width: 300px;
     min-height: 300px;
 }
-#wholeStatistics {
-    padding-top: 4rem;
+#statistics {
+    text-align: center;
 }
 #header {
     position: fixed;
@@ -39,10 +39,11 @@ h2 {
     padding: 0.4rem 0 1rem 0;
 }
 #partMonth, #fullMonth {
-    display: inline-block;
+    display: inline-table;
     margin-right: 2rem;
     padding: 1rem;
     border: dashed violet 0.1rem;
+    text-align: center;
 }
 
 
