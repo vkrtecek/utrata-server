@@ -9,11 +9,8 @@
 namespace App\Model\Exception;
 
 
-class BadParameterException extends \Exception
+class BadParameterException extends ApplicationException
 {
-    /** @var string */
-    private $default;
-
     /**
      * BadParameterException constructor.
      * @param string $message
@@ -21,13 +18,8 @@ class BadParameterException extends \Exception
      * @param int $code
      * @param \Exception $previous
      */
-    public function __construct($message = "", $default = "", $code = 0, \Exception $previous = NULL) {
-        parent::__construct($message, $code, $previous);
-        $this->default = $default;
-    }
-
-    /** @return string */
-    public function getDefault() {
-        return $this->default;
+    public function __construct(string $message = "", string $default = "", int $code = 0, \Exception $previous = NULL)
+    {
+        parent::__construct($message, $default, $code, $previous);
     }
 }

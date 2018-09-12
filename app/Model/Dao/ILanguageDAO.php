@@ -15,27 +15,27 @@ use App\Model\Exception\IntegrityException;
 interface ILanguageDAO
 {
     /**
-     * @return Language[]|NULL
+     * @return Language[]
      */
-    public function findAll();
+    public function findAll(): array;
 
     /**
      * @param string $code
      * @return Language|NULL
      */
-    public function findOne($code);
+    public function findOne(string $code): ?Language;
 
     /**
      * @param Language $language
      * @return Language
      */
-    public function create(Language $language);
+    public function create(Language $language): Language;
 
     /**
      * @param Language $language
      * @return Language
      */
-    public function update(Language $language);
+    public function update(Language $language): Language;
 
     /**
      * @param Language $language

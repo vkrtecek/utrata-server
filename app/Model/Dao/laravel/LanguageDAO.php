@@ -12,53 +12,38 @@ namespace App\Model\Dao;
 use App\Model\Entity\Language;
 use App\Model\Exception\IntegrityException;
 
-class LanguageDAO implements ILanguageDAO
+class LanguageDAO extends AbstractDAO implements ILanguageDAO
 {
 
-    /**
-     * @return Language[]|NULL
-     */
-    public function findAll(){
-        return Language::all();
+    /** @inheritdoc */
+    public function findAll(): array {
+        return $this->convertToArray(Language::all());
     }
 
-    /**
-     * @param string $code
-     * @return Language|NULL
-     */
-    public function findOne($code){
-    	$l = Language::find($code);
-		return $l;
-    }
+    /** @inheritdoc */
+    public function findOne(string $code): ?Language {
+    	return Language::find($code);
+	}
 
-    /**
-     * @param Language $language
-     * @return Language
-     */
-    public function create(Language $language) {
+    /** @inheritdoc */
+    public function create(Language $language): Language {
         $language->save();
         return $language;
     }
 
-    /**
-     * @param Language $language
-     * @return Language
-     */
-    public function update(Language $language) {
+    /** @inheritdoc */
+    public function update(Language $language): Language {
         $language->save();
         return $language;
     }
 
-    /**
-     * @param Language $language
-     * @throws IntegrityException
-     */
+    /** @inheritdoc */
     public function delete(Language $language) {
         try {
             $language->delete();
         } catch (\Exception $ex) {
             //FK key violation
-            throw new IntegrityException($ex->getMessage(), 0, $ex);
+            throw new IntegrityException('Exception.Integrity', 'Cannot remove cause of FK', 0, $ex);
         }
     }
 

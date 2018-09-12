@@ -15,46 +15,46 @@ use App\Model\Exception\IntegrityException;
 interface ICheckStateDAO
 {
     /**
-     * @return CheckState[]|NULL
+     * @return CheckState[]
      */
-    public function findAll();
+    public function findAll(): array;
 
     /**
      * @param int $id
      * @return CheckState|NULL
      */
-    public function findOne($id);
+    public function findOne(int $id): CheckState;
+
+	/**
+	 * @param string $key
+	 * @param string $val
+	 * @return CheckState[]
+	 */
+	public function findByColumn(string $key, string $val): array;
 
 	/**
 	 * @param string $key
 	 * @param mixed $val
 	 * @return CheckState|NULL
 	 */
-	public function findByColumn($key, $val);
-
-	/**
-	 * @param string $key
-	 * @param mixed $val
-	 * @return CheckState|NULL
-	 */
-	public function findLastByColumn($key, $val);
+	public function findLastByColumn(string $key, string $val): ?CheckState;
 
 	/**
 	 * @param CheckState $checkState
 	 * @return CheckState
 	 */
-	public function create(CheckState $checkState);
+	public function create(CheckState $checkState): CheckState;
 
 	/**
 	 * @param CheckState $checkState
 	 * @return CheckState
 	 */
-	public function update(CheckState $checkState);
+	public function update(CheckState $checkState): CheckState;
 
 	/**
-	 * @param int $id
-	 * @return void
+	 * @param CheckState $cs
+	 * @throws IntegrityException
 	 */
-	public function delete($id);
+	public function delete(CheckState $cs);
 
 }

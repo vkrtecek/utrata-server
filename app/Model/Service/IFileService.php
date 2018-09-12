@@ -19,14 +19,14 @@ interface IFileService
 	 * @param Member $member
 	 * @return string
 	 */
-	public function getBackup(Member $member);
+	public function getBackup(Member $member): string;
 
 	/**
 	 * @param Member $member
 	 * @param string $content
-	 * @return boolean
+	 * @return bool
 	 * @throws FileParseException
 	 * @throws EOFException
 	 */
-	public function storeBackup(Member $member, $content);
+	public function storeBackup(Member $member, string $content): bool;
 }

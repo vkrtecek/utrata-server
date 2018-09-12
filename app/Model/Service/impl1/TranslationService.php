@@ -14,10 +14,9 @@ use App\Model\Entity\Language;
 use App\Model\Entity\Translation;
 use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\BadParameterException;
-use App\Model\Exception\IntegrityException;
+use App\Model\Exception\BadRequestException;
 use App\Model\Exception\NotFoundException;
 use Illuminate\Support\Facades\Auth;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class TranslationService implements ITranslationService
 {
@@ -38,43 +37,29 @@ class TranslationService implements ITranslationService
 		$this->languageService = $languageService;
 	}
 
-	/**
-	 * @return Translation[]
-	 * @throws NotFoundException
-	 */
-	public function getTranslations() {
+	/** @inheritdoc */
+	public function getTranslations(): array {
 		$translations = $this->translationDao->findAll();
-		if ($translations == NULL)
-			throw new NotFoundException('TranslationService: No Translation found.');
+		if (count($translations) == 0)
+			throw (new NotFoundException('Exception.NotFound', 'No :entity found'))->setBind(['entity' => 'Translation']);
 		return $translations;
 	}
 
-	/**
-	 * @param string $languageCode
-	 * @return Translation[]
-	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 */
-	public function getTranslationsByLanguage($languageCode) {
+    /** @inheritdoc */
+    public function getTranslationsByLanguage(string $languageCode): array {
 		if (!$languageCode || $languageCode == "")
-			throw new BadParameterException('TranslationService: Identifier "language" not specified.');
+			throw (new BadParameterException('Exception.Parameter.Missing', ':parameter missing'))->setBind(['parameter' => 'language']);
 		$language = $this->languageService->getLanguage($languageCode);
 		$translations = $this->translationDao->findAllByLanguage($language);
 		if ($translations == NULL)
-			throw new NotFoundException('TranslationService: No Translation for this language found.');
+            throw (new NotFoundException('Exception.NotFound', 'No :entity found'))->setBind(['entity' => 'Translation']);
 		return $translations;
 	}
 
-	/**
-	 * @param string $code
-	 * @param string $languageCode
-	 * @param string $default
-	 * @return Translation
-	 * @throws BadParameterException
-	 */
-	public function getTranslation($code, $languageCode, $default = '') {
-		if ($code == NULL || $code == "" || $languageCode == NULL || $languageCode == "")
-			throw new BadParameterException('TranslationService: Identifier "code" or "language" not specified.');
+    /** @inheritdoc */
+    public function getTranslation(string $code, string $languageCode, string $default = ''): Translation {
+		if (empty($code) || empty($languageCode))
+            throw (new BadParameterException('Exception.Parameter.Missing', ':parameter missing'))->setBind(['parameter' => 'code or language']);
 		$language = $this->languageService->getLanguage($languageCode);
 		$translation = $this->translationDao->findOne($code, $language);
 		if ($translation == NULL) {
@@ -84,41 +69,25 @@ class TranslationService implements ITranslationService
 		return $translation;
 	}
 
-	/**
-	 * @param string $code
-	 * @param Language $language
-	 * @param string $default
-	 * @return string
-	 * @throws BadParameterException
-	 */
-	public function getTranslationDefault($code, Language $language, $default = '') {
+    /** @inheritdoc */
+    public function getTranslationDefault(string $code, Language $language, string $default = ''): string {
 		return $this->getTranslation($code, $language->getCode(), $default)->getValue();
 	}
 
-	/**
-	 * @param string $code
-	 * @param string $default
-	 * @return string
-	 */
-	public function get($code, $default = '') {
+    /** @inheritdoc */
+    public function get(string $code, string $default = ''): string {
 		$language = Auth::user() ? Auth::user()->getLanguage()->getCode() : 'CZK';
 		return $this->getTranslation($code, $language, $default)->getValue();
 	}
 
-	/**
-	 * @param array $data
-	 * @return Translation
-	 * @throws AlreadyExistException
-	 * @throws BadParameterException
-	 * @throws NotFoundException
-	 */
-	public function createTranslation($data) {
+    /** @inheritdoc */
+    public function createTranslation(array $data): Translation {
 		$translation = new Translation();
 		if (!isset($data['code']) || !isset($data['language']))
-			throw new BadParameterException('TranslationService: Identifier "code" or "language" not specified.');
+            throw (new BadParameterException('Exception.Parameter.Missing', ':parameter missing'))->setBind(['parameter' => 'code or language']);
 		try {
 			$this->getTranslation($data['code'], $data['language']);
-			throw new AlreadyExistException('TranslationService: Translation with this code and language already exists.');
+			throw (new AlreadyExistException('Exception.AlreadyExists', ':entity with this :parameter already exists'))->setBind(['parameter' => 'code and language']);
 		} catch (NotFoundException $ex) {
 			$translation->setCode($data['code']);
 			$language = $this->languageService->getLanguage($data['language']);
@@ -128,60 +97,30 @@ class TranslationService implements ITranslationService
 		}
 	}
 
-	/**
-	 * @param string $code
-	 * @param string $language
-	 * @param $data
-	 * @return Translation
-	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 * @throws BadRequestHttpException
-	 */
-	public function updateTranslation($code, $language, $data) {
+    /** @inheritdoc */
+    public function updateTranslation(string $code, string $language, array $data): Translation {
 		try {
 			$translation = $this->getTranslation($code, $language);
 			$this->setTranslation($translation, $data);
 			return $this->translationDao->update($translation);
 		} catch (NotFoundException $ex) {
-			throw new NotFoundException('TranslationService: No Translation with this code and language', 0, $ex);
+            throw (new NotFoundException('Exception.NotFound', 'No :entity found'))->setBind(['entity' => 'Translation']);
 		}
 	}
 
-	/**
-	 * @param string $code
-	 * @param string $language
-	 * @return string[]
-	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 * @throws IntegrityException
-	 */
-	public function deleteTranslation($code, $language) {
+    /** @inheritdoc */
+    public function deleteTranslation(string $code, string $language) {
 		try {
 			$translation = $this->getTranslation($code, $language);
 			$this->translationDao->delete($translation);
 			return array($code, $language);
 		} catch (NotFoundException $ex) {
-			throw new NotFoundException('TranslationSerice: No Transaltion with given "code" and "language"', 0, $ex);
+            throw (new NotFoundException('Exception.NotFound', 'No :entity found'))->setBind(['entity' => 'Translation']);
 		}
 	}
 
-	/**
-	 * @param Translation $entity
-	 * @param $data
-	 * @throws BadRequestHttpException
-	 */
-	protected function setTranslation(Translation $entity, $data) {
-		if (!isset($data['value']) || $data['value'] == NULL)
-			throw new BadRequestHttpException('TranslationSerice: "value" must be specified.');
-		else
-			$entity->setValue($data['value']);
-	}
-
-	/**
-	 * @param Translation $translation
-	 * @return array
-	 */
-	public function format(Translation $translation) {
+    /** @inheritdoc */
+    public function format(Translation $translation): array {
 		$ret = [];
 
 		$ret['code'] = $translation->getCode();
@@ -191,14 +130,23 @@ class TranslationService implements ITranslationService
 		return $ret;
 	}
 
-	/**
-	 * @param Translation[] $translations
-	 * @return array
-	 */
-	public function formatEntites($translations) {
+    /** @inheritdoc */
+    public function formatEntities(array $translations): array {
 		$ret = [];
 		foreach($translations as $translation)
 			$ret[] = $this->format($translation);
 		return $ret;
 	}
+
+    /**
+     * @param Translation $entity
+     * @param array $data
+     * @throws BadRequestException
+     */
+    protected function setTranslation(Translation $entity, $data) {
+        if (!isset($data['value']))
+            throw (new BadParameterException('Exception.Parameter.Missing', ':parameter missing'))->setBind(['parameter' => 'value']);
+        else
+            $entity->setValue($data['value']);
+    }
 }

@@ -10,45 +10,43 @@ namespace App\Model\Dao;
 
 
 use App\Model\Entity\Currency;
-use App\Model\Exception\BadParameterException;
 use App\Model\Exception\IntegrityException;
-use App\Model\Exception\NotFoundException;
 
 interface ICurrencyDAO
 {
     /**
-     * @return Currency[]|NULL
+     * @return Currency[]
      */
-    public function findAll();
+    public function findAll(): array;
 
     /**
      * @param $id
      * @return Currency|NULL
      */
-    public function findOne($id);
+    public function findOne(int $id): ?Currency;
+
+    /**
+     * @param string $key
+     * @param string $val
+     * @return Currency|NULL
+     */
+    public function findOneByColumn(string $key, string $val): ?Currency;
 
     /**
      * @param Currency $currency
      * @return Currency
      */
-    public function create(Currency $currency);
+    public function create(Currency $currency): Currency;
 
     /**
      * @param Currency $currency
      * @return Currency
      */
-    public function update(Currency $currency);
+    public function update(Currency $currency): Currency;
 
     /**
      * @param Currency $currency
      * @throws IntegrityException
      */
     public function delete(Currency $currency);
-
-	/**
-	 * @param string $key
-	 * @param mixed $val
-	 * @return Currency
-	 */
-	public function findOneByColumn($key, $val);
 }

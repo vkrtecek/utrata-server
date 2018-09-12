@@ -17,58 +17,58 @@ use App\Model\Filter\ItemFilter;
 interface IItemDAO
 {
     /**
-     * @return Item[]|NULL
+     * @return Item[]
      */
-    public function findAll();
+    public function findAll(): array;
 
     /**
      * @param int $id
      * @return Item|NULL
      */
-    public function findOne($id);
+    public function findOne(int $id): ?Item;
 
 	/**
 	 * @param string $key
-	 * @param mixed $val
-	 * @return Item[]|NULL
+	 * @param string $val
+	 * @return Item[]
 	 */
-	public function findByColumn($key, $val);
+	public function findByColumn(string $key, string $val): array;
 
 	/**
 	 * @param ItemFilter $filters
 	 * @return Item[]
 	 */
-	public function findByFilter(ItemFilter $filters);
+	public function findByFilter(ItemFilter $filters): array;
 
 	/**
 	 * @param ItemFilter $filter
 	 * @return Item[]
 	 */
-	public function findUsersItemsByNotes(ItemFilter $filter);
+	public function findUsersItemsByNotes(ItemFilter $filter): array;
 
     /**
      * @param Member $member
      * @return Item[]|NULL
      */
-    public function findUserItems(Member $member);
+    public function findUserItems(Member $member): array;
 
 	/**
 	 * @param Member $member
-	 * @return Item
+	 * @return Item|NULL
 	 */
-	public function findUserLastItem(Member $member);
+	public function findUserLastItem(Member $member): ?Item;
 
     /**
      * @param Item $item
      * @return Item
      */
-    public function create(Item $item);
+    public function create(Item $item): Item;
 
     /**
      * @param Item $item
      * @return Item
      */
-    public function update(Item $item);
+    public function update(Item $item): Item;
 
     /**
      * @param Item $item
@@ -80,7 +80,7 @@ interface IItemDAO
 	 * @param Item $item
 	 * @return Item|NULL
 	 */
-	public function checkExistence(Item $item);
+	public function checkExistence(Item $item): ?Item;
 
     /**
      * @param ItemFilter $filter

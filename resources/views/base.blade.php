@@ -9,10 +9,11 @@
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
     @include('inc.styles')
     @yield('stylesheets')
+    @include('inc.scripts')
+    @yield('preScripts')
 
     <title>{{ env('APP_NAME') }} | @yield('title')</title>
 
@@ -20,17 +21,14 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
-{{ app()->getLocale() }}
-<div id="app">
-    @include('inc.header')
-    @yield('navigation')
+    {{ app()->getLocale() }}
+    <div id="app">
+        @include('inc.header')
+        @yield('navigation')
 
-    @yield('content')
-</div>
+        @yield('content')
+    </div>
 
-
-<!-- Scripts -->
-@include('inc.scripts')
-@yield('scripts')
+    @yield('scripts')
 </body>
 </html>

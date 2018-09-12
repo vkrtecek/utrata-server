@@ -22,21 +22,4 @@ class MemberPurposeController extends AbstractController {
 		parent::__construct($memberService);
 		$this->memberPurposeService = $memberPurposeService;
 	}
-
-	/**
-	 * @param Request $req
-	 * @return Response
-	 */
-	public function changePurposes(Request $req) {
-		$this->assumeLogged($req);
-		$member = $this->loggedUser($req);
-		$purposes = $req->get('notes');
-		try {
-			$this->memberPurposeService->setMemberPurposes($member, $purposes);
-		} catch (NotFoundException $e) {
-			return Response::create(['error' => $e->getMessage()], Response::HTTP_NOT_FOUND);
-		}
-
-		return Response::create([], Response::HTTP_OK);
-	}
 }

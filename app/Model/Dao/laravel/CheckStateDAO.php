@@ -10,70 +10,52 @@ namespace App\Model\Dao;
 
 
 use App\Model\Entity\CheckState;
+use App\Model\Exception\IntegrityException;
 
-class CheckStateDAO implements ICheckStateDAO
+class CheckStateDAO extends AbstractDAO implements ICheckStateDAO
 {
-    /**
-     * @return CheckState[]
-     */
-    public function findAll() {
-    	return CheckState::all();
+    /** @inheritdoc */
+    public function findAll(): array {
+    	return $this->convertToArray(CheckState::all());
     }
 
-    /**
-     * @param int $id
-     * @return CheckState
-     */
-    public function findOne($id) {
+    /** @inheritdoc */
+    public function findOne(int $id): CheckState {
         return CheckState::find($id);
     }
 
-	/**
-	 * @param string $key
-	 * @param mixed $val
-	 * @return CheckState|NULL
-	 */
-	public function findByColumn($key, $val) {
-		return CheckState::where($key, $val)->get();
+    /** @inheritdoc */
+    public function findByColumn(string $key, string $val): array {
+		return $this->convertToArray(CheckState::where($key, $val)->get());
 	}
 
-	/**
-	 * @param string $key
-	 * @param mixed $val
-	 * @return CheckState|NULL
-	 */
-	public function findLastByColumn($key, $val) {
+    /** @inheritdoc */
+    public function findLastByColumn(string $key, string $val): ?CheckState {
 		return CheckState::where($key, $val)
 			->orderBy('CheckStateID', 'DESC')
 			->first();
 	}
 
-    /**
-     * @param CheckState $checkState
-     * @return CheckState
-     */
-    public function create(CheckState $checkState) {
+    /** @inheritdoc */
+    public function create(CheckState $checkState): CheckState {
     	$checkState->setChecked(new \DateTime());
 		$checkState->save();
         return $checkState;
     }
 
-	/**
-	 * @param CheckState $checkState
-	 * @return CheckState
-	 */
-	public function update(CheckState $checkState) {
+    /** @inheritdoc */
+    public function update(CheckState $checkState): CheckState {
 		$checkState->setChecked(new \DateTime());
 		$checkState->save();
 		return $checkState;
 	}
 
-	/**
-	 * @param int $id
-	 * @return void
-	 */
-	public function delete($id) {
-		$cs = $this->findOne($id);
-		$cs->delete();
+    /** @inheritdoc */
+    public function delete(CheckState $cs) {
+		try {
+            $cs->delete();
+        } catch (\Exception $ex) {
+		    throw new IntegrityException('Exception.Integrity', 'Cannot remove cause of FK', 0, $ex);
+        }
 	}
 }

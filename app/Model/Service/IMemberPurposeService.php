@@ -22,15 +22,12 @@ interface IMemberPurposeService
 	 * @param Member $member
 	 * @param Purpose $purpose
 	 * @return MemberPurpose
-	 * @throws AlreadyExistException
 	 */
-	public function create(Member $member, Purpose $purpose);
+	public function create(Member $member, Purpose $purpose): MemberPurpose;
 
 	/**
 	 * @param Member $member
 	 * @param Purpose $purpose
-	 * @return void
-	 * @throws BadRequestHttpException
 	 */
 	public function delete(Member $member, Purpose $purpose);
 
@@ -38,21 +35,13 @@ interface IMemberPurposeService
 	 * @param Member $member
 	 * @return MemberPurpose[]
 	 */
-	public function getMemberPurposes(Member $member);
+	public function getMemberPurposes(Member $member): array;
 
 	/**
 	 * @param Member $member
 	 * @param Purpose $purpose
 	 * @return MemberPurpose|NULL
 	 */
-	public function getMemberPurpose(Member $member, Purpose $purpose);
-
-	/**
-	 * @param Member $member
-	 * @param string $ids ID of each purpose separated by comma
-	 * @return void
-	 * @throws NotFoundException
-	 */
-	public function setMemberPurposes(Member $member, $ids);
+	public function getMemberPurpose(Member $member, Purpose $purpose): ?MemberPurpose;
 
 }

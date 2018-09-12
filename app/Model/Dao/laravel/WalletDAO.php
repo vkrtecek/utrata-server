@@ -12,97 +12,55 @@ namespace App\Model\Dao;
 use App\Model\Entity\CheckState;
 use App\Model\Entity\Item;
 use App\Model\Entity\Wallet;
-use App\Model\Enum\ItemType;
-use App\Model\Exception\IntegrityException;
-use Illuminate\Database\QueryException;
 
-class WalletDAO implements IWalletDAO
+class WalletDAO extends AbstractDAO implements IWalletDAO
 {
-	/**
-	 * @return Wallet[]|NULL
-	 */
-	public function findAll() {
-		return Wallet::all();
+    /** @inheritdoc */
+    public function findAll(): array {
+		return $this->convertToArray(Wallet::all());
 	}
 
-	/**
-	 * @param int $id
-	 * @return Wallet|NULL
-	 */
-	public function findOne($id) {
+    /** @inheritdoc */
+    public function findOne(int $id): ?Wallet {
 		return Wallet::find($id);
 	}
 
-	/**
-	 * @param string $key
-	 * @param mixed $val
-	 * @return Wallet[]
-	 */
-	public function findByColumn($key, $val) {
-		return Wallet::where($key, $val)->get();
+    /** @inheritdoc */
+    public function findByColumn(string $key, string $val): array {
+		return $this->convertToArray(Wallet::where($key, $val)->get());
 	}
 
-	/**
-	 * @param string $key
-	 * @param mixed $val
-	 * @return Wallet
-	 */
-	public function findOneByColumn($key, $val) {
+    /** @inheritdoc */
+    public function findOneByColumn(string $key, string $val): ?Wallet {
 		return Wallet::where($key, $val)->first();
 	}
 
-	/**
-	 * @param Wallet $wallet
-	 * @return Item[]
-	 */
-	public function getItems(Wallet $wallet) {
-		return Item::where('WalletID', $wallet->getId())->get();
+    /** @inheritdoc */
+    public function getItems(Wallet $wallet): array {
+		return $this->convertToArray(Item::where('WalletID', $wallet->getId())->get());
 	}
 
-	/**
-	 * @param Wallet $wallet
-	 * @return CheckState[]
-	 */
-	public function getCheckStates(Wallet $wallet) {
-		$ret = [];
-		$ret[] = CheckState::where('WalletID', $wallet->getId())
-			->where('type', ItemType::CARD)
-			->first();
-		$ret[] = CheckState::where('WalletID', $wallet->getId())
-			->where('type', ItemType::CASH)
-			->first();
-		return $ret;
+    /** @inheritdoc */
+    public function getCheckStates(Wallet $wallet): array {
+        return $this->convertToArray(CheckState::where('WalletID', $wallet->getId())->get());
 	}
 
-	/**
-	 * @param Wallet $wallet
-	 * @return Wallet
-	 */
-	public function create(Wallet $wallet) {
+    /** @inheritdoc */
+    public function create(Wallet $wallet): Wallet {
 		$wallet->setCreated(new \DateTime());
 		$wallet->save();
 		return $wallet;
 	}
 
-	/**
-	 * @param Wallet $wallet
-	 * @return Wallet
-	 */
-	public function update(Wallet $wallet) {
+    /** @inheritdoc */
+    public function update(Wallet $wallet): Wallet {
 		$wallet->setModified(new \DateTime());
 		$wallet->save();
 		return $wallet;
 	}
 
-	/**
-	 * @param Wallet $wallet
-	 * @throws IntegrityException
-	 */
+	/** @inheritdoc */
 	public function delete(Wallet $wallet) {
-		try {
-			$wallet->delete();
-		} catch (QueryException $ex) {
-			throw new IntegrityException('Integrity violation');
-		}
+        $wallet->delete();
 	}
 }

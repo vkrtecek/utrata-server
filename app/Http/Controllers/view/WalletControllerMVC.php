@@ -23,6 +23,7 @@ use App\Model\Service\IPurposeService;
 use App\Model\Service\IWalletService;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Redirect;
 
 class WalletControllerMVC extends AbstractControllerMVC
@@ -98,40 +99,24 @@ class WalletControllerMVC extends AbstractControllerMVC
 	}
 
 	/**
-	 * @return View
-	 */
-	public function wantCreate() {
-		return view('pages.addWallet');
-	}
-
-	/**
 	 * @param Request $request
 	 * @return Redirect|View
      * @throws AuthenticationMVCException
 	 */
 	public function create(Request $request) {
 	    $this->assumeLogged();
+
+	    //only form to create
+	    if ($request->get('name') === null) {
+            return view('pages.addWallet');
+        }
+
 		try {
 			$wallet = $this->walletService->createWallet($this->member, $request->get('name'));
 		} catch (BadParameterException $ex) {
 			return view('pages.addWallet')->with('warning', $ex->getMessage());
 		}
 		return redirect(route('get.wallet', ['id' => $wallet->getId()]));
-	}
-
-	/**
-	 * @param $id
-	 * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-	 * @throws AuthenticationException
-	 * @throws BadParameterException
-	 * @throws UnderEntityNotFoundException
-	 * @throws \App\Model\Exception\NotFoundException
-	 */
-	public function wantUpdate($id) {
-        $this->assumeLogged();
-		$wallet = $this->walletService->getWallet($id, $this->member);
-		$wallet = $this->walletService->format($wallet);
-		return view('pages.updateWallet')->with('wallet', $wallet);
 	}
 
 	/**
@@ -145,11 +130,18 @@ class WalletControllerMVC extends AbstractControllerMVC
 	 */
 	public function update(Request $request, $id) {
         $this->assumeLogged();
+        $wallet = $this->walletService->getWallet($id, $this->member);
+        $wallet = $this->walletService->format($wallet);
+
+        //only form to update
+        if ($request->get('name') === null) {
+            return view('pages.updateWallet')
+                ->with('wallet', $wallet);
+        }
+
 		try {
 			$this->walletService->updateWallet($this->member, $id, $request->get('name'));
 		} catch (BadParameterException $ex) {
-			$wallet = $this->walletService->getWallet($id, $this->member);
-			$wallet = $this->walletService->format($wallet);
 			return view('pages.updateWallet')
 				->with('wallet', $wallet)
 				->with('warning', $ex->getMessage());
@@ -231,5 +223,46 @@ class WalletControllerMVC extends AbstractControllerMVC
             ->with('notes', $notes) //id, value
             ->with('items', $items)
             ->with('state', ItemState::CHECKED);
+    }
+
+    /**
+     * @param Request $request
+     * @param int $id of wallet
+     * @return Response
+     * @throws AuthenticationException
+     */
+    public function updateCheckState(Request $request, $id) {
+        $this->assumeLogged();
+        $type = $request->get('type');
+        $value = str_replace(',', '.', $request->get('value'));
+
+        if (empty($type) || empty($value))
+            return Response::create('Empty type or value', Response::HTTP_BAD_REQUEST);
+
+        try {
+            $this->walletService->updateCheckState($this->member, $id, $type, $value);
+        } catch (\Exception $e) {
+            return Response::create($e->getMessage(), Response::HTTP_BAD_REQUEST);
+        }
+        return Response::create('ok');
+    }
+
+    /**
+     * @param @param int $id of wallet
+     * @return Response
+     * @throws AuthenticationException
+     * @throws BadParameterException
+     * @throws NotFoundException
+     */
+    public function checkStateStatus($id) {
+        $this->assumeLogged();
+        $wallet = $this->walletService->getWallet($id, $this->member);
+        $wallet = $this->walletService->format($wallet);
+
+        $response = view('jquery.status')
+            ->with('wallet', $wallet)
+            ->with('member', $this->member);
+
+        return Response::create($response)->header('Content-Type', 'text/html');
     }
 }

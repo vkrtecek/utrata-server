@@ -41,54 +41,6 @@ function updateAllItems(url, urlPrintItems, state, conf = 'Do you really want to
     });
     printItems(urlPrintItems, state);
 }
-/*
-function updateItemMakeForm(itemId, url) {
-    if(inUpdate)
-        return;
-    inUpdate = true;
-    $.ajax({
-        url: url,
-        data: {
-
-        },
-        success: function(responseText) {
-            $('#itemDiv_' + itemId).html(responseText);
-        }
-    });
-}
-
-function stornoUpdating(url, state) {
-    printItems(url, state);
-    inUpdate = false;
-}
-
-function acceptUpdating(url, urlPrintItems, state) {
-    var body = {
-        id: $('#_id').val(),
-        name: $('#_name').val(),
-        description: $('#_description').val(),
-        note: {
-            id: $('#_note').val()
-        },
-        type: $('#_type').val(),
-        price: $('#_price').val(),
-        currency: {
-            code: $('#_currency').val()
-        },
-        course: $('#_course').val(),
-        date: $('#_date').val(),
-        wallet: $('#_wallet').val()
-    };
-    $.ajax({
-        url: url,
-        method: 'put',
-        data: body,
-        success: function() {
-            printItems(urlPrintItems, state);
-            inUpdate = false;
-        }
-    });
-}*/
 
 function updateItemRead(itemId, url, printUrl, state) {
     $.ajax({
@@ -136,6 +88,50 @@ function printItems(url, state) {
         error: function(e) {
             console.log(e);
             $('#items').html(e);
+        }
+    });
+}
+
+/**
+ * updates checkstate and redraw div
+ * @param url string - where to call for update
+ * @param type string - karta/hotovost
+ * @param divId string - id of div to be redrawn
+ * @param value float - value of new chceckstate
+ * @param printUrl string - where to get content in server
+ */
+function updateState(url, type, divId, value, printUrl) {
+    var body = {
+        type: type,
+        value: value
+    };
+
+    $.ajax({
+        url: url,
+        method: 'put',
+        data: body,
+        success: function (text) {
+            printStatus(printUrl, divId);
+        },
+        error: function (e) {
+            console.log(e);
+        }
+    });
+}
+
+/**
+ * prints card and cash status into div with given ID
+ * @param url string - where to get content in server
+ * @param divId string - div to be overwritten
+ */
+function printStatus(url, divId) {
+    $.ajax({
+        url: url,
+        success: function(text) {
+            document.getElementById(divId).innerHTML = text;
+        },
+        error: function(e) {
+            console.log(e);
         }
     });
 }

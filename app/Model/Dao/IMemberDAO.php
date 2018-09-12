@@ -19,74 +19,38 @@ use App\Model\Exception\IntegrityException;
 interface IMemberDAO
 {
     /**
-     * @return Member[]|NULL
+     * @return Member[]
      */
-    public function findAll();
+    public function findAll(): array;
 
     /**
      * @param string $name
      * @return Member|NULL
      */
-    public function findOne($name);
+    public function findOne(string $name): ?Member;
 
-	/**
-	 * @param Member $member
-	 * @return MemberPurpose[]
-	 */
-	public function getMemberPurposes(Member $member);
-
-	/**
-	 * @param Member $member
-	 * @return Purpose[]
-	 */
-	public function getPurposes(Member $member);
-
-	/**
-	 * @param Member $member
-	 * @return Wallet[]
-	 */
-	public function getWallets(Member $member);
-
-	/**
-	 * @param Member $member
-	 * @return Item[]
-	 */
-	public function getItems(Member $member);
+    /**
+     * @param $key
+     * @param $val
+     * @return Member|NULL
+     */
+    public function findOneByColumn(string $key, string $val): ?Member;
 
     /**
      * @param Member $member
      * @return Member
      */
-    public function create(Member $member);
+    public function create(Member $member): Member;
 
     /**
      * @param Member $member
      * @return Member
      */
-    public function update(Member $member);
+    public function update(Member $member): Member;
 
     /**
      * @param Member $member
      * @throws IntegrityException
      */
     public function delete(Member $member);
-
-	/**
-	 * @param $key
-	 * @param $val
-	 * @return Member|NULL
-	 */
-	public function findOneByColumn($key, $val);
-
-	/**
-	 * @param string $login
-	 * @return bool
-	 */
-	public function uniqueLogin($login);
-
-	/**
-	 * @param string $mail
-	 * @return bool
-	 */
-	public function uniqueMail($mail);
 }

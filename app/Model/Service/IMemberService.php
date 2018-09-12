@@ -24,22 +24,21 @@ interface IMemberService
 	 * @return Member[]
 	 * @throws NotFoundException
 	 */
-	public function getMembers();
+	public function getMembers(): array;
 
 	/**
 	 * @param string $login
 	 * @return Member
-	 * @throws BadParameterException
 	 * @throws NotFoundException
 	 */
-	public function getMember($login);
+	public function getMember(string $login): Member;
 
 	/**
 	 * @param string $token
 	 * @return Member
 	 * @throws NotFoundException
 	 */
-	public function getByToken($token);
+	public function getByToken(string $token): Member;
 
 	/**
 	 * @param $data
@@ -47,8 +46,10 @@ interface IMemberService
 	 * @throws AlreadyExistException for login, email
 	 * @throws BadRequestHttpException missing some value
 	 * @throws BadParameterException
+     * @throws NotFoundException
+     * @throws AuthenticationException
 	 */
-	public function createMember($data);
+	public function createMember(array $data): Member;
 
 	/**
 	 * @param string $login
@@ -60,16 +61,15 @@ interface IMemberService
 	 * @throws AlreadyExistException for e-mails
 	 * @throws AuthenticationException
 	 */
-	public function updateMember($login, $data);
+	public function updateMember(string $login, array $data): Member;
 
 	/**
 	 * @param string $login
 	 * @return string
 	 * @throws NotFoundException
-	 * @throws BadParameterException
 	 * @throws IntegrityException
 	 */
-	public function deleteMember($login);
+	public function deleteMember(string $login);
 
 	/**
 	 * logs in or creates new account to user
@@ -79,17 +79,18 @@ interface IMemberService
 	 * @throws NotFoundException
 	 * @throws BadRequestHttpException
 	 * @throws AlreadyExistException
+     * @throws AuthenticationException
 	 */
-	public function interactWithFacebook($data);
+	public function interactWithFacebook(array $data): Member;
 
 	/**
 	 * @param string $column
 	 * @param mixed $login
-	 * @return Member|NULL
+	 * @return Member
 	 * @throws NotFoundException
 	 * @throws BadParameterException
 	 */
-	public function getMemberByColumn($column, $login);
+	public function getMemberByColumn(string $column, string $login): Member;
 
 	/**
 	 * creates token and returns member in new state
@@ -97,30 +98,33 @@ interface IMemberService
 	 * @param string $password
 	 * @return Member
 	 * @throws SecurityException
+     * @throws BadParameterException
 	 */
-	public function login($login, $password);
+	public function login(string $login, string $password): Member;
 
 	/**
 	 * @param $login
 	 * @return Member
+     * @throws NotFoundException
+     * @throws BadParameterException
 	 */
-	public function loginByFacebook($login);
+	public function loginByFacebook(string $login): Member;
 
 	/**
 	 * @param Member $member
 	 * @return Member
 	 */
-	public function logout(Member $member);
+	public function logout(Member $member): Member;
 
 	/**
 	 * @param Member $member
 	 * @return array
 	 */
-	public function format(Member $member);
+	public function format(Member $member): array;
 
 	/**
 	 * @param Member[] $members
 	 * @return array
 	 */
-	public function formatEntities($members);
+	public function formatEntities(array $members): array;
 }

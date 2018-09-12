@@ -13,33 +13,22 @@ use App\Model\Entity\Member;
 use App\Model\Entity\MemberPurpose;
 use App\Model\Entity\Purpose;
 
-class MemberPurposeDAO implements IMemberPurposeDAO
+class MemberPurposeDAO extends AbstractDAO implements IMemberPurposeDAO
 {
 
-	/**
-	 * @param Member $member
-	 * @param Purpose $purpose
-	 * @return MemberPurpose|NULL
-	 */
-	public function find(Member $member, Purpose $purpose) {
+    /** @inheritdoc */
+    public function findPurposes(Member $member): array {
+        return $this->convertToArray(MemberPurpose::where('MemberID', $member->getId())->get());
+    }
+
+    /** @inheritdoc */
+	public function find(Member $member, Purpose $purpose): ?MemberPurpose {
 		return MemberPurpose::where('MemberID', $member->getId())
 			->where('PurposeID', $purpose->getId())->first();
 	}
 
-	/**
-	 * @param Member $member
-	 * @return MemberPurpose[]
-	 */
-	public function findPurposes(Member $member) {
-		return MemberPurpose::where('MemberID', $member->getId())->get();
-	}
-
-	/**
-	 * @param Member $member
-	 * @param Purpose $purpose
-	 * @return MemberPurpose
-	 */
-	public function create(Member $member, Purpose $purpose) {
+    /** @inheritdoc */
+    public function create(Member $member, Purpose $purpose): MemberPurpose {
 		$mp = new MemberPurpose();
 		$mp->setMember($member);
 		$mp->setPurpose($purpose);
@@ -47,12 +36,8 @@ class MemberPurposeDAO implements IMemberPurposeDAO
 		return $mp;
 	}
 
-	/**
-	 * @param Member $member
-	 * @param Purpose $purpose
-	 * @return void
-	 */
-	public function delete(Member $member, Purpose $purpose) {
+    /** @inheritdoc */
+    public function delete(Member $member, Purpose $purpose) {
 		$mps = MemberPurpose::where('MemberID', $member->getId())
 			->where('PurposeID', $purpose->getId())->get();
 		if ($mps) {

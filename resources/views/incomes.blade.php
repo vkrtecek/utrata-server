@@ -12,6 +12,8 @@
 
     @include('inc.styles')
     @yield('stylesheets')
+    @include('inc.scripts')
+    @yield('preScripts')
 
     <title>{{ env('APP_NAME') }} | @yield('title')</title>
 
@@ -19,16 +21,14 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
-<div id="app">
-    @include('inc.headerIncomes')
-    @yield('navigation')
+    <div id="app">
+        @include('inc.headerIncomes')
+        @yield('navigation')
+        @yield('checkStates')
 
-    @yield('content')
-</div>
+        @yield('content')
+    </div>
 
-
-<!-- Scripts -->
-@include('inc.scripts')
-@yield('scripts')
+    @yield('scripts')
 </body>
 </html>

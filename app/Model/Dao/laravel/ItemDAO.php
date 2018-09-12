@@ -17,104 +17,71 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ItemDAO extends AbstractDAO implements IItemDAO
 {
-	/**
-     * @return Item[]|NULL
-     */
-    public function findAll() {
-    	return Item::all();
+    /** @inheritdoc */
+    public function findAll(): array {
+    	return $this->convertToArray(Item::all());
     }
 
-    /**
-     * @param int $id
-     * @return Item|NULL
-     */
-    public function findOne($id) {
+    /** @inheritdoc */
+    public function findOne(int $id): ?Item {
     	return Item::find($id);
     }
 
-	/**
-	 * @param string $key
-	 * @param mixed $val
-	 * @return Item[]|NULL
-	 */
-	public function findByColumn($key, $val) {
-		return Item::where($key, $val)->get();
+    /** @inheritdoc */
+    public function findByColumn(string $key, string $val): array {
+		return $this->convertToArray(Item::where($key, $val)->get());
 	}
 
-	/**
-	 * @param ItemFilter $filters
-	 * @return Item[]
-	 */
-	public function findByFilter(ItemFilter $filters) {
+    /** @inheritdoc */
+    public function findByFilter(ItemFilter $filters): array {
 		$items = $this->getBuilderByFilter($filters);
 		return $this->convertToArray($items->get());
 	}
 
-	/**
-	 * @param ItemFilter $filter
-	 * @return Item[]
-	 */
-	public function findUsersItemsByNotes(ItemFilter $filter) {
+    /** @inheritdoc */
+    public function findUsersItemsByNotes(ItemFilter $filter): array {
 		$items = Item::where('MemberID', $filter->getMember()->getId());
 		$items->where('PurposeID', $filter->getNotes());
-		return $items->get();
+		return $this->convertToArray($items->get());
 	}
 
-    /**
-     * @param Member $member
-     * @return Item[]|NULL
-     */
-    public function findUserItems(Member $member) {
-		return Item::where('MemberID', $member->getId())->get();
+    /** @inheritdoc */
+    public function findUserItems(Member $member): array {
+		return $this->convertToArray(Item::where('MemberID', $member->getId())->get());
     }
 
-	/**
-	 * @param Member $member
-	 * @return Item
-	 */
-	public function findUserLastItem(Member $member) {
+    /** @inheritdoc */
+    public function findUserLastItem(Member $member): ?Item {
 		return Item::where('MemberID', $member->getId())
 			->orderBy('date', 'desc')->first();
 	}
 
-    /**
-     * @param Item $item
-     * @return Item
-     */
-    public function create(Item $item) {
+    /** @inheritdoc */
+    public function create(Item $item): Item {
     	$item->setCreated(new \DateTime());
     	$item->save();
 		return $item;
     }
 
-    /**
-     * @param Item $item
-     * @return Item
-     */
-    public function update(Item $item) {
+    /** @inheritdoc */
+    public function update(Item $item): Item {
     	$item->setModified(new \DateTime());
 		$item->save();
 		return $item;
     }
 
-    /**
-     * @param Item $item
-     * @throws IntegrityException
-     */
+    /** @inheritdoc */
     public function delete(Item $item) {
 		try {
 			$item->delete();
 		} catch (\Exception $ex) {
 			//FK key violation
-			throw new IntegrityException($ex->getMessage(), 0, $ex);
+			throw new IntegrityException('Exception.Integrity', 'Cannot remove cause of FK',0, $ex);
 		}
     }
 
-	/**
-	 * @param Item $item
-	 * @return Item|NULL
-	 */
-	public function checkExistence(Item $item) {
+    /** @inheritdoc */
+    public function checkExistence(Item $item): ?Item {
 		$item = Item::where('mainName', $item->getName())
 			->where('description', $item->getDescription())
 			->where('price', $item->getPrice())
@@ -129,6 +96,7 @@ class ItemDAO extends AbstractDAO implements IItemDAO
     public function count(ItemFilter $filter): int {
         return $this->getBuilderByFilter($filter)->count();
     }
+
 
     /**
      * @param ItemFilter $filter

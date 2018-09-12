@@ -9,26 +9,24 @@
 namespace App\Model\Service;
 
 
-use App\Model\Entity\CheckState;
 use App\Model\Entity\Member;
 use App\Model\Entity\Wallet;
-use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\BadParameterException;
+use App\Model\Exception\BadRequestException;
 use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
 use App\Model\Exception\UnderEntityNotFoundException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 interface IWalletService
 {
 	/**
+     * get all user's wallets
 	 * @param string $login
 	 * @return Wallet[]
 	 * @throws NotFoundException
-	 * @throws BadParameterException
 	 */
-	public function getWallets($login);
+	public function getWallets(string $login): array;
 
 	/**
 	 * @param int $id
@@ -38,7 +36,13 @@ interface IWalletService
 	 * @throws BadParameterException
 	 * @throws AuthenticationException
 	 */
-	public function getWallet(int $id, Member $member);
+	public function getWallet(int $id, Member $member): Wallet;
+
+    /**
+     * @param Member $member
+     * @return Wallet[]
+     */
+	public function getByMember(Member $member): array;
 
 	/**
 	 * @param Member $member
@@ -46,7 +50,7 @@ interface IWalletService
 	 * @return Wallet
 	 * @throws BadParameterException
 	 */
-	public function createWallet(Member $member, $name);
+	public function createWallet(Member $member, string $name): Wallet;
 
 	/**
 	 * @param Member $member
@@ -55,10 +59,10 @@ interface IWalletService
 	 * @return Wallet
 	 * @throws NotFoundException
 	 * @throws BadParameterException
-	 * @throws BadRequestHttpException
+	 * @throws BadRequestException
 	 * @throws AuthenticationException
 	 */
-	public function updateWallet(Member $member, $id, $name);
+	public function updateWallet(Member $member, int $id, string $name): Wallet;
 
 	/**
 	 * @param int $id
@@ -69,21 +73,21 @@ interface IWalletService
 	 * @throws AuthenticationException
 	 * @throws IntegrityException
 	 */
-	public function deleteWallet($id, Member $member);
+	public function deleteWallet(int $id, Member $member);
 
 	/**
 	 * @param Wallet $wallet
 	 * @return array
 	 * @throws UnderEntityNotFoundException
 	 */
-	public function format(Wallet $wallet);
+	public function format(Wallet $wallet): array;
 
 	/**
 	 * @param Wallet[] $wallets
 	 * @return array
 	 * @throws UnderEntityNotFoundException
 	 */
-	public function formatEntities($wallets);
+	public function formatEntities(array $wallets): array;
 
 
 	/**
@@ -96,5 +100,5 @@ interface IWalletService
 	 * @throws BadParameterException
 	 * @throws AuthenticationException
 	 */
-	public function updateCheckState(Member $member, $walletId, $type, $value);
+	public function updateCheckState(Member $member, int $walletId, string $type, float$value): array;
 }

@@ -16,40 +16,40 @@ use App\Model\Exception\IntegrityException;
 interface IPurposeDAO
 {
     /**
-     * @return Purpose[]|NULL
+     * @return Purpose[]
      */
-    public function findAll();
+    public function findAll(): array;
 
     /**
      * @param int $id
      * @return Purpose|NULL
      */
-    public function findOne($id);
+    public function findOne(int $id): ?Purpose;
 
 	/**
 	 * @param string $key
-	 * @param mixed $val
-	 * @return Purpose[]|NULL
+	 * @param string $val
+	 * @return Purpose[]
 	 */
-	public function findByColumn($key, $val);
+	public function findByColumn(string $key, string $val): array;
 
 	/**
 	 * @param Purpose $purpose
-	 * @return Item[]|NULL
+	 * @return Item[]
 	 */
-	public function findItems(Purpose $purpose);
+	public function findItems(Purpose $purpose): array;
 
     /**
      * @param Purpose $purpose
      * @return Purpose
      */
-    public function create(Purpose $purpose);
+    public function create(Purpose $purpose): Purpose;
 
     /**
      * @param Purpose $purpose
      * @return Purpose
      */
-    public function update(Purpose $purpose);
+    public function update(Purpose $purpose): Purpose;
 
     /**
      * @param Purpose $purpose

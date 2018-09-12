@@ -21,7 +21,7 @@ interface ICurrencyService
      * @return Currency[]
      * @throws NotFoundException
      */
-    public function getCurrencies();
+    public function getCurrencies(): array;
 
     /**
      * @param int $id
@@ -29,7 +29,7 @@ interface ICurrencyService
      * @throws BadParameterException
      * @throws NotFoundException
      */
-    public function getCurrency($id);
+    public function getCurrency(int $id): Currency;
 
     /**
      * @param string $column column in database
@@ -37,14 +37,14 @@ interface ICurrencyService
      * @return Currency
      * @throws NotFoundException
      */
-    public function getCurrencyByColumn($column, $value);
+    public function getCurrencyByColumn(string $column, string $value): Currency;
 
     /**
      * @param $data
      * @return Currency
      * @throws BadRequestHttpException
      */
-    public function createCurrency($data);
+    public function create(array $data);
 
     /**
      * @param int $id
@@ -54,26 +54,25 @@ interface ICurrencyService
      * @throws BadParameterException
      * @throws BadRequestHttpException
      */
-    public function updateCurrency($id, $data);
+    public function update(int $id, array $data): Currency;
 
     /**
      * @param int $id
-     * @return int
      * @throws NotFoundException
      * @throws BadParameterException
      * @throws IntegrityException
      */
-    public function deleteCurrency($id);
+    public function deleteCurrency(int $id);
 
 	/**
 	 * @param Currency $currency
 	 * @return array
 	 */
-	public function format(Currency $currency);
+	public function format(Currency $currency): array;
 
 	/**
 	 * @param Currency[] $currencies
 	 * @return array
 	 */
-	public function formatEntities($currencies);
+	public function formatEntities(array $currencies): array;
 }

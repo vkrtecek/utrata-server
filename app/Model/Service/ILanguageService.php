@@ -12,9 +12,9 @@ namespace App\Model\Service;
 use App\Model\Entity\Language;
 use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\BadParameterException;
+use App\Model\Exception\BadRequestException;
 use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 interface ILanguageService
 {
@@ -22,7 +22,7 @@ interface ILanguageService
      * @return Language[]
      * @throws NotFoundException
      */
-    public function getLanguages();
+    public function getLanguages(): array;
 
     /**
      * @param string $code
@@ -30,45 +30,44 @@ interface ILanguageService
      * @throws BadParameterException
      * @throws NotFoundException
      */
-    public function getLanguage($code);
+    public function getLanguage(string $code): Language;
 
     /**
-     * @param $data
+     * @param array $data
      * @return Language
      * @throws AlreadyExistException
      * @throws BadParameterException
-     * @throws BadRequestHttpException
+     * @throws BadRequestException
      */
-    public function createLanguage($data);
+    public function createLanguage(array $data): Language;
 
     /**
      * @param string $code
-     * @param $data
+     * @param array $data
      * @return Language
      * @throws BadParameterException
      * @throws NotFoundException
-     * @throws BadRequestHttpException
+     * @throws BadRequestException
      */
-    public function updateLanguage($code, $data);
+    public function updateLanguage(string $code, array $data): Language;
 
     /**
      * @param string $code
-     * @return string
      * @throws BadParameterException
      * @throws NotFoundException
      * @throws IntegrityException
      */
-    public function deleteLanguage($code);
+    public function deleteLanguage(string $code);
 
 	/**
 	 * @param Language $language
 	 * @return array
 	 */
-	public function format(Language $language);
+	public function format(Language $language): array;
 
 	/**
 	 * @param Language[] $languages
 	 * @return array
 	 */
-	public function formatEntites($languages);
+	public function formatEntites(array $languages): array;
 }

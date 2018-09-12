@@ -32,7 +32,7 @@ class TranslationController extends Controller
 		try {
 			$languageCode = $request->get('language');
 			$translations = $this->translationService->getTranslationsByLanguage($languageCode);
-			$translations = $this->translationService->formatEntites($translations);
+			$translations = $this->translationService->formatEntities($translations);
 		} catch (NotFoundException $ex) {
 			return Response::create(['error' => $ex->getMessage()], Response::HTTP_NOT_FOUND);
 		} catch (BadParameterException $ex) {

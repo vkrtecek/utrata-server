@@ -5,7 +5,7 @@
 @section('title', $trans->get('UpdateItem.Form.Heading', 'Update item'))
 
 @section('stylesheets')
-    <link href="{{ asset('css/updateItem.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/addItem.css') }}" rel="stylesheet">
 @endsection
 
 @section('scripts')
@@ -15,7 +15,7 @@
 @section('navigation')
     <div class="container">
         <a href="{{ route('get.wallets') }}">{{ env('APP_NAME', 'Laravel') }}</a> >
-        <a href="{{ route('get.wallet', ['id' => $item['wallet']]) }}">{{ $trans->get('Navigation.Wallet', 'Wallet') }}</a> >
+        <a href="{{ route('get.wallet', ['id' => $item['wallet']]) }}">{{ $trans->get('Navigation.Wallet', 'Wallet') }} {{ $wallet['name'] }}</a> >
         <a href="#">{{ $trans->get('Navigation.UpdateItem', 'Update item') }}</a>
     </div>
 @endsection
@@ -36,7 +36,7 @@
                             <label for="name">{{ $trans->get('UpdateItem.Form.Name', 'Name:') }}</label>
                         </td>
                         <td>
-                            <input type="text" id="name" name="name" value="{{ old('name') ? old('name') : $item['name'] }}" /><strong class="red"> *</strong>
+                            <input type="text" id="name" name="name" value="{{ $_POST['name'] ?? $item['name'] }}" /><strong class="red"> *</strong>
                         </td>
                     </tr>
 
@@ -67,7 +67,7 @@
                             <label for="currency">{{ $trans->get('UpdateItem.Form.Currency', 'Currency:') }}</label>
                         </td>
                         <td>
-                            <select id="curr" name="currency" class="thirth" onchange="recountCourse( '{{ Auth::user()->getCurrency()->getCode() }}' )">
+                            <select id="curr" name="currency" class="thirth" onchange="recountCourse( '{{ Auth::user()->getCurrency()->getCode() }}', '{{ route('get.course') }}', 'course', this)">
                                 @foreach($currencies as $currency)
                                     <option value="{{ $currency['code'] }}" {{ $currency['code'] == $item['currency']['code'] ? 'selected' : '' }}>
                                         {{ $currency['value'] }}
@@ -139,9 +139,9 @@
                         </td>
                         <td>
                             <select id="wallet" name="wallet">
-                                @foreach($wallets as $wallet)
-                                    <option {{ $wallet['id'] == $item['wallet'] ? 'selected' : '' }} value="{{ $wallet['id'] }}">
-                                        {{ $wallet['name'] }}
+                                @foreach($wallets as $_wallet)
+                                    <option {{ $_wallet['id'] == $item['wallet'] ? 'selected' : '' }} value="{{ $_wallet['id'] }}">
+                                        {{ $_wallet['name'] }}
                                     </option>
                                 @endforeach
                             </select>

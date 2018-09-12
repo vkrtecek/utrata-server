@@ -4,11 +4,11 @@
 @section('title', $trans->get('Import.Title', 'Import backup'))
 
 @section('stylesheets')
-    <link href="{{ asset('css/loadData.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/loadBackup.css') }}" rel="stylesheet">
 @endsection
 
 @section('scripts')
-    <script type="text/javascript" src="{{ asset('js/loadData.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/loadBackup.js') }}"></script>
 @endsection
 
 @section('navigation')

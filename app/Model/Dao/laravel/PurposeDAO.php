@@ -13,68 +13,47 @@ use App\Model\Entity\Item;
 use App\Model\Entity\Purpose;
 use App\Model\Exception\IntegrityException;
 
-class PurposeDAO implements IPurposeDAO
+class PurposeDAO extends AbstractDAO implements IPurposeDAO
 {
 
-    /**
-     * @return Purpose[]|NULL
-     */
-    public function findAll() {
-        return Purpose::all();
+    /** @inheritdoc */
+    public function findAll(): array {
+        return $this->convertToArray(Purpose::all());
     }
 
-	/**
-	 * @param string $key
-	 * @param mixed $val
-	 * @return Purpose[]|NULL
-	 */
-	public function findByColumn($key, $val) {
-		return Purpose::where($key, $val)->get();
+    /** @inheritdoc */
+    public function findByColumn(string $key, string $val): array {
+		return $this->convertToArray(Purpose::where($key, $val)->get());
 	}
 
-    /**
-     * @param int $id
-     * @return Purpose|NULL
-     */
-    public function findOne($id) {
+    /** @inheritdoc */
+    public function findOne(int $id): ?Purpose {
         return Purpose::find($id);
     }
 
-    /**
-	 * @param Purpose $purpose
-	 * @return Item[]|NULL
-	 */
-	public function findItems(Purpose $purpose) {
-		return Item::where('PurposeID', $purpose->getId())->get();
+    /** @inheritdoc */
+    public function findItems(Purpose $purpose): array {
+		return $this->convertToArray(Item::where('PurposeID', $purpose->getId())->get());
 	}
 
-    /**
-     * @param Purpose $purpose
-     * @return Purpose
-     */
-    public function create(Purpose $purpose) {
+    /** @inheritdoc */
+    public function create(Purpose $purpose): Purpose {
         $purpose->save();
         return $purpose;
     }
 
-    /**
-     * @param Purpose $purpose
-     * @return Purpose
-     */
-    public function update(Purpose $purpose) {
+    /** @inheritdoc */
+    public function update(Purpose $purpose): Purpose {
         $purpose->save();
         return $purpose;
     }
 
-    /**
-     * @param Purpose $purpose
-     * @throws IntegrityException
-     */
+    /** @inheritdoc */
     public function delete(Purpose $purpose) {
         try {
             $purpose->delete();
         } catch (\Exception $ex) {
-            throw new IntegrityException('Cannot removed couse of FK. ' . $ex->getMessage(), 0, $ex);
+            throw new IntegrityException('Exception.Integrity', 'Cannot remove cause of FK.', 0, $ex);
         }
     }
 }

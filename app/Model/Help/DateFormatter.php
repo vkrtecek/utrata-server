@@ -40,25 +40,27 @@ class DateFormatter
 	}
 
 	/**
-	 * @param string $date in format
+	 * @param string $date in format YYYY-MM-DD hh:mm:ss
 	 * @return string
 	 */
 	public function dateToReadableFormat($date) {
 		$_date = new DateTime($date);
-		$delimiter = ':-:';
-		$date = $_date->format('d. ' . $delimiter . ' Y | H:i:s');
-		$_month = $_date->format('m');
-		$month = $this->translationService->get(self::$months[$_month-1]['code'], self::$months[$_month-1]['value']);
-		$date = str_replace($delimiter, $month, $date);
-		return $date;
+//		$delimiter = ':-:';
+//		$date = $_date->format('d. ' . $delimiter . ' Y | H:i:s');
+//		$_month = $_date->format('m');
+//		$month = $this->translationService->get(self::$months[$_month-1]['code'], self::$months[$_month-1]['value']);
+//		$date = str_replace($delimiter, $month, $date);
+//		return $date;
+        return strftime(env('DATETIME_FORMAT', "%e. %b %y, %H:%M"), $_date->getTimestamp());
 	}
 
 	/**
-	 * @param string $date
+	 * @param string|\DateTime $date
 	 * @return string
 	 */
 	public function dateToInputFormat($date) {
-		$date = new DateTime($date);
+	    if (!$date instanceof \DateTime)
+    		$date = new DateTime($date);
 		return $date->format('Y-m-d') . 'T' . $date->format('H:i:s');
 	}
 }

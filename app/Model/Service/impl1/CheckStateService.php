@@ -32,105 +32,76 @@ class CheckStateService implements ICheckStateService
 		$this->checkSateDao = $checkStateDAO;
 	}
 
-	/**
-	 * @param Wallet $wallet
-	 * @return CheckState[]
-	 * @throws NotFoundException
-	 */
-	public function getWalletCheckStates(Wallet $wallet) {
+	/** @inheritdoc */
+	public function getWalletCheckStates(Wallet $wallet): array {
 		$cs = $this->checkSateDao->findByColumn('WalletID', $wallet->getId());
-		if (!$cs || count($cs) == 0)
-			throw new NotFoundException('CheckStateService: No check state found.');
+		if (count($cs) == 0)
+			throw (new NotFoundException('Exception.NotFound', 'No :entity found.'))->setBind(['entity' => 'CheckState']);
 		return $cs;
 	}
 
-	/**
-	 * @param Wallet $wallet
-	 * @param string $type
-	 * @return CheckState
-	 * @throws NotFoundException
-	 */
-	public function getWalletCheckState(Wallet $wallet, $type = ItemType::CARD) {
+    /** @inheritdoc */
+    public function getWalletCheckState(Wallet $wallet, string $type = ItemType::CARD): CheckState {
 		$css = $this->getWalletCheckStates($wallet);
 		if (count($css) == 0)
-			throw new NotFoundException('No CheckState found for wallet (' . $wallet->getId() . ').');
+            throw (new NotFoundException('Exception.NotFound', 'No :entity found.'))->setBind(['entity' => 'CheckState']);
 		foreach ($css as $cs)
 			if ($cs->getType() == $type) {
 				return $cs;
 			}
-		throw new NotFoundException('No CheckState of such type');
+        throw (new NotFoundException('Exception.NotFound', 'No :entity found.'))->setBind(['entity' => 'CheckState']);
 	}
 
-	/**
-	 * @param int $id
-	 * @return CheckState
-	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 */
-	public function getCheckState($id) {
-		if (!ctype_digit($id) || $id < 1)
-			throw new BadParameterException('Not INTEGER or smaller that 1');
+    /** @inheritdoc */
+    public function getCheckState(int $id): CheckState {
+		if ($id < 1)
+			throw new BadParameterException('Exception.BadParameter.SmallerThan1', 'Identifier smaller than 1');
 		$checkState = $this->checkSateDao->findOne($id);
 		if (!$checkState)
-			throw new NotFoundException('No CheckState found');
+            throw (new NotFoundException('Exception.NotFound', 'No :entity found.'))->setBind(['entity' => 'CheckState']);
 		return $checkState;
 	}
 
-	/**
-	 * @param Wallet $wallet
-	 * @param string $type
-	 * @return CheckState
-	 */
-	public function createCheckState(Wallet $wallet, $type = ItemType::CARD) {
+    /** @inheritdoc */
+    public function createCheckState(Wallet $wallet, string $type = ItemType::CARD): CheckState {
 		$cs = new CheckState();
 		$cs->setType($type);
 		$cs->setValue(0);
 		$cs->setWallet($wallet);
 		return $this->checkSateDao->create($cs);
 	}
-	/**
-	 * @param Wallet $wallet
-	 * @param string $type
-	 * @param double $value
-	 * @return CheckState
-	 * @throws NotFoundException
-	 */
-	public function updateCheckState(Wallet $wallet, $type, $value) {
+
+	/** @inheritdoc */
+    public function updateCheckState(Wallet $wallet, string $type, float $value): CheckState {
 		$cs = $this->getWalletCheckState($wallet, $type);
 		$cs->setValue($value);
 		return $this->checkSateDao->update($cs);
 	}
 
-	/**
-	 * @param int $id
-	 * @return int
-	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 * @throws IntegrityException
-	 */
-	public function deleteCheckState($id) {
-		$this->checkSateDao->delete($id);
+    /** @inheritdoc */
+    public function deleteCheckState(int $id) {
+	    $cs = $this->getCheckState($id);
+		$this->checkSateDao->delete($cs);
 		return $id;
 	}
 
-	/**
-	 * @param CheckState $checkState
-	 * @return array
-	 */
-	public function format(CheckState $checkState) {
+    /** @inheritdoc */
+    public function format(CheckState $checkState): array {
 		$ret = [];
 
 		$ret['id'] = $checkState->getId();
 		$ret['type'] = $checkState->getType();
 		$ret['checked'] = $checkState->getChecked()->format('Y-m-d H:i:s');
-		$ret['value'] = $checkState->getValue();
+		$ret['value'] = number_format($checkState->getValue(), 2, ',', ' ');
 
 		return $ret;
 	}
 
-	/**
-	 * @param CheckState[] $checkStates
-	 * @return array
-	 */
-	public function formatEntities($checkStates) {}
+    /** @inheritdoc */
+    public function formatEntities(array $checkStates): array {
+        $ret = [];
+        foreach ($checkStates as $checkState)
+            $ret[] = $checkState;
+        return $ret;
+    }
 }

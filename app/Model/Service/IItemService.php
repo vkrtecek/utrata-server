@@ -31,6 +31,12 @@ interface IItemService
 	 */
 	public function getWalletItems(int $walletId, Member $member, ?ItemFilter $filter = NULL): array;
 
+    /**
+     * @param Member $member
+     * @return Item[]
+     */
+	public function getMembersItems(Member $member): array;
+
 
 	/**
 	 * @param Member $member
@@ -42,6 +48,16 @@ interface IItemService
 	 * @throws AuthenticationException
 	 */
 	public function getMonthStatistics(Member $member, int $walletId, $purposes = NULL): array;
+
+    /**
+     * @param Member $member
+     * @param ItemFilter $filter
+     * @return float
+     * @throws NotFoundException
+     * @throws BadParameterException
+     * @throws AuthenticationException
+     */
+	public function priceByFilter(Member $member, ItemFilter $filter): float;
 
 	/**
 	 * @param int $id
@@ -58,6 +74,8 @@ interface IItemService
 	 * @throws BadRequestHttpException
 	 * @throws AlreadyExistException
 	 * @throws NotFoundException
+     * @throws BadParameterException
+     * @throws AuthenticationException
 	 */
 	public function createItem(Member $member, array $data): Item;
 
@@ -91,6 +109,7 @@ interface IItemService
 	 * @throws NotFoundException
 	 * @throws BadParameterException
 	 * @throws BadRequestHttpException
+     * @throws AuthenticationException
 	 */
 	public function updateItem(Member $member, int $id, array $data): Item;
 

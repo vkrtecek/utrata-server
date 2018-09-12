@@ -10,13 +10,11 @@ namespace App\Model\Service;
 
 
 use App\Model\Entity\CheckState;
-use App\Model\Entity\Member;
 use App\Model\Entity\Wallet;
 use App\Model\Enum\ItemType;
 use App\Model\Exception\BadParameterException;
 use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 interface ICheckStateService
 {
@@ -25,7 +23,7 @@ interface ICheckStateService
 	 * @return CheckState[]
 	 * @throws NotFoundException
 	 */
-	public function getWalletCheckStates(Wallet $wallet);
+	public function getWalletCheckStates(Wallet $wallet): array;
 
 	/**
 	 * @param Wallet $wallet
@@ -33,7 +31,7 @@ interface ICheckStateService
 	 * @return CheckState
 	 * @throws NotFoundException
 	 */
-	public function getWalletCheckState(Wallet $wallet, $type = ItemType::CARD);
+	public function getWalletCheckState(Wallet $wallet, string $type = ItemType::CARD): CheckState;
 
 	/**
 	 * @param int $id
@@ -41,15 +39,15 @@ interface ICheckStateService
 	 * @throws NotFoundException
 	 * @throws BadParameterException
 	 */
-	public function getCheckState($id);
+	public function getCheckState(int $id): CheckState;
 
 	/**
 	 * @param Wallet $wallet
 	 * @param string $type
 	 * @return CheckState
-	 * @throws BadRequestHttpException
+	 * @throws BadParameterException
 	 */
-	public function createCheckState(Wallet $wallet, $type = ItemType::CARD);
+	public function createCheckState(Wallet $wallet, string $type = ItemType::CARD): CheckState;
 
 	/**
 	 * @param Wallet $wallet
@@ -58,7 +56,7 @@ interface ICheckStateService
 	 * @return CheckState
 	 * @throws NotFoundException
 	 */
-	public function updateCheckState(Wallet $wallet, $type, $value);
+	public function updateCheckState(Wallet $wallet, string $type, float $value): CheckState;
 
 	/**
 	 * @param int $id
@@ -67,17 +65,17 @@ interface ICheckStateService
 	 * @throws BadParameterException
 	 * @throws IntegrityException
 	 */
-	public function deleteCheckState($id);
+	public function deleteCheckState(int $id);
 
 	/**
 	 * @param CheckState $checkState
 	 * @return array
 	 */
-	public function format(CheckState $checkState);
+	public function format(CheckState $checkState): array;
 
 	/**
 	 * @param CheckState[] $checkStates
 	 * @return array
 	 */
-	public function formatEntities($checkStates);
+	public function formatEntities(array $checkStates): array;
 }

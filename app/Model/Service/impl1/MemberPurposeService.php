@@ -50,57 +50,29 @@ class MemberPurposeService implements IMemberPurposeService
 		$this->languageService = $languageService;
 	}
 
-	/**
-	 * @param Member $member
-	 * @param Purpose $purpose
-	 * @return MemberPurpose
-	 */
-	public function create(Member $member, Purpose $purpose) {
+    /** @inheritdoc */
+    public function create(Member $member, Purpose $purpose): MemberPurpose {
 		$already = $this->memberPurposeDao->find($member, $purpose);
 		if ($already)
 			return null;
 		return $this->memberPurposeDao->create($member, $purpose);
 	}
 
-	/**
-	 * @param Member $member
-	 * @param Purpose $purpose
-	 * @return void
-	 * @throws BadRequestHttpException
-	 */
-	public function delete(Member $member, Purpose $purpose) {
+    /** @inheritdoc */
+    public function delete(Member $member, Purpose $purpose) {
 		if (count($this->userItemsWithPurpose($member, $purpose)) == 0) {
 			$this->memberPurposeDao->delete($member, $purpose);
 		}
 	}
 
-	/**
-	 * @param Member $member
-	 * @return MemberPurpose[]
-	 */
-	public function getMemberPurposes(Member $member) {
+    /** @inheritdoc */
+    public function getMemberPurposes(Member $member): array {
 		return $this->memberPurposeDao->findPurposes($member);
 	}
 
-	/**
-	 * @param Member $member
-	 * @param Purpose $purpose
-	 * @return MemberPurpose|NULL
-	 */
-	public function getMemberPurpose(Member $member, Purpose $purpose) {
+	/** @inheritdoc */
+	public function getMemberPurpose(Member $member, Purpose $purpose): ?MemberPurpose {
 		return $this->memberPurposeDao->find($member, $purpose);
-	}
-
-	/**
-	 * @param Member $member
-	 * @param string $ids ID of each purpose separated by comma
-	 * @return void
-	 * @throws NotFoundException
-	 */
-	public function setMemberPurposes(Member $member, $ids) {
-		foreach (explode(',', $ids) as $id) {
-			$purpose = $this->purposeDao->findOne($id);
-		}
 	}
 
 
@@ -111,9 +83,9 @@ class MemberPurposeService implements IMemberPurposeService
 	 * @param Purpose $purpose
 	 * @return Item[]
 	 */
-	private function userItemsWithPurpose(Member $member, Purpose $purpose) {
+	private function userItemsWithPurpose(Member $member, Purpose $purpose): array {
 		$filters = new ItemFilter();
-		$filters->setNotes([ (string)$purpose->getId() ])->setMember($member);
+		$filters->setNotes((string)$purpose->getId())->setMember($member);
 		return $this->itemDao->findUsersItemsByNotes($filters);
 	}
 }

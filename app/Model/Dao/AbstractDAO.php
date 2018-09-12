@@ -11,6 +11,11 @@ namespace App\Model\Dao;
 
 abstract class AbstractDAO
 {
+    /**
+     * convert collection of items to array
+     * @param iterable $items
+     * @return array
+     */
     public function convertToArray(iterable $items): array {
         $ret = [];
         foreach ($items as $item)

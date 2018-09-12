@@ -23,7 +23,7 @@ h2 > #walletName {
 }
 
 #wholeWallet {
-    padding-top: 4rem;
+    padding-top: 2rem;
     width: 90%;
     margin: auto;
 }
@@ -150,6 +150,12 @@ span#loading{
     display: block;
     min-width: 300px;
     min-height: 300px;
+}
+span#loading_little{
+    background: url('../img/loading_little.gif') center no-repeat;
+    display: block;
+    min-width: 400px;
+    min-height: 70px;
 }
 
 

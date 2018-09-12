@@ -16,34 +16,34 @@ use App\Model\Exception\IntegrityException;
 interface ITranslationDAO
 {
     /**
-     * @return Translation[]|NULL
+     * @return Translation[]
      */
-    public function findAll();
+    public function findAll(): array;
 
     /**
      * @param string $code
      * @param Language $language
      * @return Translation|NULL
      */
-    public function findOne($code, Language $language);
+    public function findOne(string $code, Language $language): ?Translation;
 
 	/**
 	 * @param Language $language
-	 * @return Translation[]|NULL
+	 * @return Translation[]
 	 */
-	public function findAllByLanguage(Language $language);
+	public function findAllByLanguage(Language $language): array;
 
     /**
      * @param Translation $translation
      * @return Translation
      */
-    public function create(Translation $translation);
+    public function create(Translation $translation): Translation;
 
     /**
      * @param Translation $translation
      * @return Translation
      */
-    public function update(Translation $translation);
+    public function update(Translation $translation): Translation;
 
     /**
      * @param Translation $translation

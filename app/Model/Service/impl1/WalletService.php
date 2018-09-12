@@ -20,7 +20,6 @@ use App\Model\Exception\BadParameterException;
 use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
 use App\Model\Exception\UnderEntityNotFoundException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use DateTime;
 
 class WalletService implements IWalletService
@@ -51,46 +50,33 @@ class WalletService implements IWalletService
 		$this->translationsService = $translationService;
 	}
 
-	/**
-	 * get all user's wallets
-	 * @param string $login
-	 * @return Wallet[]
-	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 */
-	public function getWallets($login) {
+	/** @inheritdoc */
+	public function getWallets(string $login): array {
 		$member = $this->memberService->getMember($login);
 		return $this->walletDao->findByColumn('MemberID', $member->getId());
 	}
 
-	/**
-	 * @param int $id
-	 * @param Member $member
-	 * @return Wallet
-	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 * @throws AuthenticationException
-	 */
-	public function getWallet(int $id, Member $member) {
-		if (!preg_match('/^[1-9][0-9]*[ ]*$/', $id))
-			throw new BadParameterException('WalletService: Not INTEGER or smaller than 1. -> ' . $id);
+    /** @inheritdoc */
+    public function getWallet(int $id, Member $member): Wallet {
+		if ($id < 1)
+			throw new BadParameterException('Exception.BadParameter.SmallerThan1', 'Identifier smaller than 1');
 		$wallet = $this->walletDao->findOne($id);
 		if ($wallet == NULL)
-			throw new NotFoundException('WalletService: No result found.');
+			throw (new NotFoundException('Exception.NotFound', 'No :entity found'))->setBind(['entity' => 'Wallet']);
 		if ($wallet->getMember()->getId() != $member->getId())
-			throw new AuthenticationException('WalletService: Member is not owner of this wallet.');
+            throw (new AuthenticationException('Exception.UserNotOwner', 'User is not owner of this :entity'))->setBind(['entity' => 'Wallet']);
 		return $wallet;
 	}
 
-	/**
-	 * @param Member $member
-	 * @param string $name
-	 * @return Wallet
-	 * @throws BadParameterException
-	 */
-	public function createWallet(Member $member, $name) {
+	/** @inheritdoc */
+    public function getByMember(Member $member): array {
+        return $this->walletDao->findByColumn('MemberID', $member->getId());
+    }
+
+    /** @inheritdoc */
+    public function createWallet(Member $member, string $name): Wallet {
 		if (!$name)
-			throw new BadParameterException($this->translationsService->getTranslation('Wallet.Create.Error.Empty.Name', $member->getLanguage()->getCode(), 'Empty name')->getValue());
+			throw (new BadParameterException('Exception.Parameter.Empty', 'Empty :parameter'))->setBind(['parameter' => 'name']);
 		$wallet = new Wallet();
 		$wallet->setMember($member);
 		$wallet->setName($name);
@@ -99,49 +85,28 @@ class WalletService implements IWalletService
 		return $wallet;
 	}
 
-	/**
-	 * @param Member $member
-	 * @param int $id
-	 * @param string $name
-	 * @return Wallet
-	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 * @throws BadRequestHttpException
-	 * @throws AuthenticationException
-	 */
-	public function updateWallet(Member $member, $id, $name) {
+    /** @inheritdoc */
+    public function updateWallet(Member $member, int $id, string $name): Wallet {
 		if (!$name)
-			throw new BadParameterException($this->translationsService->getTranslation('Wallet.Update.Error.Empty.Name', $member->getLanguage()->getCode(), 'Empty name')->getValue());
+			throw (new BadParameterException('Exception.Parameter.Empty', 'Empty :parameter'))->setBind(['parameter' => 'name']);
 		$wallet = $this->getWallet($id, $member);
 		if ($wallet->getMember()->getId() !== $member->getId())
-			throw new AuthenticationException('WalletService: Member is not owner of this wallet.');
+			throw (new AuthenticationException('Exception.UserNotOwner', 'User is not owner of this :entity'))->setBind(['entity' => 'Wallet']);
 		$wallet->setName($name);
 		$this->walletDao->update($wallet);
 		return $wallet;
 	}
 
-	/**
-	 * @param int $id
-	 * @param Member $member
-	 * @return int
-	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 * @throws AuthenticationException
-	 * @throws IntegrityException
-	 */
-	public function deleteWallet($id, Member $member) {
+    /** @inheritdoc */
+    public function deleteWallet(int $id, Member $member) {
 		$wallet = $this->getWallet($id, $member);
 		$this->deleteCheckstates($wallet);
 		$this->walletDao->delete($wallet);
 		return $wallet->getId();
 	}
 
-	/**
-	 * @param Wallet $wallet
-	 * @return array
-	 * @throws UnderEntityNotFoundException
-	 */
-	public function format(Wallet $wallet) {
+    /** @inheritdoc */
+    public function format(Wallet $wallet): array {
 		$ret = [];
 
 		$ret['id'] = $wallet->getId();
@@ -161,12 +126,8 @@ class WalletService implements IWalletService
 		return $ret;
 	}
 
-	/**
-	 * @param Wallet[] $wallets
-	 * @return array
-	 * @throws UnderEntityNotFoundException
-	 */
-	public function formatEntities($wallets) {
+    /** @inheritdoc */
+    public function formatEntities(array $wallets): array {
 		if (!$wallets)
 			return NULL;
 		$ret = [];
@@ -178,17 +139,8 @@ class WalletService implements IWalletService
 
 
 
-	/**
-	 * @param Member $member
-	 * @param int $walletId
-	 * @param string $type
-	 * @param double $value
-	 * @return array
-	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 * @throws AuthenticationException
-	 */
-	public function updateCheckState(Member $member, $walletId, $type, $value) {
+    /** @inheritdoc */
+    public function updateCheckState(Member $member, int $walletId, string $type, float $value): array {
 		$wallet = $this->getWallet($walletId, $member);
 		$cs = $this->checkStateService->updateCheckState($wallet, $type, $value);
 		return $this->checkStateService->format($cs);
@@ -207,7 +159,7 @@ class WalletService implements IWalletService
 	 * @param string $type
 	 * @return double
 	 */
-	private function countRest(Wallet $wallet, $type = ItemType::CARD) {
+	private function countRest(Wallet $wallet, string $type = ItemType::CARD): float {
 		$minus = $plus = 0;
 		foreach ($this->walletDao->getItems($wallet) as $item) {
 			$amount = ($item->getPrice() * $item->getCourse());
@@ -228,7 +180,7 @@ class WalletService implements IWalletService
 	 * @param Wallet $wallet
 	 * @return double
 	 */
-	private function countMonthExpense(Wallet $wallet) {
+	private function countMonthExpense(Wallet $wallet): float {
 		$expense = 0;
 		foreach ($this->walletDao->getItems($wallet) as $item) {
 			if ($item->getDate()->format('Y-m') == (new DateTime())->format('Y-m')) {
@@ -246,7 +198,7 @@ class WalletService implements IWalletService
 	 * @param int $state
 	 * @return int
 	 */
-	private function getItemsCount($wallet, $state = ItemState::ALL) {
+	private function getItemsCount(Wallet $wallet, int $state = ItemState::ALL): int {
 		$items = $this->walletDao->getItems($wallet);
 		$cnt = 0;
 		switch ($state) {
@@ -282,6 +234,7 @@ class WalletService implements IWalletService
 	/**
 	 * creates 2 beggining CheckStates. For card and cash with value of 0
 	 * @param Wallet $wallet
+     * @throws BadParameterException
 	 */
 	private function createStartingCheckstates(Wallet $wallet) {
 		$this->checkStateService->createCheckState($wallet, ItemType::CARD);
@@ -290,6 +243,9 @@ class WalletService implements IWalletService
 
 	/**
 	 * @param Wallet $wallet
+     * @throws NotFoundException
+     * @throws BadParameterException
+     * @throws IntegrityException
 	 */
 	private function deleteCheckstates(Wallet $wallet) {
 		foreach ($this->checkStateService->getWalletCheckStates($wallet) as $cs)
@@ -306,7 +262,7 @@ class WalletService implements IWalletService
 		try {
 			return $this->checkStateService->getWalletCheckState($wallet, $type);
 		} catch (NotFoundException $e) {
-			throw new UnderEntityNotFoundException($e->getMessage());
+			throw (new UnderEntityNotFoundException($e->getMessage(), $e->getDefault()))->setBind($e->getBinds());
 		}
 	}
 }

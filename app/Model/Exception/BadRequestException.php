@@ -1,15 +1,16 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: vkrte_000
- * Date: 29. 1. 2018
- * Time: 18:21
+ * User: Krtek
+ * Date: 12.9.2018
+ * Time: 1:13
  */
 
 namespace App\Model\Exception;
 
-class EOFException extends ApplicationException {
 
+class BadRequestException extends ApplicationException
+{
     /**
      * BadParameterException constructor.
      * @param string $message

@@ -17,53 +17,53 @@ use App\Model\Exception\IntegrityException;
 interface IWalletDAO
 {
 	/**
-	 * @return Wallet[]|NULL
+	 * @return Wallet[]
 	 */
-	public function findAll();
+	public function findAll(): array;
 
 	/**
 	 * @param int $id
 	 * @return Wallet|NULL
 	 */
-	public function findOne($id);
+	public function findOne(int $id): ?Wallet;
 
 	/**
 	 * @param string $key
-	 * @param mixed $val
+	 * @param string $val
 	 * @return Wallet[]
 	 */
-	public function findByColumn($key, $val);
+	public function findByColumn(string $key, string $val): array;
 
 	/**
 	 * @param string $key
 	 * @param mixed $val
 	 * @return Wallet
 	 */
-	public function findOneByColumn($key, $val);
+	public function findOneByColumn(string $key, string $val): ?Wallet;
 
 	/**
 	 * @param Wallet $wallet
 	 * @return Item[]
 	 */
-	public function getItems(Wallet $wallet);
+	public function getItems(Wallet $wallet): array;
 
 	/**
 	 * @param Wallet $wallet
 	 * @return CheckState[]
 	 */
-	public function getCheckStates(Wallet $wallet);
+	public function getCheckStates(Wallet $wallet): array;
 
 	/**
 	 * @param Wallet $wallet
 	 * @return Wallet
 	 */
-	public function create(Wallet $wallet);
+	public function create(Wallet $wallet): Wallet;
 
 	/**
 	 * @param Wallet $wallet
 	 * @return Wallet
 	 */
-	public function update(Wallet $wallet);
+	public function update(Wallet $wallet): Wallet;
 
 	/**
 	 * @param Wallet $wallet

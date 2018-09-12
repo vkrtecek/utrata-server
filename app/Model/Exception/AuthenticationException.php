@@ -9,7 +9,17 @@
 namespace App\Model\Exception;
 
 
-class AuthenticationException extends \Exception
+class AuthenticationException extends ApplicationException
 {
-
+    /**
+     * BadParameterException constructor.
+     * @param string $message
+     * @param string $default
+     * @param int $code
+     * @param \Exception $previous
+     */
+    public function __construct(string $message = "", string $default = "", int $code = 0, \Exception $previous = NULL)
+    {
+        parent::__construct($message, $default, $code, $previous);
+    }
 }

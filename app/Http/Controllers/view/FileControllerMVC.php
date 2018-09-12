@@ -12,6 +12,7 @@ namespace App\Http\Controllers;
 use App\Model\Service\IFileService;
 use App\Model\Service\IMemberService;
 use App\Model\Service\IWalletService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Input;
 use Illuminate\View\View;
@@ -57,27 +58,23 @@ class FileControllerMVC extends AbstractControllerMVC
 	 * @return \Illuminate\Contracts\View\Factory|View
 	 * @throws \App\Model\Exception\AuthenticationMVCException
 	 */
-	public function wantStore() {
-		$this->assumeLogged();
-		return view('pages.loadData');
-	}
-
-	/**
-	 * @return \Illuminate\Contracts\View\Factory|View
-	 * @throws \App\Model\Exception\AuthenticationMVCException
-	 */
 	public function store() {
 		$this->assumeLogged();
-		$member = $this->loggedMember();
+
+		//only form to upload
+		if (Input::file('file') === null) {
+            return view('pages.loadBackup');
+        }
+
 		$file = Input::file('file');
 		$content = File::get($file->getRealPath());
 		try {
-			$this->fileService->storeBackup($member, $content);
+			$this->fileService->storeBackup($this->member, $content);
 		} catch (\Exception $ex) {
-			return view('pages.loadData')
+			return view('pages.loadBackup')
 				->with('err', $ex->getMessage());
 		}
-		return view('pages.loadData')
+		return view('pages.loadBackup')
 			->with('message', 'ok');
 	}
 }

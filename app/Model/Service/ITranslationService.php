@@ -13,9 +13,9 @@ use App\Model\Entity\Language;
 use App\Model\Entity\Translation;
 use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\BadParameterException;
+use App\Model\Exception\BadRequestException;
 use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 interface ITranslationService
 {
@@ -23,7 +23,7 @@ interface ITranslationService
 	 * @return Translation[]
 	 * @throws NotFoundException
 	 */
-	public function getTranslations();
+	public function getTranslations(): array;
 
 	/**
 	 * @param string $languageCode
@@ -31,7 +31,7 @@ interface ITranslationService
 	 * @throws NotFoundException
 	 * @throws BadParameterException
 	 */
-	public function getTranslationsByLanguage($languageCode);
+	public function getTranslationsByLanguage(string $languageCode): array;
 
     /**
      * @param string $code
@@ -39,8 +39,9 @@ interface ITranslationService
 	 * @param string $default
      * @return Translation
      * @throws BadParameterException
+     * @throws NotFoundException
      */
-    public function getTranslation($code, $language, $default = '');
+    public function getTranslation(string $code, string $language, string $default = ''): Translation;
 
 	/**
 	 * @param string $code
@@ -48,35 +49,39 @@ interface ITranslationService
 	 * @param string $default
 	 * @return string
 	 * @throws BadParameterException
+     * @throws NotFoundException
 	 */
-	public function getTranslationDefault($code, Language $language, $default = '');
+	public function getTranslationDefault(string $code, Language $language, string $default = ''): string;
 
 	/**
 	 * @param string $code
 	 * @param string $default
 	 * @return string
+     * @throws BadParameterException
+     * @throws NotFoundException
 	 */
-	public function get($code, $default = '');
+	public function get(string $code, string $default = ''): string;
 
     /**
-     * @param $data
+     * @param array $data
      * @return Translation
      * @throws AlreadyExistException
-     * @throws BadRequestHttpException
+     * @throws BadParameterException
+     * @throws BadRequestException
      * @throws NotFoundException
      */
-    public function createTranslation($data);
+    public function createTranslation(array $data): Translation;
 
     /**
      * @param string $code
      * @param string $language
-     * @param $data
+     * @param array $data
      * @return Translation
      * @throws NotFoundException
      * @throws BadParameterException
-     * @throws BadRequestHttpException
+     * @throws BadRequestException
      */
-    public function updateTranslation($code, $language, $data);
+    public function updateTranslation(string $code, string $language, array $data): Translation;
 
     /**
      * @param string $code
@@ -86,17 +91,17 @@ interface ITranslationService
      * @throws BadParameterException
      * @throws IntegrityException
      */
-    public function deleteTranslation($code, $language);
+    public function deleteTranslation(string $code, string $language);
 
 	/**
 	 * @param Translation $translation
 	 * @return array
 	 */
-	public function format(Translation $translation);
+	public function format(Translation $translation): array;
 
 	/**
 	 * @param Translation[] $translations
 	 * @return array
 	 */
-	public function formatEntites($translations);
+	public function formatEntities(array $translations): array;
 }

@@ -21,25 +21,24 @@ interface IMemberPurposeDAO
 	 * @param Purpose $purpose
 	 * @return MemberPurpose|NULL
 	 */
-	public function find(Member $member, Purpose $purpose);
+	public function find(Member $member, Purpose $purpose): ?MemberPurpose;
 
 	/**
 	 * @param Member $member
 	 * @return MemberPurpose[]
 	 */
-	public function findPurposes(Member $member);
+	public function findPurposes(Member $member): array;
 
 	/**
 	 * @param Member $member
 	 * @param Purpose $purpose
 	 * @return MemberPurpose
 	 */
-	public function create(Member $member, Purpose $purpose);
+	public function create(Member $member, Purpose $purpose): MemberPurpose;
 
 	/**
 	 * @param Member $member
 	 * @param Purpose $purpose
-	 * @return void
 	 */
 	public function delete(Member $member, Purpose $purpose);
 

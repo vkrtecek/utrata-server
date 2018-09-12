@@ -12,9 +12,7 @@ namespace App\Model\Service;
 use App\Model\Dao\ICurrencyDAO;
 use App\Model\Entity\Currency;
 use App\Model\Exception\BadParameterException;
-use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class CurrencyService implements ICurrencyService
 {
@@ -29,77 +27,44 @@ class CurrencyService implements ICurrencyService
 		$this->currencyDao = $currencyDAO;
 	}
 
-	/**
-	 * @return Currency[]
-	 * @throws NotFoundException
-	 */
-	public function getCurrencies() {
+	/** @inheritdoc */
+	public function getCurrencies(): array {
 		$currencies = $this->currencyDao->findAll();
 		if (count($currencies) == 0)
-			throw new NotFoundException('No Currency found');
+            throw (new NotFoundException('Exception.NotFound', 'No :entity found.'))->setBind(['entity' => 'Currency']);
 		return $currencies;
 	}
 
-	/**
-	 * @param int $id
-	 * @return Currency
-	 * @throws BadParameterException
-	 * @throws NotFoundException
-	 */
-	public function getCurrency($id) {
-		if ((string)((int)$id) != $id || (int)$id < 1)
-			throw new BadParameterException('Not integer or smaller than 1');
+    /** @inheritdoc */
+    public function getCurrency(int $id): Currency {
+		if ($id < 1)
+			throw new BadParameterException('Exception.BadParameter.SmallerThan1', 'Identifier smaller than 1');
 		$currency = $this->currencyDao->findOne($id);
 		if (!$currency)
-			throw new NotFoundException('No Currency found');
+            throw (new NotFoundException('Exception.NotFound', 'No :entity found.'))->setBind(['entity' => 'Currency']);
 
 		return $currency;
 	}
 
-	/**
-	 * @param string $column column in database
-	 * @param mixed $value
-	 * @return Currency
-	 * @throws NotFoundException
-	 */
-	public function getCurrencyByColumn($column, $value) {
+    /** @inheritdoc */
+    public function getCurrencyByColumn(string $column, string $value): Currency {
 		$currency = $this->currencyDao->findOneByColumn($column, $value);
 		if (!$currency)
-			throw new NotFoundException('No Currency found');
+            throw (new NotFoundException('Exception.NotFound', 'No :entity found.'))->setBind(['entity' => 'Currency']);
 		return $currency;
 	}
 
-	/**
-	 * @param $data
-	 * @return Currency
-	 * @throws BadRequestHttpException
-	 */
-	public function createCurrency($data) {}
+    /** @inheritdoc */
+    public function create(array $data): Currency {}
 
-	/**
-	 * @param int $id
-	 * @param $data
-	 * @return Currency
-	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 * @throws BadRequestHttpException
-	 */
-	public function updateCurrency($id, $data) {}
+    /** @inheritdoc */
+    public function update(int $id, array $data): Currency {}
 
-	/**
-	 * @param int $id
-	 * @return int
-	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 * @throws IntegrityException
-	 */
-	public function deleteCurrency($id) {}
+    /** @inheritdoc */
+    public function deleteCurrency(int $id) {}
 
-	/**
-	 * @param Currency $currency
-	 * @return array
-	 */
-	public function format(Currency $currency) {
+    /** @inheritdoc */
+    public function format(Currency $currency): array {
 		$ret = [];
 
 		$ret['id'] = $currency->getId();
@@ -111,14 +76,11 @@ class CurrencyService implements ICurrencyService
 
 	}
 
-	/**
-	 * @param Currency[] $currencies
-	 * @return array
-	 */
-	public function formatEntities($currencies) {
+    /** @inheritdoc */
+    public function formatEntities(array $currencies): array {
 		$ret = [];
 		foreach ($currencies as $currency)
-			$ret[] = self::format($currency);
+			$ret[] = $this->format($currency);
 		return $ret;
 	}
 }

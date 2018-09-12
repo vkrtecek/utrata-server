@@ -23,14 +23,15 @@ interface IPurposeService
 	 * @return Purpose[]
 	 * @throws NotFoundException
 	 */
-	public function getPurposes();
+	public function getPurposes(): array;
 
 	/**
 	 * @param string $code language code
 	 * @return Purpose[]
 	 * @throws NotFoundException
+     * @throws BadParameterException
 	 */
-	public function getLanguagePurposes($code);
+	public function getLanguagePurposes(string $code): array;
 
 	/**
 	 * @param string $languageCode
@@ -38,29 +39,29 @@ interface IPurposeService
 	 * @throws NotFoundException
 	 * @throws BadParameterException
 	 */
-	public function getLanguageBasePurposes($languageCode);
+	public function getLanguageBasePurposes(string $languageCode): array;
 
 	/**
 	 * @param Member $member
 	 * @param string $languageCode
 	 * @return Purpose[]
 	 * @throws NotFoundException
-	 * @throws BadParameterException
+     * @throws BadParameterException
 	 */
-	public function getUserLanguagePurposes(Member $member, $languageCode);
+	public function getUserLanguagePurposes(Member $member, string $languageCode): array;
 
 	/**
 	 * @param Member $member
 	 * @return Purpose[]
 	 * @throws NotFoundException
 	 */
-	public function getUserPurposes(Member $member);
+	public function getUserPurposes(Member $member): array;
 
 	/**
 	 * @param Member $member
 	 * @return Purpose[]
 	 */
-	public function getPurposesCreatedByUser(Member $member);
+	public function getPurposesCreatedByUser(Member $member): array;
 
     /**
      * @param int $id
@@ -68,7 +69,7 @@ interface IPurposeService
      * @throws BadParameterException
      * @throws NotFoundException
      */
-    public function getPurpose($id);
+    public function getPurpose(int $id): Purpose;
 
     /**
 	 * @param Member $member
@@ -76,8 +77,9 @@ interface IPurposeService
      * @return Purpose
      * @throws BadRequestHttpException
 	 * @throws AlreadyExistException
+     * @throws NotFoundException
      */
-    public function createPurpose(Member $member, $data);
+    public function createPurpose(Member $member, array $data): Purpose;
 
     /**
      * @param int $id
@@ -87,29 +89,28 @@ interface IPurposeService
      * @throws BadRequestHttpException
      * @throws BadParameterException
      */
-    public function updatePurpose($id, $data);
+    public function updatePurpose(int $id, array $data): Purpose;
 
     /**
      * @param int $id
 	 * @param Member $member
-     * @return int
      * @throws NotFoundException
      * @throws BadParameterException
      * @throws IntegrityException
      */
-    public function deletePurpose($id, Member $member);
+    public function deletePurpose(int $id, Member $member);
 
 	/**
 	 * @param Purpose $purpose
 	 * @param Member $member
 	 * @return array
 	 */
-	public function format(Purpose $purpose, Member $member);
+	public function format(Purpose $purpose, Member $member): array;
 
 	/**
 	 * @param Purpose[] $purposes
 	 * @param Member $member
 	 * @return array
 	 */
-	public function formatEntities($purposes, Member $member);
+	public function formatEntities(array $purposes, Member $member): array;
 }

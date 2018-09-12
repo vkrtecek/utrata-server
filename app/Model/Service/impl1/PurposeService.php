@@ -15,6 +15,7 @@ use App\Model\Entity\Member;
 use App\Model\Entity\Purpose;
 use App\Model\Exception\AlreadyExistException;
 use App\Model\Exception\BadParameterException;
+use App\Model\Exception\BadRequestException;
 use App\Model\Exception\IntegrityException;
 use App\Model\Exception\NotFoundException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -44,35 +45,25 @@ class PurposeService implements IPurposeService
 		$this->memberPurposeService = $memberPurposeService;
 	}
 
-	/**
-	 * @return Purpose[]
-	 * @throws NotFoundException
-	 */
-	public function getPurposes() {}
+	/** @inheritdoc */
+	public function getPurposes(): array {}
 
-	/**
-	 * @param string $code language code
-	 * @return Purpose[]
-	 * @throws NotFoundException
-	 */
-	public function getLanguagePurposes($code) {
+
+    /** @inheritdoc */
+    public function getLanguagePurposes(string $code): array {
 		$language = $this->languageService->getLanguage($code);
 		$purposes = $this->purposeDao->findByColumn('LanguageCode', $language->getCode());
 		if ($purposes == NULL || count($purposes) == 0)
-			throw new NotFoundException('PurposeService: No purpose found.');
+			throw (new NotFoundException('Exception.NotFound', 'No :entity found.'))->setBind(['entity' => 'Purpose']);
 		$ret = [];
 		foreach ($purposes as $purpose)
 			$ret[] = $purpose;
 		return $ret;
 	}
 
-	/**
-	 * @param string $languageCode
-	 * @return Purpose[]
-	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 */
-	public function getLanguageBasePurposes($languageCode) {
+
+    /** @inheritdoc */
+    public function getLanguageBasePurposes(string $languageCode): array {
 		//only for test existence of language
 		$this->languageService->getLanguage($languageCode);
 		$purposes = $this->purposeDao->findByColumn('LanguageCode', $languageCode);
@@ -83,14 +74,9 @@ class PurposeService implements IPurposeService
 		return $ret;
 	}
 
-	/**
-	 * @param Member $member
-	 * @param string $languageCode
-	 * @return Purpose[]
-	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 */
-	public function getUserLanguagePurposes(Member $member, $languageCode) {
+
+    /** @inheritdoc */
+    public function getUserLanguagePurposes(Member $member, string $languageCode): array {
 		$purposes = $this->getLanguagePurposes($languageCode);
 		$ret = [];
 		foreach ($purposes as $key => $purpose) {
@@ -102,65 +88,47 @@ class PurposeService implements IPurposeService
 		return $ret;
 	}
 
-	/**
-	 * @param Member $member
-	 * @return Purpose[]
-	 * @throws NotFoundException
-	 */
-	public function getUserPurposes(Member $member) {
+
+    /** @inheritdoc */
+    public function getUserPurposes(Member $member): array {
 		$memberPurposes = $this->memberPurposeService->getMemberPurposes($member);
 		if ($memberPurposes === NULL)
-			throw new NotFoundException('PurposeService: No Purposes for this Member');
+			throw (new NotFoundException('Exception.NotFound', 'No :entity found.'))->setBind(['entity' => 'Purposes']);
 		$purposes = [];
 		foreach ($memberPurposes as $memberPurpose)
 			$purposes[] = $memberPurpose->getPurpose();
 		return $purposes;
 	}
 
-	/**
-	 * @param Member $member
-	 * @return Purpose[]
-	 */
-	public function getPurposesCreatedByUser(Member $member) {
-		$purposes =  $this->purposeDao->findByColumn('CreatorID', $member->getId());
-		$ret = [];
-		foreach ($purposes as $purpose)
-			$ret[] = $purpose;
-		return $ret;
+
+    /** @inheritdoc */
+    public function getPurposesCreatedByUser(Member $member): array {
+		return $this->purposeDao->findByColumn('CreatorID', $member->getId());
 	}
 
-	/**
-	 * @param int $id
-	 * @return Purpose
-	 * @throws BadParameterException
-	 * @throws NotFoundException
-	 */
-	public function getPurpose($id) {
-		if (!ctype_digit(trim($id)) || (int)$id < 1)
-			throw new BadParameterException('PurposeService: Not integer or smaller than 1');
+
+    /** @inheritdoc */
+    public function getPurpose(int $id): Purpose {
+		if ($id < 1)
+			throw new BadParameterException('Exception.BadParameter.SmallerThan1', 'Identifier smaller than 1');
 		$purpose = $this->purposeDao->findOne($id);
 		if (!$purpose)
-			throw new NotFoundException('PurposeService: No Purpose found.');
+			throw (new NotFoundException('Exception.NotFound', 'No :entity found.'))->setBind(['entity' => 'Purpose']);
 		return $purpose;
 	}
 
-	/**
-	 * @param Member $member
-	 * @param $data
-	 * @return Purpose
-	 * @throws BadRequestHttpException
-	 * @throws AlreadyExistException
-	 */
-	public function createPurpose(Member $member, $data) {
+
+    /** @inheritdoc */
+    public function createPurpose(Member $member, array $data): Purpose {
 		if (!isset($data['name']))
-			throw new BadRequestHttpException('Name of note missing');
+			throw (new BadRequestException('Exception.Parameter.Missing', ':parameter missing'))->setBind(['parameter' => 'Name of note']);
 		$code = $this->codeFromValue($data['name']);
 
 		$withSameCode = $this->purposeDao->findByColumn('code', $code);
 		foreach ($withSameCode as $note) {
 			//note with same code exists (basic or user's)
 			if ($note->isBase() || ($note->getCreator() && $note->getCreator()->getId() == $member->getId())) {
-				throw (new AlreadyExistException('Note with this code already exists'))->setReason($code);
+				throw (new AlreadyExistException('Exception.AlreadyExists', ':entity with this :parameter already exists'))->setReason($code)->setBind(['entity' => 'Note', 'parameter' => 'code']);
 			}
 		}
 		if (isset($data['language']) && $data['language']) {
@@ -181,32 +149,20 @@ class PurposeService implements IPurposeService
 		return $purpose;
 	}
 
-	/**
-	 * @param int $id
-	 * @param $data
-	 * @return Purpose
-	 * @throws NotFoundException
-	 * @throws BadRequestHttpException
-	 * @throws BadParameterException
-	 */
-	public function updatePurpose($id, $data) {}
 
-	/**
-	 * @param int $id
-	 * @param Member $member
-	 * @return int
-	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 * @throws IntegrityException
-	 */
-	public function deletePurpose($id, Member $member) {
+    /** @inheritdoc */
+    public function updatePurpose(int $id, array $data): Purpose {}
+
+
+    /** @inheritdoc */
+    public function deletePurpose(int $id, Member $member) {
 		if (!ctype_digit(trim($id)) || (int)$id < 1)
-			throw new BadParameterException('PurposeService: Not integer or smaller than 1');
+			throw new BadParameterException('Exception.BadParameter.SmallerThan1', 'Identifier smaller than 1');
 		$purpose = $this->purposeDao->findOne($id);
 		if (!$purpose)
-			throw new NotFoundException('PurposeService: Purpose with given id not found.');
+			throw (new NotFoundException('Exception.NotFound', 'No :entity found.'))->setBind(['entity' => 'Note']);
 		if ($purpose->isBase())
-			throw new IntegrityException('PurposeService: Cannot delete this note.');
+			throw (new IntegrityException('Exception.CannotRemove', 'Cannot remove this :entity'))->setBind(['entity' => 'note']);
 
 		$mp = $this->memberPurposeService->getMemberPurpose($member, $purpose);
 		if ($mp !== NULL) {
@@ -216,12 +172,9 @@ class PurposeService implements IPurposeService
 		return $id;
 	}
 
-	/**
-	 * @param Purpose $purpose
-	 * @param Member $member
-	 * @return array
-	 */
-	public function format(Purpose $purpose, Member $member) {
+
+    /** @inheritdoc */
+    public function format(Purpose $purpose, Member $member): array {
 		return [
 			'id' => $purpose->getId(),
 			'code' => $purpose->getCode(),
@@ -231,12 +184,9 @@ class PurposeService implements IPurposeService
 		];
 	}
 
-	/**
-	 * @param Purpose[] $purposes
-	 * @param Member $member
-	 * @return array
-	 */
-	public function formatEntities($purposes, Member $member) {
+
+    /** @inheritdoc */
+    public function formatEntities(array $purposes, Member $member): array {
 		if (!$purposes)
 			return [];
 		$ret = [];
@@ -247,11 +197,10 @@ class PurposeService implements IPurposeService
 
 	/**
 	 * @param Purpose $purpose
-	 * @return Item[]|NULL
+	 * @return Item[]
 	 */
-	private function itemsForPurpose(Purpose $purpose) {
-		$items = $this->purposeDao->findItems($purpose);
-		return $items == NULL ? [] : $items;
+	private function itemsForPurpose(Purpose $purpose): array {
+		return  $this->purposeDao->findItems($purpose);
 	}
 
 
@@ -259,7 +208,7 @@ class PurposeService implements IPurposeService
 	 * @param string $val
 	 * @return string
 	 */
-	private function codeFromValue($val) {
+	private function codeFromValue(string $val): string {
 		$table = array(
 			'À'=>'A', 'Á'=>'A', 'Â'=>'A', 'Ã'=>'A', 'Ä'=>'A', 'Å'=>'A', 'Æ'=>'A', 'Ç'=>'C', 'È'=>'E', 'É'=>'E',
 			'Ê'=>'E', 'Ë'=>'E', 'Ì'=>'I', 'Í'=>'I', 'Î'=>'I', 'Ï'=>'I', 'Ñ'=>'N', 'Ò'=>'O', 'Ó'=>'O', 'Ô'=>'O',

@@ -12,6 +12,7 @@ namespace App\Http\Controllers;
 use App\Http\Pagination;
 use App\Model\Entity\Item;
 use App\Model\Enum\ItemState;
+use App\Model\Exception\ApplicationException;
 use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\AuthenticationMVCException;
 use App\Model\Exception\BadParameterException;
@@ -94,6 +95,7 @@ class ItemControllerMVC extends AbstractControllerMVC
 	 * @param int $walletId
 	 * @return Response
 	 * @throws AuthenticationMVCException
+     * @throws BadParameterException
 	 */
 	public function getWalletItems(Request $request, $walletId) {
 		$this->assumeLogged();
@@ -110,18 +112,44 @@ class ItemControllerMVC extends AbstractControllerMVC
 	}
 
 	/**
-	 * @param int $walletId
-	 * @return View
-	 * @throws NotFoundException
-	 * @throws BadParameterException
+	 * @param Request $request
+     * @param int $walletId
+	 * @return \Illuminate\Routing\Redirector
 	 * @throws AuthenticationException
+	 * @throws AuthenticationMVCException
+	 * @throws BadParameterException
+	 * @throws NotFoundException
+	 * @throws \App\Model\Exception\UnderEntityNotFoundException
 	 */
-	public function wantAdd($walletId) {
+	public function create(Request $request, $walletId) {
 		$this->assumeLogged();
-		$wallet = $this->walletService->getWallet($walletId, $this->member);
-		$wallet = $this->walletService->format($wallet);
-		return view('pages.addItem')
-			->with('wallet', $wallet);
+
+		//only form to add
+		if ($request->get('walletId') === null) {
+            $wallet = $this->walletService->getWallet($walletId, $this->member);
+            $wallet = $this->walletService->format($wallet);
+            return view('pages.addItem')
+                ->with('wallet', $wallet);
+        }
+
+		$data = $request->all();
+        $data['vyber'] = $request->get('vyber') === 'on';
+        $data['odepsat'] = $request->get('odepsat') === 'on';
+		$data['member']['login'] = $this->member->getLogin();
+		$data['currency']['code'] = $request->get('currencyId');
+        $data['note']['id'] = $request->get('noteId');
+        $data['wallet'] = $request->get('walletId');
+		try {
+			$this->itemService->createItem($this->member, $data);
+		} catch (ApplicationException $e) {
+			$wallet = $this->walletService->getWallet($request->get('walletId'), $this->member);
+			$wallet = $this->walletService->format($wallet);
+			$message = $this->translationService->get($e->getMessage(), $e->getDefault());
+			return view('pages.addItem')
+				->with('wallet', $wallet)
+				->with('message', $e->bind($message));
+		}
+		return redirect(route('get.wallet', ['id' => $request->get('walletId')]));
 	}
 
     /**
@@ -133,71 +161,30 @@ class ItemControllerMVC extends AbstractControllerMVC
      * @throws BadParameterException
      * @throws NotFoundException
      */
-	public function addIncome(Request $request, int $walletId) {
+    public function createIncome(Request $request, int $walletId) {
         $this->assumeLogged();
         $wallet = $this->walletService->getWallet($walletId, $this->member);
+        $wallet = $this->walletService->format($wallet);
         //only form to add
         if ($request->get('walletId') === null) {
-            $wallet = $this->walletService->format($wallet);
             return view('pages.addIncome')
                 ->with('wallet', $wallet);
         }
         //request to add income
+        try {
+            $data = $request->all();
+            $data['member']['login'] = $this->member->getLogin();
+            $data['currency']['code'] = $request->get('currencyId');
+            $data['wallet'] = $request->get('walletId');
+            $this->itemService->createItem($this->member, $data);
+        } catch (\Exception $e) {
+            return view('pages.addIncome')
+                ->with('wallet', $wallet)
+                ->with('message', $e->getMessage());
+        }
+
+        return redirect(route('get.wallet.incomes', ['id' => $wallet['id']]));
     }
-
-	/**
-	 * @param Request $request
-	 * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-	 * @throws AuthenticationException
-	 * @throws AuthenticationMVCException
-	 * @throws BadParameterException
-	 * @throws NotFoundException
-	 * @throws \App\Model\Exception\UnderEntityNotFoundException
-	 */
-	public function create(Request $request) {
-		$this->assumeLogged();
-		$data = $request->all();
-		$data['member']['login'] = $this->member->getLogin();
-		$data['currency']['code'] = $request->get('currencyId');
-        $data['note']['id'] = $request->get('noteId');
-        $data['wallet'] = $request->get('walletId');
-		try {
-			$this->itemService->createItem($this->member, $data);
-		} catch (\Exception $e) {
-			$wallet = $this->walletService->getWallet($request->get('walletId'), $this->member);
-			$wallet = $this->walletService->format($wallet);
-			return view('pages.addItem')
-				->with('wallet', $wallet)
-				->with('message', $e->getMessage());
-		}
-		return redirect(route('get.wallet', ['id' => $request->get('walletId')]));
-	}
-
-	/**
-	 * @param int $id
-	 * @return View
-	 * @throws AuthenticationMVCException
-	 * @throws \App\Model\Exception\BadParameterException
-	 * @throws \App\Model\Exception\NotFoundException
-	 * @throws \App\Model\Exception\UnderEntityNotFoundException
-	 */
-	public function wantUpdate($id) {
-		$this->assumeLogged();
-		$item = $this->itemService->getItem($id);
-		$item = $this->itemService->format($item, $this->member);
-		$currencies = $this->currencyService->getCurrencies();
-		$currencies = $this->currencyService->formatEntities($currencies);
-		$purposes = $this->purposeService->getUserPurposes($this->member);
-		$purposes = $this->purposeService->formatEntities($purposes, $this->member);
-		$wallets = $this->walletService->getWallets($this->member->getLogin());
-		$wallets = $this->walletService->formatEntities($wallets);
-		return view('pages.updateItem')
-			->with('item', $item)
-			->with('currencies', $currencies)
-			->with('notes', $purposes)
-			->with('wallets', $wallets)
-            ->with('previousURL', url()->previous());
-	}
 
 	/**
 	 * @param Request $request
@@ -209,18 +196,32 @@ class ItemControllerMVC extends AbstractControllerMVC
 	 */
 	public function update(Request $request, $id) {
 		$this->assumeLogged();
+        $item = $this->itemService->getItem($id);
+        $wallet = $item->getWallet();
+        $wallet = $this->walletService->format($wallet);
+        $item = $this->itemService->format($item, $this->member);
+        $currencies = $this->currencyService->getCurrencies();
+        $currencies = $this->currencyService->formatEntities($currencies);
+        $purposes = $this->purposeService->getUserPurposes($this->member);
+        $purposes = $this->purposeService->formatEntities($purposes, $this->member);
+        $wallets = $this->walletService->getWallets($this->member->getLogin());
+        $wallets = $this->walletService->formatEntities($wallets);
+
+        //only form to update
+        if ($request->get('id') === null) {
+            return view('pages.updateItem')
+                ->with('item', $item)
+                ->with('wallet', $wallet)
+                ->with('currencies', $currencies)
+                ->with('notes', $purposes)
+                ->with('wallets', $wallets)
+                ->with('previousURL', url()->previous());
+        }
+
 		$data = $request->all();
 		try {
 			$this->itemService->updateItem($this->member, $request->get('id'), $data);
 		} catch (\Exception $ex) {
-            $item = $this->itemService->getItem($id);
-            $item = $this->itemService->format($item, $this->member);
-            $currencies = $this->currencyService->getCurrencies();
-            $currencies = $this->currencyService->formatEntities($currencies);
-            $purposes = $this->purposeService->getUserPurposes($this->member);
-            $purposes = $this->purposeService->formatEntities($purposes, $this->member);
-            $wallets = $this->walletService->getWallets($this->member->getLogin());
-            $wallets = $this->walletService->formatEntities($wallets);
             return view('pages.updateItem')
                 ->with('item', $item)
                 ->with('currencies', $currencies)
@@ -286,7 +287,9 @@ class ItemControllerMVC extends AbstractControllerMVC
 	 * @param int $state
      * @param int $walletID
 	 * @return string
+     * @throws NotFoundException
      * @throws BadParameterException
+     * @throws AuthenticationException
 	 */
 	private function makeHTMLs(array $items, int $state, int $walletID): string {
         $table = Table::create($items, env('FILTERING_LIST_LIMIT', 15), true);
@@ -298,7 +301,7 @@ class ItemControllerMVC extends AbstractControllerMVC
             });
         $table->addColumn($this->translationService->get('PrintItems.Type', 'Type'))->setContent('type');
         $table->addColumn($this->translationService->get('PrintItems.Date', 'Date'), 'date')->setContent(function (Item $item) {
-            return strftime("%e. %b. %y, %H:%M", $item->getDate()->getTimestamp());
+            return strftime(env('DATETIME_FORMAT',"%e. %b %y, %H:%M"), $item->getDate()->getTimestamp());
         });
         $table->addColumn($this->translationService->get('PrintItems.Price', 'Price'), 'price')->setContent(function (Item $item) {
             return '<strong>' . number_format($item->getPrice() * $item->getCourse(), 2, ',', ' ') .
@@ -324,16 +327,14 @@ class ItemControllerMVC extends AbstractControllerMVC
             : $state === ItemState::CHECKED
                 ? 'get.wallet.archive'
                 : 'get.wallet';
-        $filter = (new ItemFilter())->setState($state)->setWalletId($walletID)->setMember($this->member);
+        $filter = (new ItemFilter())->setLimit(PHP_INT_MAX)->setState($state)->setWalletId($walletID)->setMember($this->member);
         $table->setTotalItemCount($this->itemService->count($filter))->setNavigationNames([
             'url' => route($url, ['id' => $walletID]),
             'orderBy' => 'orderBy',
             'order' => 'orderHow',
         ]);
 
-        $price = 0;
-        foreach ($items as $item)
-            $price += $item->getPrice() * $item->getCourse();
+        $price = $this->itemService->priceByFilter($this->member, $filter);
 
 	    return view('jquery.itemsTable')
             ->with('table', $table)

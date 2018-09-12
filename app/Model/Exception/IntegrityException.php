@@ -9,16 +9,17 @@
 namespace App\Model\Exception;
 
 
-class IntegrityException extends \Exception
+class IntegrityException extends ApplicationException
 {
     /**
      * BadParameterException constructor.
      * @param string $message
+     * @param string $default
      * @param int $code
      * @param \Exception $previous
      */
-    public function __construct($message = "", $code = 0, \Exception $previous = NULL)
+    public function __construct(string $message = "", string $default = "", int $code = 0, \Exception $previous = NULL)
     {
-        parent::__construct($message, $code, $previous);
+        parent::__construct($message, $default, $code, $previous);
     }
 }

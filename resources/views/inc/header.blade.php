@@ -13,7 +13,7 @@
             </button>
 
             <!-- Branding Image -->
-            <a class="navbar-brand" href="{{ url('/login') }}">
+            <a id="_button_home" class="navbar-brand" href="{{ url('/login') }}">
                 {{ config('app.name', 'Laravel') }}
             </a>
         </div>
@@ -39,7 +39,7 @@
 
                         <ul class="dropdown-menu" role="menu">
                             <li>
-                                <a href="{{ route('get.member.settings') }}">{{ $trans->get('Menu.Settings', 'Settings') }}</a>
+                                <a id="_button_settings" href="{{ route('get.member.settings') }}">{{ $trans->get('Menu.Settings', 'Settings') }}</a>
                             </li>
                             <li>
                                 <a href="{{ route('get.backup') }}">{{ $trans->get('Menu.DownloadBackUp', 'Download backup') }}</a>
@@ -49,7 +49,7 @@
                             </li>
 
                             <li>
-                                <a href="{{ route('logout') }}"
+                                <a href="{{ route('logout') }}" id="_button_logout"
                                    onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                     {{ $trans->get('Menu.Logout', 'Logout') }}

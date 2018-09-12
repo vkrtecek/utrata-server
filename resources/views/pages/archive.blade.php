@@ -2,7 +2,7 @@
 @inject('trans', 'App\Model\Service\ITranslationService')
 
 @section('navigation')
-    <div class="container">
+    <div class="container" id="navigation">
         <a href="{{ route('get.wallets') }}">{{ env('APP_NAME', 'Laravel') }}</a> &gt;
         <a href="{{ route('get.wallet', ['id' => $wallet['id']]) }}">{{ $trans->get('Navigation.Wallet', 'Wallet') }} {{ $wallet['name'] }}</a> &gt;
         <a href="#">{{ $trans->get('Navigation.Wallet.Archive', 'Archive') }}</a>
@@ -15,11 +15,15 @@
     <link href="{{ asset('css/wallet.css') }}" rel="stylesheet">
 @endsection
 
-@section('scripts')
+@section('preScripts')
     <script type="text/javascript" src="{{ asset('js/wallet.js') }}"></script>
     <script type="text/javascript">
         printItems('{{ route('get.items.wallet', ['id' => $wallet['id']]) }}', '{{ \App\Model\Enum\ItemState::CHECKED }}');
     </script>
+@endsection
+
+@section('checkStates')
+    @include('inc.checkStates')
 @endsection
 
 @section('content')

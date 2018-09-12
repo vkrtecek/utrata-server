@@ -10,62 +10,38 @@ namespace App\Model\Dao;
 
 
 use App\Model\Entity\Currency;
-use App\Model\Exception\IntegrityException;
 
-class CurrencyDAO implements ICurrencyDAO
+class CurrencyDAO extends AbstractDAO implements ICurrencyDAO
 {
-    /**
-     * @return Currency[]
-     */
-    public function findAll() {
-        return Currency::all();
+    /** @inheritdoc */
+    public function findAll(): array {
+        return $this->convertToArray(Currency::all());
     }
 
-    /**
-     * @param int $id
-     * @return Currency
-     */
-    public function findOne($id) {
+    /** @inheritdoc */
+    public function findOne(int $id): ?Currency {
         return Currency::find($id);
     }
 
-    /**
-     * @param Currency $currency
-     * @return Currency
-     */
-    public function create(Currency $currency) {
+    /** @inheritdoc */
+    public function findOneByColumn(string $key, string $val): ?Currency {
+        return Currency::where($key, $val)->first();
+    }
+
+    /** @inheritdoc */
+    public function create(Currency $currency): Currency {
     	$currency->save();
         return $currency;
     }
 
-    /**
-     * @param Currency $currency
-     * @return Currency
-     */
-    public function update(Currency $currency) {
+    /** @inheritdoc */
+    public function update(Currency $currency): Currency {
         $currency->save();
         return $currency;
     }
 
-    /**
-     * @param Currency $currency
-     * @throws IntegrityException
-     */
+    /** @inheritdoc */
     public function delete(Currency $currency) {
-        try {
-        	$currency->delete();
-        } catch (\Exception $ex) {
-            //FK key violation
-            throw new IntegrityException($ex->getMessage(), 0, $ex);
-        }
+        $currency->delete();
     }
-
-	/**
-	 * @param string $key
-	 * @param mixed $val
-	 * @return Currency
-	 */
-    public function findOneByColumn($key, $val) {
-    	return Currency::where($key, $val)->first();
-	}
 }

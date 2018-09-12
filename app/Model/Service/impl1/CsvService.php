@@ -23,7 +23,6 @@ use App\Model\Entity\Wallet;
 use App\Model\Enum\ItemType;
 use App\Model\Exception\AuthenticationException;
 use App\Model\Exception\BadParameterException;
-use App\Model\Exception\EOFException;
 use App\Model\Exception\FileParseException;
 use App\Model\Exception\NotFoundException;
 
@@ -88,21 +87,25 @@ class CsvService implements IFileService
 	/** @var IItemService */
 	protected $itemService;
 
-	/**
-	 * CsvService constructor.
-	 * @param IMemberDAO $memberDAO
-	 * @param IPurposeDAO $purposeDAO
-	 * @param IWalletDAO $walletDAO
-	 * @param IItemDAO $itemDAO
-	 * @param ICheckStateDAO $checkStateDAO
-	 * @param IWalletService $walletService
-	 * @param ICheckStateService $checkStateService
-	 * @param IPurposeService $purposeService
-	 * @param ILanguageService $languageService
-	 * @param ICurrencyService $currencyService
-	 * @param IMemberService $memberService
-	 * @param IItemService $itemService
-	 */
+	/** @var IMemberPurposeService */
+	protected $memberPurposeService;
+
+    /**
+     * CsvService constructor.
+     * @param IMemberDAO $memberDAO
+     * @param IPurposeDAO $purposeDAO
+     * @param IWalletDAO $walletDAO
+     * @param IItemDAO $itemDAO
+     * @param ICheckStateDAO $checkStateDAO
+     * @param IWalletService $walletService
+     * @param ICheckStateService $checkStateService
+     * @param IPurposeService $purposeService
+     * @param ILanguageService $languageService
+     * @param ICurrencyService $currencyService
+     * @param IMemberService $memberService
+     * @param IItemService $itemService
+     * @param IMemberPurposeService $memberPurposeService
+     */
 	public function __construct(
 		IMemberDAO $memberDAO,
 		IPurposeDAO $purposeDAO,
@@ -115,7 +118,8 @@ class CsvService implements IFileService
 		ILanguageService $languageService,
 		ICurrencyService $currencyService,
 		IMemberService $memberService,
-		IItemService $itemService
+		IItemService $itemService,
+        IMemberPurposeService $memberPurposeService
 	) {
 		$this->memberDao = $memberDAO;
 		$this->purposeDao = $purposeDAO;
@@ -129,6 +133,7 @@ class CsvService implements IFileService
 		$this->currencyService = $currencyService;
 		$this->memberService = $memberService;
 		$this->itemService = $itemService;
+		$this->memberPurposeService = $memberPurposeService;
 	}
 
 
@@ -146,16 +151,13 @@ class CsvService implements IFileService
 
 
 
-	/**
-	 * @param Member $member
-	 * @return string
-	 */
-	public function getBackup(Member $member) {
+	/** @inheritdoc */
+	public function getBackup(Member $member): string {
 		$content = new File();
 		$content->appendLine(self::formatMember($member));
 
 		//purposes
-		$memberPurposes = $this->memberDao->getMemberPurposes($member);
+		$memberPurposes = $this->memberPurposeService->getMemberPurposes($member);
 		$content->appendLine(count($memberPurposes));
 		foreach ($memberPurposes as $memberPurpose) {
 			$purpose = $memberPurpose->getPurpose();
@@ -163,13 +165,13 @@ class CsvService implements IFileService
 		}
 
 		//wallets
-		$wallets = $this->memberDao->getWallets($member);
+		$wallets = $this->walletService->getByMember($member);
 		$content->appendLine(count($wallets));
 		foreach ($wallets as $wallet)
 			$content->appendLine(self::formatWallet($wallet));
 
 		//items
-		$items = $this->memberDao->getItems($member);
+		$items = $this->itemService->getMembersItems($member);
 		$content->appendLine(count($items));
 		foreach ($items as $item)
 			$content->appendLine(self::formatItem($item));
@@ -190,14 +192,8 @@ class CsvService implements IFileService
 		return $content->getContent();
 	}
 
-	/**
-	 * @param Member $member
-	 * @param string $content
-	 * @return boolean
-	 * @throws FileParseException
-	 * @throws EOFException
-	 */
-	public function storeBackup(Member $member, $content) {
+    /** @inheritdoc */
+    public function storeBackup(Member $member, string $content): bool {
 		$file = new File($content);
 		$member = $this->getMember($file->getLine());
 
@@ -205,12 +201,12 @@ class CsvService implements IFileService
 		$purposes = [];
 		$purposeCnt = $file->getLine();
 		if (!ctype_digit($purposeCnt))
-			throw new FileParseException('Parse: Purpose count number not integer');
+			throw (new FileParseException('Exception.FileParse.NotInteger', 'Parse: :entity count number not integer'))->setBind(['entity' => 'CheckState']);
 		for ($i = 0; $i < $purposeCnt; $i++) {
 			try {
 				$purposes[] = $this->getPurpose($file->getLine());
 			} catch (FileParseException $ex) {
-				throw new FileParseException(($i+1) . 'nt Purpose: ' . $ex->getMessage(), 0, $ex);
+				throw (new FileParseException(':numnt :entity: :message', 0, $ex))->setBind(['num' => $i+1, 'entity' => 'Purpose', 'message' => $ex->getMessage()]);
 			}
 		}
 
@@ -218,12 +214,12 @@ class CsvService implements IFileService
 		$wallets = [];
 		$walletsCnt = $file->getLine();
 		if (!ctype_digit($walletsCnt))
-			throw new FileParseException('Parse: Wallet count number not integer');
+			throw (new FileParseException('Exception.FileParse..NotInteger', 'Parse: :entity count number not integer'))->setBind(['entity' => 'CheckState']);
 		for ($i = 0; $i < $walletsCnt; $i++) {
 			try {
 				$wallets[] = $this->getWallet($file->getLine(), $member);
 			} catch (FileParseException $ex) {
-				throw new FileParseException(($i+1) . 'nt Wallet: ' . $ex->getMessage(), 0, $ex);
+                throw (new FileParseException(':numnt :entity: :message', 0, $ex))->setBind(['num' => $i+1, 'entity' => 'Wallet', 'message' => $ex->getMessage()]);
 			}
 		}
 
@@ -231,12 +227,12 @@ class CsvService implements IFileService
 		$items = [];
 		$itemsCnt = $file->getLine();
 		if (!ctype_digit($itemsCnt))
-			throw new FileParseException('Parse: Item count number not integer');
+			throw (new FileParseException('Exception.FileParse.NotInteger', 'Parse: :entity count number not integer'))->setBind(['entity' => 'CheckState']);
 		for ($i = 0; $i < $itemsCnt; $i++) {
 			try {
 				$items[] = $this->getItem($file->getLine(), $member);
 			} catch (FileParseException $ex) {
-				throw new FileParseException(($i+1) . 'nt Item: ' . $ex->getMessage(), 0, $ex);
+                throw (new FileParseException(':numnt :entity: :message', 0, $ex))->setBind(['num' => $i+1, 'entity' => 'Item', 'message' => $ex->getMessage()]);
 			}
 		}
 
@@ -245,14 +241,14 @@ class CsvService implements IFileService
 		$checkStates = [];
 		$checkStatesCnt = $file->getLine();
 		if (!ctype_digit($checkStatesCnt))
-			throw new FileParseException('Parse: CheckState count number not integer');
+			throw (new FileParseException('Exception.FileParse.NotInteger', 'Parse: :entity count number not integer'))->setBind(['entity' => 'CheckState']);
 		if ($checkStatesCnt != $walletsCnt * ItemType::TYPES)
-			throw new FileParseException('Parse: CheckState count expected: ' . ($walletsCnt * ItemType::TYPES) . ', got ' . $checkStatesCnt);
+			throw (new FileParseException('Exception.FileParse.CountExpected', 'Parse: :entity count expected: :expected, got :got'))->setBind(['entity' => 'CheckState', 'expected' => ($walletsCnt * ItemType::TYPES), 'got' => $checkStatesCnt]);
 		for ($i = 0; $i < $checkStatesCnt; $i++) {
 			try {
 				$checkStates[] = $this->getCheckState($file->getLine(), $wallets[(int)($i/2)]);
 			} catch (FileParseException $ex) {
-				throw new FileParseException(($i+1) . 'nt CheckState: ' . $ex->getMessage(), 0, $ex);
+                throw (new FileParseException(':numnt :entity: :message', 0, $ex))->setBind(['num' => $i+1, 'entity' => 'CheckState', 'message' => $ex->getMessage()]);
 			}
 		}
 
@@ -284,7 +280,7 @@ class CsvService implements IFileService
 	 * @param Member $member
 	 * @return string
 	 */
-	private static function formatMember(Member $member) {
+	private static function formatMember(Member $member): string {
 		return $member->getFirstName() . ';' .
 			$member->getLastName() . ';' .
 			$member->getLogin() . ';' .
@@ -302,7 +298,7 @@ class CsvService implements IFileService
 	 * @param Purpose $purpose
 	 * @return string
 	 */
-	private static function formatPurpose(Purpose $purpose) {
+	private static function formatPurpose(Purpose $purpose): string {
 		return $purpose->getId() . ';' .
 			$purpose->getCode() . ';' .
 			$purpose->getValue() . ';' .
@@ -316,7 +312,7 @@ class CsvService implements IFileService
 	 * @param Wallet $wallet
 	 * @return string
 	 */
-	private static function formatWallet(Wallet $wallet) {
+	private static function formatWallet(Wallet $wallet): string {
 		return $wallet->getId() . ';' .
 			$wallet->getName();
 	}
@@ -326,7 +322,7 @@ class CsvService implements IFileService
 	 * @param Item $item
 	 * @return string
 	 */
-	private static function formatItem(Item $item) {
+	private static function formatItem(Item $item): string {
 		return $item->getId() . ';' .
 			$item->getName() . ';' .
 			$item->getDescription() . ';' .
@@ -349,7 +345,7 @@ class CsvService implements IFileService
 	 * @param CheckState $checkState
 	 * @return string
 	 */
-	private static function formatCheckState(CheckState $checkState) {
+	private static function formatCheckState(CheckState $checkState): string {
 		return $checkState->getId() . ';' .
 			$checkState->getWallet()->getId() . ';' .
 			$checkState->getType() . ';' .
@@ -389,10 +385,10 @@ class CsvService implements IFileService
 	 * @return Member
 	 * @throws FileParseException
 	 */
-	private function getMember($string)
+	private function getMember(string $string): Member
 	{
 		if (count(explode(';', $string)) != self::MEMBER_FIELDS)
-			throw new FileParseException('ParseMember: ' . self::MEMBER_FIELDS . ' fields expected, ' . count(explode(';', $string)) . ' given.');
+			throw (new FileParseException('Exception.FileParse.', 'Parse:entity: ' . self::MEMBER_FIELDS . ' fields expected, ' . count(explode(';', $string)) . ' given.'))->setBind(['entity' => 'Member']);
 		list($fName,
 			$lName,
 			$login,
@@ -437,7 +433,7 @@ class CsvService implements IFileService
 	 * @return Purpose
 	 * @throws FileParseException
 	 */
-	private function getPurpose($string) {
+	private function getPurpose(string $string): Purpose {
 		if (count(explode(';', $string)) != self::PURPOSE_FIELDS)
 			throw new FileParseException(self::PURPOSE_FIELDS . ' fields expected, ' . count(explode(';', $string)) . ' given.');
 		list($id, $code, $val, $base, $_language, $_creator) = explode(';', $string);
@@ -474,7 +470,7 @@ class CsvService implements IFileService
 	 * @return Wallet
 	 * @throws FileParseException
 	 */
-	private function getWallet($string, Member $member) {
+	private function getWallet(string $string, Member $member): Wallet {
 		if (count(explode(';', $string)) != self::WALLET_FIELDS)
 			throw new FileParseException(self::WALLET_FIELDS . ' fields expected, ' . count(explode(';', $string)) . ' given.');
 		list($id, $name) = explode(';', $string);
@@ -506,7 +502,7 @@ class CsvService implements IFileService
 	 * @return Item
 	 * @throws FileParseException
 	 */
-	private function getItem($string, Member $member) {
+	private function getItem(string $string, Member $member): Item {
 		if (count(explode(';', $string)) != self::ITEM_FIELDS)
 			throw new FileParseException(self::ITEM_FIELDS . ' fields expected, ' . count(explode(';', $string)) . ' given.');
 		list($id,
@@ -581,7 +577,7 @@ class CsvService implements IFileService
 	 * @return CheckState
 	 * @throws FileParseException
 	 */
-	private function getCheckState($string, Wallet $wallet) {
+	private function getCheckState(string $string, Wallet $wallet): CheckState {
 		if (count(explode(';', $string)) != self::CHECK_STATE_FIELDS)
 			throw new FileParseException(self::CHECK_STATE_FIELDS . ' fields expected, ' . count(explode(';', $string)) . ' given.');
 		list($id, $walletId, $type, $checked, $value) = explode(';', $string);
@@ -632,16 +628,16 @@ class CsvService implements IFileService
 	 * @param string $date
 	 * @param string $created
 	 * @param string $type
-	 * @param boolean $active
-	 * @param boolean $income
-	 * @param boolean $vyber
-	 * @param boolean $odepsat
+	 * @param bool $active
+	 * @param bool $income
+	 * @param bool $vyber
+	 * @param bool $odepsat
 	 * @param int $_note
 	 * @param int $_currency
 	 * @param int $_wallet
 	 * @throws FileParseException
 	 */
-	private static function checkBeforeSettingItem($id, $name, $price, $course, $date, $created, $type, $active, $income, $vyber, $odepsat, $_note, $_currency, $_wallet) {
+	private static function checkBeforeSettingItem(int $id, string $name, float $price, float $course, string $date, string $created, string $type, bool $active, bool $income, bool $vyber, bool $odepsat, int $_note, int $_currency, int $_wallet) {
 		if ((trim($id) && !ctype_digit($id))
 			|| $name == ""
 			|| !is_numeric($price)
@@ -669,16 +665,17 @@ class CsvService implements IFileService
 	 * @param double $course
 	 * @param string $date
 	 * @param string $type
-	 * @param boolean $active
-	 * @param boolean $income
-	 * @param boolean $vyber
-	 * @param boolean $odepsat
+	 * @param bool $active
+	 * @param bool $income
+	 * @param bool $vyber
+	 * @param bool $odepsat
 	 * @param int $_note
 	 * @param int $_currency
 	 * @param int $_wallet
 	 * @throws FileParseException
+     * @throws BadParameterException
 	 */
-	private function setItem(Item $item, Member $member, $name, $desc, $price, $course, $date, $type, $active, $income, $vyber, $odepsat, $_note, $_currency, $_wallet) {
+	private function setItem(Item $item, Member $member, string $name, string $desc, float $price, float $course, string $date, string $type, bool $active, bool $income, bool $vyber, bool $odepsat, int $_note, int $_currency, int $_wallet) {
 		try {
 			$note = $_note ? $this->purposeService->getPurpose($_note) : NULL;
 			$currency = $this->currencyService->getCurrencyByColumn('code', $_currency);

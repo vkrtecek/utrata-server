@@ -13,6 +13,7 @@
 
 Route::get('/', function(){ return redirect(route('get.wallets')); });
 
+/*##################-  Member  -######################*/
 Route::get('member', 'MemberControllerMVC@get')->name('get.member');
 Route::get('member/login/exists/{login}', 'MemberControllerMVC@checkLoginExistence')->name('get.member.login.exists');
 Route::get('member/email/exists/{email}', 'MemberControllerMVC@checkEmailExistence')->name('get.member.email.exists');
@@ -25,11 +26,12 @@ Route::put('member', 'MemberControllerMVC@update')->name('put.member');
 /*##################-  Item  -######################*/
 Route::get('/item/{itemId}', 'ItemControllerMVC@getHTML')->name('get.item.HTML');
 Route::get('/items/wallet/{walletId}', 'ItemControllerMVC@getWalletItems')->name('get.items.wallet');
-Route::get('/wallet/{id}/addItem', 'ItemControllerMVC@wantAdd')->name('get.item.addItem');
-Route::get('/wallet/{id}/addIncome', 'ItemControllerMVC@addIncome')->name('get.item.addIncome');
-Route::get('/item/update/{itemId}', 'ItemControllerMVC@wantUpdate')->name('get.item.update');
+Route::get('/wallet/{id}/addItem', 'ItemControllerMVC@create')->name('get.item.addItem');
+Route::get('/wallet/{id}/addIncome', 'ItemControllerMVC@createIncome')->name('get.item.addIncome');
+Route::get('/item/update/{itemId}', 'ItemControllerMVC@update')->name('get.item.update');
 //Route::get('/items/statistics', 'ItemControllerMVC@statistics')->name('get.items.statistics');
-Route::post('/item', 'ItemControllerMVC@create')->name('post.item');
+Route::post('/wallet/{id}/item', 'ItemControllerMVC@create')->name('post.item');
+Route::post('/wallet/{id}/income', 'ItemControllerMVC@createIncome')->name('post.item.income');
 Route::put('/item/{id}', 'ItemControllerMVC@update')->name('put.item');
 Route::put('/item/check/{id}', 'ItemControllerMVC@check')->name('put.item.check');
 Route::put('/items/check/{walletId}', 'ItemControllerMVC@checkAll')->name('put.items.check');
@@ -47,29 +49,33 @@ Route::delete('/purpose/{id}', 'PurposeControllerMVC@delete')->name('delete.purp
 
 
 /*##################-  MemberPurpose  -###################*/
-//Route::post('/memberpurposes', 'MemberPurposeControllerMVC@changePurposes')->name('post.memberpurpose');
 Route::post('/member_purpose', 'MemberPurposeControllerMVC@create')->name('post.memberPurpose.connection');
 Route::delete('/member_purpose', 'MemberPurposeControllerMVC@delete')->name('delete.memberPurpose.connection');
 
 
+
 /*##################-  Wallet  -######################*/
 Route::get('/home', 'WalletControllerMVC@getUserWallets')->name('get.wallets');
-Route::get('/wallet/add', 'WalletControllerMVC@wantCreate')->name('get.wallet.add');
-Route::get('/wallet/update/{id}', 'WalletControllerMVC@wantUpdate')->name('get.wallet.update');
+Route::get('/wallet/add', 'WalletControllerMVC@create')->name('get.wallet.add');
+Route::get('/wallet/update/{id}', 'WalletControllerMVC@update')->name('get.wallet.update');
 Route::get('/wallet/{id}', 'WalletControllerMVC@get')->name('get.wallet');
 Route::get('wallet/{id}/incomes', 'WalletControllerMVC@incomes')->name('get.wallet.incomes');
 Route::get('wallet/{id}/archive', 'WalletControllerMVC@archive')->name('get.wallet.archive');
+Route::get('/wallet/{id}/checkState', 'WalletControllerMVC@checkStateStatus')->name('get.checkstate.status');
 Route::post('/wallet', 'WalletControllerMVC@create')->name('post.wallet');
-//Route::put('/wallet/checkState/{walletId}', 'WalletControllerMVC@updateCheckState')->name('put.wallet.checkState');
+Route::put('/wallet/{id}/checkState', 'WalletControllerMVC@updateCheckState')->name('put.wallet.checkState');
 Route::put('/wallet/{id}', 'WalletControllerMVC@update')->name('put.wallet');
 Route::delete('/wallet/{id}', 'WalletControllerMVC@delete')->name('delete.wallet');
 
 
 /*###################-  File  -#######################*/
 Route::get('/file/backup', 'FileControllerMVC@backup')->name('get.backup');
-Route::get('/file/import', 'FileControllerMVC@wantStore')->name('get.import');
+Route::get('/file/import', 'FileControllerMVC@store')->name('get.import');
 Route::post('/file/import', 'FileControllerMVC@store')->name('post.import');
 
+
+/*###################-  Additional  -#######################*/
+Route::get('/course', 'CourseControllerMVC@get')->name('get.course');
 
 Auth::routes();
 

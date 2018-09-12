@@ -11,64 +11,41 @@ namespace App\Model\Dao;
 
 use App\Model\Entity\Language;
 use App\Model\Entity\Translation;
-use App\Model\Exception\IntegrityException;
 
-class TranslationDAO implements ITranslationDAO
+class TranslationDAO extends AbstractDAO implements ITranslationDAO
 {
 
-    /**
-     * @return Translation[]|NULL
-     */
-    public function findAll() {
-        return Translation::all();
+    /** @inheritdoc */
+    public function findAll(): array {
+        return $this->convertToArray(Translation::all());
     }
 
-    /**
-     * @param string $code
-     * @param Language $language
-     * @return Translation|NULL
-     */
-    public function findOne($code, Language $language) {
+    /** @inheritdoc */
+    public function findOne(string $code, Language $language): ?Translation {
     	return Translation::where('TranslationCode', $code)
 			->where('LanguageCode', $language->getCode())
 			->first();
     }
 
-	/**
-	 * @param Language $language
-	 * @return Translation[]|NULL
-	 */
-	public function findAllByLanguage(Language $language) {
-		return Translation::where('LanguageCode', $language->getCode())->get();
+    /** @inheritdoc */
+    public function findAllByLanguage(Language $language): array {
+		return $this->convertToArray(Translation::where('LanguageCode', $language->getCode())->get());
 	}
 
-    /**
-     * @param Translation $translation
-     * @return Translation
-     */
-    public function create(Translation $translation) {
+    /** @inheritdoc */
+    public function create(Translation $translation): Translation {
         $translation->save();
         return $translation;
     }
 
-    /**
-     * @param Translation $translation
-     * @return Translation
-     */
-    public function update(Translation $translation) {
+    /** @inheritdoc */
+    public function update(Translation $translation): Translation {
         $translation->save();
         return $translation;
     }
 
-    /**
-     * @param Translation $translation
-     * @throws IntegrityException
-     */
+    /** @inheritdoc */
     public function delete(Translation $translation){
-        try {
-            $translation->delete();
-        } catch (\Exception $ex) {
-            throw new IntegrityException('Cannot remove couse of FK. ' . $ex->getMessage(), 0, $ex);
-        }
+        $translation->delete();
     }
 }
