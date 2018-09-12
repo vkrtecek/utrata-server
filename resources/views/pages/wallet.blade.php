@@ -16,6 +16,9 @@
 
 @section('preScripts')
     <script type="text/javascript" src="{{ asset('js/wallet.js') }}"></script>
+@endsection
+
+@section('scripts')
     <script type="text/javascript">
         printItems('{{ route('get.items.wallet', ['id' => $wallet['id']]) }}', '{{ \App\Model\Enum\ItemState::UNCHECKED }}');
     </script>

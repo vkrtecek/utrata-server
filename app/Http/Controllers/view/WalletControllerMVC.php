@@ -246,7 +246,7 @@ class WalletControllerMVC extends AbstractControllerMVC
     public function updateCheckState(Request $request, $id) {
         $this->assumeLogged();
         $type = $request->get('type');
-        $value = str_replace(',', '.', $request->get('value'));
+        $value = str_replace([' ', ','], ['', '.'], $request->get('value'));
 
         if (empty($type) || empty($value))
             return Response::create('Empty type or value', Response::HTTP_BAD_REQUEST);
