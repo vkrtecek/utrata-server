@@ -184,14 +184,14 @@ class ItemFilter extends AbstractFilter
 
 
 	/** @return bool */
-	public function isActive(): bool {
+	public function isActive(): ?bool {
 		return $this->active;
 	}
 	/**
-	 * @param bool $active
+	 * @param bool|NULL $active
 	 * @return ItemFilter
 	 */
-	public function setActive(bool $active): ItemFilter {
+	public function setActive(?bool $active): ItemFilter {
 		$this->active = $active;
 		return $this;
 	}

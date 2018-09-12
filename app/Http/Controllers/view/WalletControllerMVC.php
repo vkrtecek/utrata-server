@@ -29,6 +29,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Redirect;
+use Khill\Lavacharts\Lavacharts;
 
 class WalletControllerMVC extends AbstractControllerMVC
 {
@@ -276,5 +277,80 @@ class WalletControllerMVC extends AbstractControllerMVC
             ->with('member', $this->member);
 
         return Response::create($response)->header('Content-Type', 'text/html');
+    }
+
+    /**
+     * @param int $id
+     * @return View
+     * @throws AuthenticationException
+     * @throws NotFoundException
+     * @throws BadParameterException
+     */
+    public function monthlyPreview($id) {
+        $this->assumeLogged();
+
+        $purposes = $this->purposeService->getUserPurposes($this->member);
+        $purposes = $this->purposeService->formatEntities($purposes, $this->member);
+        $wallet = $this->walletService->getWallet($id, $this->member);
+        $wallet = $this->walletService->format($wallet);
+
+        return view('pages.monthlyPreview')
+            ->with('notes', $purposes)
+            ->with('wallet', $wallet);
+    }
+
+    /**
+     * @param Request $request
+     * @param int $id
+     * @return Response
+     * @throws AuthenticationException
+     * @throws NotFoundException
+     * @throws BadParameterException
+     */
+    public function monthlyPreviewData(Request $request, $id) {
+        $this->assumeLogged();
+        $notes = $request->get('noteId');
+        if (strtolower($notes) === 'null')
+            $notes = null;
+        $statistics = $this->itemService->getMonthStatistics($this->member, $id, $notes);
+
+        $lavaFull = new Lavacharts();
+        $table = \Lava::DataTable();
+        $table->addStringColumn('Station')
+            ->addNumberColumn('asd');
+        $table->addRow([
+            'asdas',
+            45,
+        ]);
+        $lavaFull->ColumnChart('full', $table, [
+            'backgroundColor' => [999],
+            'chartArea' => [80],
+            'colors' => ['090', '900', '009'],
+            'title' => 'title',
+            'titlePosition' => 'c',
+        ]);
+
+
+        $lavaPart = new Lavacharts();
+        $table2 = \Lava::DataTable();
+        $table2->addStringColumn('Station')
+            ->addNumberColumn('asd');
+        $table2->addRow([
+            'asdas',
+            45,
+        ]);
+        $lavaPart->ColumnChart('part', $table2, [
+            'backgroundColor' => [999],
+            'chartArea' => [80],
+            'colors' => ['090', '900', '009'],
+            'title' => 'title',
+            'titlePosition' => 'c',
+        ]);
+
+
+        return view('jquery.monthlyPreviewData')
+            ->with('data', $statistics)
+            ->with('partGraph', $lavaPart)
+            ->with('fullGraph', $lavaFull);
     }
 }

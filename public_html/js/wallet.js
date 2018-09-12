@@ -67,6 +67,8 @@ function deleteItem(itemId, url, conf = 'Do you really want to delete this item?
 
 
 function printItems(url, state) {
+    document.getElementById('items').innerHTML = '<span title="loading" id="loading"></span>';
+
     var body = {
         state: state,
         month: $('#month').val(),
@@ -125,6 +127,7 @@ function updateState(url, type, divId, value, printUrl) {
  * @param divId string - div to be overwritten
  */
 function printStatus(url, divId) {
+    document.getElementById(divId).innerHTML = '<span title="loading" id="loading_little"></span>';
     $.ajax({
         url: url,
         success: function(text) {

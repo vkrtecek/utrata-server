@@ -47,7 +47,7 @@ interface IItemService
 	 * @throws BadParameterException
 	 * @throws AuthenticationException
 	 */
-	public function getMonthStatistics(Member $member, int $walletId, $purposes = NULL): array;
+	public function getMonthStatistics(Member $member, int $walletId, string $purposes = NULL): array;
 
     /**
      * @param Member $member

@@ -3,7 +3,7 @@
 
 @section('navigation')
     <div class="container" id="navigation">
-        <a href="{{ route('get.wallets') }}">{{ env('APP_NAME', 'Laravel') }}</a> >
+        <a href="{{ route('get.wallets') }}">{{ env('APP_NAME', 'Laravel') }}</a> &gt;
         <a href="#">{{ $trans->get('Navigation.Wallet', 'Wallet') }} {{ $wallet['name'] }}</a>
     </div>
 @endsection

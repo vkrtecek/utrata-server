@@ -62,6 +62,8 @@ Route::get('/wallet/{id}', 'WalletControllerMVC@get')->name('get.wallet');
 Route::get('wallet/{id}/incomes', 'WalletControllerMVC@incomes')->name('get.wallet.incomes');
 Route::get('wallet/{id}/archive', 'WalletControllerMVC@archive')->name('get.wallet.archive');
 Route::get('/wallet/{id}/checkState', 'WalletControllerMVC@checkStateStatus')->name('get.checkstate.status');
+Route::get('/wallet/{id}/monthlyPreview', 'WalletControllerMVC@monthlyPreview')->name('get.monthlyPreview');
+Route::get('/wallet/{id}/monthlyPreviewData', 'WalletControllerMVC@monthlyPreviewData')->name('get.monthlyPreviewData');
 Route::post('/wallet', 'WalletControllerMVC@create')->name('post.wallet');
 Route::put('/wallet/{id}/checkState', 'WalletControllerMVC@updateCheckState')->name('put.wallet.checkState');
 Route::put('/wallet/{id}', 'WalletControllerMVC@update')->name('put.wallet');

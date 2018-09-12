@@ -1,0 +1,111 @@
+span#statistics-loading{
+    background: url('../img/loading.gif') center no-repeat;
+    display: block;
+    min-width: 300px;
+    min-height: 300px;
+}
+#wholeStatistics {
+    padding-top: 4rem;
+}
+#header {
+    position: fixed;
+    width: 100%;
+    height: 4rem;
+    max-height: 4rem;
+    background-color: #FFF;
+    top: 0;
+    padding: 0.5rem 0 0.7rem 0;
+    left: 12.5rem;
+    display: inline;
+}
+div#introduction {
+    border-bottom: #ccc 1px solid;
+    padding-bottom: 0.7rem;
+    margin-bottom: 0.7rem;
+}
+h1 {
+    text-align: center;
+    font-family: "Helvetica", sans-serif;
+    font-size: 250%;
+    margin: 1.5rem 0 1.5rem 0;
+}
+.violet {
+    color: violet;
+}
+h2 {
+    text-align: center;
+    font-size: 175%;
+    color: #666666;
+    padding: 0.4rem 0 1rem 0;
+}
+#partMonth, #fullMonth {
+    display: inline-block;
+    margin-right: 2rem;
+    padding: 1rem;
+    border: dashed violet 0.1rem;
+}
+
+
+/* tables */
+table {
+    border: solid black 3px;
+}
+table th {
+    background-color: #aaa;
+}
+table tr:nth-child(odd) {
+    background-color: #cccccc;
+}
+table td, table th {
+    padding: 0.3rem 0.4rem 0.3rem 0.4rem;
+}
+table td {
+    text-align: center;
+}
+/* end of tables */
+
+
+
+
+/* fullMonths */
+#fullMonths td.price {
+    text-align: left;
+}
+#fullMonths td.thisMonth {
+    text-align: center;
+}
+#fullMonths .thisMonthPrice {
+    border-left: solid black 0.3rem;
+}
+#fullMonths tbody tr:hover {
+    background-color: #2e6da4;
+    color: #f9ac9e;
+}
+/* end of fullMonth */
+
+
+
+/* part month */
+#partMonths td.price {
+    text-align: left;
+}
+#partMonths td.thisMonth {
+    text-align: center;
+}
+#partMonths .thisMonthPrice {
+    border-left: solid black 0.3rem;
+}
+#partMonths tbody tr:hover {
+    background-color: #2e6da4;
+    color: #f9ac9e;
+}
+/* end of part month */
+
+
+
+/* partExtremeMonths, fullExtremeMonths */
+#partExtremeMonths, #fullExtremeMonths {
+    border: solid black 3px;
+    margin: auto;
+    margin-bottom: 2rem;
+}

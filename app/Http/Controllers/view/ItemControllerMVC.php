@@ -137,7 +137,7 @@ class ItemControllerMVC extends AbstractControllerMVC
 		$data = $request->all();
         $data['vyber'] = $request->get('vyber') === 'on';
         $data['odepsat'] = $request->get('odepsat') === 'on';
-		$data['member']['login'] = $this->member->getLogin();
+		$data['member'] = $this->member->getLogin();
 		$data['currency']['code'] = $request->get('currencyId');
         $data['note']['id'] = $request->get('noteId');
         $data['wallet'] = $request->get('walletId');
@@ -175,7 +175,7 @@ class ItemControllerMVC extends AbstractControllerMVC
         //request to add income
         try {
             $data = $request->all();
-            $data['member']['login'] = $this->member->getLogin();
+            $data['member'] = $this->member->getLogin();
             $data['currency']['code'] = $request->get('currencyId');
             $data['wallet'] = $request->get('walletId');
             $this->itemService->createItem($this->member, $data);
@@ -222,6 +222,12 @@ class ItemControllerMVC extends AbstractControllerMVC
         }
 
 		$data = $request->all();
+        $data['vyber'] = $request->get('vyber') === 'on';
+        $data['odepsat'] = $request->get('odepsat') === 'on';
+        $data['member'] = $this->member->getLogin();
+        //$data['currency']['code'] = $request->get('currencyId');
+        $data['note']['id'] = $request->get('noteId');
+        $data['wallet'] = $request->get('walletId');
 		try {
 			$this->itemService->updateItem($this->member, $request->get('id'), $data);
 		} catch (ApplicationException $ex) {
@@ -234,7 +240,6 @@ class ItemControllerMVC extends AbstractControllerMVC
                 ->with('previousURL', url()->previous())
                 ->with('message', $ex->bind($message));
 		}
-		//return redirect(route('get.wallet', ['id' => $request->get('wallet')]));
 		return redirect($request->get('previousURL'));
 	}
 

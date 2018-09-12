@@ -20,7 +20,6 @@ use App\Model\Exception\BadRequestException;
 use App\Model\Exception\NotFoundException;
 use App\Model\Filter\ItemFilter;
 use DateTime;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class ItemService implements IItemService
 {
@@ -89,7 +88,7 @@ class ItemService implements IItemService
 
 
     /** @inheritdoc */
-    public function getMonthStatistics(Member $member, int $walletId, $purposes = NULL): array {
+    public function getMonthStatistics(Member $member, int $walletId, string $purposes = NULL): array {
 		$wallet = $this->walletService->getWallet($walletId, $member);
 		$startYear = $wallet->getCreated()->format('Y');
 		$startMonth = $wallet->getCreated()->format('m');
@@ -258,8 +257,6 @@ class ItemService implements IItemService
 	 * @param Item $entity
 	 * @param mixed $data
 	 * @param bool $newEntity setting new entity
-	 * @throws BadRequestException
-	 * @throws NotFoundException
      * @throws BadParameterException
      * @throws AuthenticationException
 	 */
@@ -344,6 +341,7 @@ class ItemService implements IItemService
 	 * @param Item $item
      * @throws AlreadyExistException
      * @throws BadParameterException
+     * @throws NotFoundException
 	 */
 	protected function checkForItemExistence(Item $item) {
 		$member = $item->getMember();
@@ -376,7 +374,7 @@ class ItemService implements IItemService
 	 * @param bool $wholeMonth
 	 * @return array
 	 */
-	private function fillMonths(int $walletId, string $purposes, int $startYear, string $startMonth, int $thisYear, string $thisMonth, bool $wholeMonth = TRUE): array {
+	private function fillMonths(int $walletId, ?string $purposes, int $startYear, string $startMonth, int $thisYear, string $thisMonth, bool $wholeMonth = TRUE): array {
 		$monthStats = [];
 		$_monthStat = null;
 		for ($_year = $startYear; $_year <= $thisYear; $_year++) {
@@ -432,14 +430,28 @@ class ItemService implements IItemService
 	 */
 	private function getMonthExtremes(array $monthStats): array {
 		//get min, max and average
-		$minEx['expense'] = PHP_INT_MAX;
-		$maxEx['expense'] = $acc = 0;
+		$minEx = [
+		    'expense' => PHP_INT_MAX,
+            'month' => '00',
+            'year' => '0000',
+            'income' => 0,
+            'incomesCnt' => 0,
+            'expensesCnt' => 0,
+        ];
+		$maxEx = [
+		    'expense' => $acc = 0,
+            'month' => '00',
+            'year' => '0000',
+            'income' => 0,
+            'incomesCnt' => 0,
+            'expensesCnt' => 0,
+        ];
 		foreach ($monthStats as $monthStat) {
 			$minEx = $monthStat['expense'] < $minEx['expense'] && $monthStat['expense'] > 0 ? $monthStat : $minEx;
-			$maxEx = $maxEx['expense'] > $monthStat['expense'] ? $maxEx : $monthStat;
+			$maxEx = $maxEx['expense'] >= $monthStat['expense'] ? $maxEx : $monthStat;
 			$acc += $monthStat['expense'];
 		}
-		$minEx = $minEx['expense'] == PHP_INT_MAX ? ['expense' => 0] : $minEx;
+		$minEx['expense'] = $minEx['expense'] == PHP_INT_MAX ? 0 : $minEx['expense'];
 		$averageEx = count($monthStats) ? $acc / count($monthStats) : 0;
 		return [$minEx, $maxEx, $averageEx, $acc];
 	}

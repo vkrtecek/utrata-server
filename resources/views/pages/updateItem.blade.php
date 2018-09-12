@@ -14,8 +14,8 @@
 
 @section('navigation')
     <div class="container">
-        <a href="{{ route('get.wallets') }}">{{ env('APP_NAME', 'Laravel') }}</a> >
-        <a href="{{ route('get.wallet', ['id' => $item['wallet']]) }}">{{ $trans->get('Navigation.Wallet', 'Wallet') }} {{ $wallet['name'] }}</a> >
+        <a href="{{ route('get.wallets') }}">{{ env('APP_NAME', 'Laravel') }}</a> &gt;
+        <a href="{{ route('get.wallet', ['id' => $item['wallet']]) }}">{{ $trans->get('Navigation.Wallet', 'Wallet') }} {{ $wallet['name'] }}</a> &gt;
         <a href="#">{{ $trans->get('Navigation.UpdateItem', 'Update item') }}</a>
     </div>
 @endsection
