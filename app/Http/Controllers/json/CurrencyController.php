@@ -40,7 +40,7 @@ class CurrencyController extends AbstractController
 			$currencies = $this->currencyService->getCurrencies();
 			$formatted = $this->currencyService->formatEntities($currencies);
 		} catch (NotFoundException $ex) {
-		    $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+		    $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_NO_CONTENT);
 		}
 		return Response::create($formatted, Response::HTTP_OK);

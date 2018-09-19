@@ -10,6 +10,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Redirect;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -52,11 +53,13 @@ class Handler extends ExceptionHandler
 		if ($exception instanceof AuthenticationMVCException)
 			return redirect(route('login'));
         if ($exception instanceof \App\Model\Exception\AuthenticationException)
-            return Response::create(['auth' => $exception->getDefault()], Response::HTTP_UNAUTHORIZED);
+            return Response::create(['auth' => $exception->bind($exception->getDefault())], Response::HTTP_UNAUTHORIZED);
         if ($exception instanceof NotFoundException)
-            return Response::create(['not found' => $exception->getDefault()], Response::HTTP_UNAUTHORIZED);
+            return Response::create(['not found' => $exception->bind($exception->getDefault())], Response::HTTP_UNAUTHORIZED);
         if ($exception instanceof BadParameterException)
-            return Response::create(['bad parameter' => $exception->getDefault()], Response::HTTP_BAD_REQUEST);
+            return Response::create(['bad parameter' => $exception->bind($exception->getDefault())], Response::HTTP_BAD_REQUEST);
+        if ($exception instanceof MethodNotAllowedHttpException)
+            return Response::create(['not found' => 'Handler not found'], Response::HTTP_METHOD_NOT_ALLOWED);
         return parent::render($request, $exception);
     }
 

@@ -107,7 +107,6 @@ class MemberService implements IMemberService
 			throw (new AlreadyExistException('Exception.AlreadyExists', ':entity with this :parameter already exists'))->setBind(['entity' => 'Member', 'parameter' => 'login']);
 		} catch (NotFoundException $ex) {
 			$this->setMember($member, $data);
-			$member->setToken($this->createToken());
 			$member = $this->memberDao->create($member);
 			$this->createStartingPurposes($member);
 			return $member;
@@ -287,15 +286,15 @@ class MemberService implements IMemberService
 		//povinné položky
 		if ($newEntity) {
 			if (!isset($data['currencyCode']) || $data['currencyCode'] == NULL)
-				throw (new BadRequestException('Exception.Parameter.Missing', ':parameter missing'))->setBind(['parameter' => 'Currency']);
+				throw (new BadRequestException('Exception.Parameter.Missing', ':parameter missing'))->setBind(['parameter' => 'currencyCode']);
 			if (!isset($data['languageCode']) || $data['languageCode'] == NULL)
-				throw (new BadRequestException('Exception.Parameter.Missing', ':parameter missing'))->setBind(['parameter' => 'Language']);
+				throw (new BadRequestException('Exception.Parameter.Missing', ':parameter missing'))->setBind(['parameter' => 'languageCode']);
 			if (!isset($data['login']) || $data['login'] == NULL)
 				throw (new BadRequestException('Exception.Parameter.Missing', ':parameter missing'))->setBind(['parameter' => 'login']);
 			if (!isset($data['password']) || $data['password'] == NULL)
 				throw (new BadRequestException('Exception.Parameter.Missing', ':parameter missing'))->setBind(['parameter' => 'password']);
 			if (!isset($data['me']) || $data['me'] == NULL)
-				throw (new BadRequestException('Exception.Parameter.Missing', ':parameter missing'))->setBind(['parameter' => 'me']);
+				throw (new BadRequestException('Exception.Parameter.Missing', ':parameter missing'))->setBind(['parameter' => 'me (email)']);
 
 			$member->setToken($this->createToken());
 			if (isset($data['first_name'])) $member->setFirstName($data['first_name']);
@@ -334,8 +333,10 @@ class MemberService implements IMemberService
             $member->setLanguage($newLanguage);
 		}
 		if (isset($data['login']) && $data['login']) {
-			if ($member->getLogin() != $data['login'] && !$this->uniqueLogin($data['login']))
-				throw (new AlreadyExistException('Exception.AlreadyExists', ':entity with this :parameter already exists'))->setBind(['entity' => 'Member', 'parameter' => 'login']);
+			if (($newEntity && !$this->uniqueLogin($data['login'])) //create
+                || (!$newEntity && $member->getLogin() != $data['login'] && !$this->uniqueLogin($data['login'])) //update
+            )
+                throw (new AlreadyExistException('Exception.AlreadyExists', ':entity with this :parameter already exists'))->setBind(['entity' => 'Member', 'parameter' => 'login']);
 			$member->setLogin($data['login']);
 		}
 		if (isset($data['password']) && $data['password']) {
@@ -351,7 +352,9 @@ class MemberService implements IMemberService
 		if (isset($data['me']) && $data['me']) {
 			if (!preg_match($emailFormat, $data['me']))
 				throw (new BadParameterException('Exception.Parameter.BadFormat', ':parameter in bad format'))->setBind(['parameter' => 'your mail']);
-			if ($member->getMyMail() != $data['me'] && !$member->isExternal() && !$this->uniqueMail($data['me']))
+			if (($newEntity && !$this->uniqueMail($data['me'])) //create
+                || (!$newEntity && $member->getMyMail() != $data['me'] && !$member->isExternal() && !$this->uniqueMail($data['me'])) //update
+            )
                 throw (new AlreadyExistException('Exception.AlreadyExists', ':entity with this :parameter already exists'))->setBind(['entity' => 'Member', 'parameter' => 'mail']);
 			$member->setMyMail($data['me']);
 		}
@@ -439,7 +442,7 @@ class MemberService implements IMemberService
      * @return bool
      */
     protected function uniqueLogin(string $login): bool {
-        return $this->memberDao->findOneByColumn('login', $login) !== null;
+        return $this->memberDao->findOneByColumn('login', $login) === null;
     }
 
     /**
@@ -447,7 +450,7 @@ class MemberService implements IMemberService
      * @return bool
      */
     protected function uniqueMail(string $mail): bool {
-        return $this->memberDao->findOneByColumn('myMail', $mail) !== null;
+        return $this->memberDao->findOneByColumn('myMail', $mail) === null;
     }
 
     /**

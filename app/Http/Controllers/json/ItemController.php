@@ -50,13 +50,13 @@ class ItemController extends AbstractController
 			$items = $this->itemService->getWalletItems($walletId, $this->member, $filter);
 			$formatted = $this->itemService->formatEntities($items, $this->member);
 		} catch (NotFoundException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_NO_CONTENT);
 		} catch (BadParameterException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_BAD_REQUEST);
 		} catch (AuthenticationException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_UNAUTHORIZED);
 		}
 		return Response::create($formatted, Response::HTTP_OK);
@@ -74,16 +74,18 @@ class ItemController extends AbstractController
 		$this->assumeLogged($req);
 		$walletId = $req->get('id');
 		$purposes = $req->get('notes');
+		if (!$walletId)
+		    return Response::create(['error' => 'Empty id of wallet.'], Response::HTTP_BAD_REQUEST);
 		try {
 			$statistics = $this->itemService->getMonthStatistics($this->member, $walletId, $purposes);
 		} catch (NotFoundException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_NO_CONTENT);
 		} catch (BadParameterException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_BAD_REQUEST);
 		} catch (AuthenticationException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_UNAUTHORIZED);
 		}
 		return Response::create($statistics, Response::HTTP_OK);
@@ -103,21 +105,22 @@ class ItemController extends AbstractController
 	public function create(Request $req) {
 		$this->assumeLogged($req);
 		$data = $req->get('item');
-
+		if (!$data)
+		    return Response::create(['error' => 'Empty item'], Response::HTTP_BAD_REQUEST);
 		try {
 			$item = $this->itemService->createItem($this->member, $data);
 			$formatted = $this->itemService->format($item, $this->member);
 		} catch (AlreadyExistException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_CONFLICT);
 		} catch (NotFoundException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_NOT_FOUND);
 		} catch (BadRequestException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
             return Response::create(['error' => $ex->bind($message)], Response::HTTP_BAD_REQUEST);
         } catch (BadParameterException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
             return Response::create(['error' => $ex->bind($message)], Response::HTTP_BAD_REQUEST);
         }
 
@@ -138,10 +141,10 @@ class ItemController extends AbstractController
 		try {
 			$this->itemService->checkItem($this->member, $id);
 		} catch (NotFoundException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_NOT_FOUND);
 		} catch (AuthenticationException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_UNAUTHORIZED);
 		}
 		return Response::create($id, Response::HTTP_OK);
@@ -156,18 +159,22 @@ class ItemController extends AbstractController
 	 */
 	public function checkAll(Request $req) {
 		$this->assumeLogged($req);
+		$walletId = $req->get('walletId');
+		if (!$walletId)
+		    return Response::create(['error' => 'Empty walletId'], Response::HTTP_BAD_REQUEST);
+
 		try {
             $filter = Pagination::create($req, 'Item');
-            $filter->setWalletId($req->get('wallet'))->setMember($this->member);
-			$res = $this->itemService->checkAll($req->get('wallet'), $this->member, $filter);
+            $filter->setWalletId($walletId)->setMember($this->member);
+			$res = $this->itemService->checkAll($walletId, $this->member, $filter);
 		} catch (NotFoundException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_NOT_FOUND);
 		} catch (BadParameterException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_NOT_ACCEPTABLE);
 		} catch (AuthenticationException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_UNAUTHORIZED);
 		}
 		return Response::create($res, Response::HTTP_OK);
@@ -191,13 +198,13 @@ class ItemController extends AbstractController
 			$item = $this->itemService->updateItem($this->member, $data['id'], $data);
 			$formatted = $this->itemService->format($item, $this->member);
 		} catch (NotFoundException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_NOT_FOUND);
 		} catch (BadParameterException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_NOT_ACCEPTABLE);
 		} catch (BadRequestException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_BAD_REQUEST);
 		}
 
@@ -219,13 +226,13 @@ class ItemController extends AbstractController
 		try {
 			$this->itemService->deleteItem($this->member, $id);
 		} catch (NotFoundException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_NOT_FOUND);
 		} catch (BadParameterException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_BAD_REQUEST);
 		} catch (IntegrityException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_METHOD_NOT_ALLOWED);
 		}
 

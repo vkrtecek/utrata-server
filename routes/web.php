@@ -128,13 +128,12 @@ Route::prefix('api')->group(function(){
 	Route::get('purposes', 'PurposeController@getUserPurposes');
 	Route::get('purposes/language/{code}', 'PurposeController@getLanguagePurposes');
 	Route::get('purposesOfUser', 'PurposeController@getPurposesCreatedByUser');
-	Route::get('purposes/allAvailable', 'PurposeController@getPurposesAvailableForUser');
+//	Route::get('purposes/allAvailable', 'PurposeController@getPurposesAvailableForUser');
 	Route::post('purpose', 'PurposeController@create');
 	Route::delete('purpose/{id}', 'PurposeController@delete');
 
 
 	/*##################-  MemberPurpose  -###################*/
-	Route::post('memberpurposes', 'MemberPurposeController@changePurposes');
 
 
 	/*##################-  Translation  -######################*/

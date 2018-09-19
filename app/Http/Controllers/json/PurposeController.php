@@ -45,7 +45,7 @@ class PurposeController extends AbstractController
 			$purposes = $this->purposeService->getUserPurposes($this->member);
 			$purposes = $this->purposeService->formatEntities($purposes, $this->member);
 		} catch (NotFoundException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_NOT_FOUND);
 		}
 		return Response::create(["purposes" => $purposes], Response::HTTP_OK);
@@ -66,10 +66,10 @@ class PurposeController extends AbstractController
 			$purposes = $this->purposeService->getUserLanguagePurposes($this->member, $languageCode);
 			$formatted = $this->purposeService->formatEntities($purposes, $this->member);
 		} catch (NotFoundException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_NOT_FOUND);
 		} catch (BadParameterException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
             return Response::create(['error' => $ex->bind($message)], Response::HTTP_BAD_REQUEST);
         }
 		return Response::create(['purposes' => $formatted], Response::HTTP_OK);
@@ -105,13 +105,13 @@ class PurposeController extends AbstractController
 			$purpose = $this->purposeService->createPurpose($this->member, $note);
 			$formatted = $this->purposeService->format($purpose, $this->member);
 		} catch (BadParameterException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
             return Response::create(['error' => $ex->bind($message)], Response::HTTP_BAD_REQUEST);
         } catch (NotFoundException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
             return Response::create(['error' => $ex->bind($message)], Response::HTTP_NOT_FOUND);
         } catch (AlreadyExistException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create([
 				'error' => $ex->bind($message),
 				'code' => $ex->getReason(),
@@ -134,13 +134,13 @@ class PurposeController extends AbstractController
 		try {
 			$retId = $this->purposeService->deletePurpose($id, $this->member);
 		} catch (NotFoundException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_NOT_FOUND);
 		} catch (BadParameterException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_BAD_REQUEST);
 		} catch (IntegrityException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 		    return Response::create(['error' => $ex->bind($message)], Response::HTTP_METHOD_NOT_ALLOWED);
         }
 		return Response::create($retId, Response::HTTP_OK);

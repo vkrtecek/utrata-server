@@ -107,7 +107,7 @@ class MemberController extends AbstractController
 				'lastLogin' => $member->getAccess()->format('Y-m-d H:i:s'),
 			], Response::HTTP_OK);
 		} catch (SecurityException $ex) {
-			return Response::create(['error' => $ex->getDefault()], Response::HTTP_UNAUTHORIZED);
+			return Response::create(['error' => $ex->bind($ex->getDefault())], Response::HTTP_UNAUTHORIZED);
 		}
 	}
 
@@ -145,34 +145,38 @@ class MemberController extends AbstractController
 				'lastLogin' => $member->getAccess()->format('Y-m-d H:i:s'),
 			], Response::HTTP_OK);
 		} catch (BadParameterException $ex) {
-			return Response::create(['error' => $ex->getDefault()], Response::HTTP_BAD_REQUEST);
+			return Response::create(['error' => $ex->bind($ex->getDefault())], Response::HTTP_BAD_REQUEST);
 		} catch (NotFoundException $ex) {
-			return Response::create(['error' => $ex->getDefault()], Response::HTTP_NOT_FOUND);
+			return Response::create(['error' => $ex->bind($ex->getDefault())], Response::HTTP_NOT_FOUND);
 		} catch (BadRequestException $ex) {
-			return Response::create(['error' => $ex->getDefault()], Response::HTTP_BAD_REQUEST);
+			return Response::create(['error' => $ex->bind($ex->getDefault())], Response::HTTP_BAD_REQUEST);
 		} catch (AlreadyExistException $ex) {
-			return Response::create(['error' => $ex->getDefault()], Response::HTTP_CONFLICT);
+			return Response::create(['error' => $ex->bind($ex->getDefault())], Response::HTTP_CONFLICT);
 		}
 	}
 
     /**
+     * register
      * @param Request $req
      * @return Response
      * @throws AuthenticationException
      */
 	public function create(Request $req) {
 		$data = $req->get('data');
+		if (!$data)
+		    return Response::create(['error' => 'Empty data'], Response::HTTP_BAD_REQUEST);
+
 		try {
 			$member = $this->memberService->createMember($data);
 			$formatted = $this->memberService->format($member);
 		} catch (AlreadyExistException $ex) {
-			return Response::create(['error' => $ex->getDefault()], Response::HTTP_CONFLICT);
+			return Response::create(['error' => $ex->bind($ex->getDefault())], Response::HTTP_CONFLICT);
 		} catch (BadRequestException $ex) {
-            return Response::create(['error' => $ex->getDefault()], Response::HTTP_BAD_REQUEST);
+            return Response::create(['error' => $ex->bind($ex->getDefault())], Response::HTTP_BAD_REQUEST);
         } catch (NotFoundException $ex) {
-            return Response::create(['error' => $ex->getDefault()], Response::HTTP_NO_CONTENT);
+            return Response::create(['error' => $ex->bind($ex->getDefault())], Response::HTTP_NO_CONTENT);
         } catch (BadParameterException $ex) {
-			return Response::create(['error' => $ex->getDefault()], Response::HTTP_BAD_REQUEST);
+			return Response::create(['error' => $ex->bind($ex->getDefault())], Response::HTTP_BAD_REQUEST);
 		}
 
 		return Response::create($formatted, Response::HTTP_OK);
@@ -198,19 +202,19 @@ class MemberController extends AbstractController
 			$mem = $this->memberService->updateMember($this->member->getLogin(), $updated);
 			$formatted = $this->memberService->format($mem);
 		} catch (NotFoundException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_NOT_FOUND);
 		} catch (BadRequestException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_BAD_REQUEST);
 		} catch (BadParameterException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_BAD_REQUEST);
 		} catch (AlreadyExistException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_CONFLICT);
 		} catch (AuthenticationException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_UNAUTHORIZED);
 		}
 		return Response::create($formatted, Response::HTTP_ACCEPTED);

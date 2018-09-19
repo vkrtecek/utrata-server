@@ -59,13 +59,15 @@ class FileController extends AbstractController
 	public function store(Request $req) {
 		$this->assumeLogged($req);
 		$content = $req->get('data');
+		if (!$content)
+		    return Response::create(['error' => 'Content data is required.'], Response::HTTP_BAD_REQUEST);
 		try {
 			$bool = $this->fileService->storeBackup($this->member, $content);
 		} catch (FileParseException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_EXPECTATION_FAILED);
 		} catch (EOFException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault());
+            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
 			return Response::create(['error' => $ex->bind($message)], Response::HTTP_CONFLICT);
 		}
 		return Response::create(['success' => $bool], Response::HTTP_OK);

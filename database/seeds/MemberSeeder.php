@@ -46,7 +46,7 @@ class MemberSeeder extends Seeder
 				'firstName' => 'Jana',
 				'lastName' => 'Harníková',
 				'login' => 'jana',
-				'password' => '$2y$12$TLHfaHdPgYNepUOB6A1Bi.XPh8EunvuzxI0.Cvl8BSGgyNdxdqjua',
+				'password' => '$2y$12$TLHfaHdPgYNepUOB6A1Bi.XPh8EunvuzxI0.Cvl8BSGgyNdxdqjua', //heslo
 				'sendMonthly' => 1,
 				'sendByOne' => 0,
 				'myMail' => 'some@example.com',
@@ -65,7 +65,7 @@ class MemberSeeder extends Seeder
 				'firstName' => 'Štěpán',
 				'lastName' => 'Krteček',
 				'login' => '10208700545829696',
-				'password' => '$2y$12$TLHfaHdPgYNepUOB6A1Bi.XPh8EunvuzxI0.Cvl8BSGgyNdxdqjua',
+				'password' => '$2y$12$TLHfaHdPgYNepUOB6A1Bi.XPh8EunvuzxI0.Cvl8BSGgyNdxdqjua', //heslo
 				'sendMonthly' => 0,
 				'sendByOne' => 0,
 				'myMail' => 'some@example.com',
