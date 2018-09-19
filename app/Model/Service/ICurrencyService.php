@@ -44,7 +44,7 @@ interface ICurrencyService
      * @return Currency
      * @throws BadRequestHttpException
      */
-    public function create(array $data);
+    public function create(array $data): Currency;
 
     /**
      * @param int $id

@@ -51,7 +51,7 @@ class MemberPurposeService implements IMemberPurposeService
 	}
 
     /** @inheritdoc */
-    public function create(Member $member, Purpose $purpose): MemberPurpose {
+    public function create(Member $member, Purpose $purpose): ?MemberPurpose {
 		$already = $this->memberPurposeDao->find($member, $purpose);
 		if ($already)
 			return null;

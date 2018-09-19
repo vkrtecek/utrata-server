@@ -33,6 +33,14 @@ class Purpose extends Model
 	public function getId() {
 		return $this->PurposeID;
 	}
+    /**
+     * @param int $id
+     * @return Purpose
+     */
+	public function setId(int $id): Purpose {
+	    $this->PurposeID = $id;
+	    return $this;
+    }
 
 	/**
 	 * @return string

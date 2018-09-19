@@ -14,46 +14,36 @@ use App\Model\Entity\CheckState;
 
 class FakeCheckStateDAO implements ICheckStateDAO
 {
-	/**
-	 * @return CheckState[]|NULL
-	 */
-	public function findAll() {}
+    /** @inheritdoc */
+    public function findAll(): array {
+        return [];
+    }
 
-	/**
-	 * @param int $id
-	 * @return CheckState|NULL
-	 */
-	public function findOne($id) {}
+    /** @inheritdoc */
+    public function findOne(int $id): ?CheckState {
+        return null;
+    }
 
-	/**
-	 * @param string $key
-	 * @param mixed $val
-	 * @return CheckState|NULL
-	 */
-	public function findByColumn($key, $val) {}
+	/** @inheritdoc */
+	public function findByColumn(string $key, string $val): array {
+	    return [];
+    }
 
-	/**
-	 * @param string $key
-	 * @param mixed $val
-	 * @return CheckState|NULL
-	 */
-	public function findLastByColumn($key, $val) {}
+    /** @inheritdoc */
+    public function findLastByColumn(string $key, string $val): ?CheckState {
+        return null;
+    }
 
-	/**
-	 * @param CheckState $checkState
-	 * @return CheckState
-	 */
-	public function create(CheckState $checkState) {}
+    /** @inheritdoc */
+    public function create(CheckState $checkState): CheckState {
+        return $checkState;
+    }
 
-	/**
-	 * @param CheckState $checkState
-	 * @return CheckState
-	 */
-	public function update(CheckState $checkState) {}
+    /** @inheritdoc */
+    public function update(CheckState $checkState): CheckState {
+        return $checkState;
+    }
 
-	/**
-	 * @param int $id
-	 * @return void
-	 */
-	public function delete($id) {}
+    /** @inheritdoc */
+    public function delete(CheckState $cs) {}
 }

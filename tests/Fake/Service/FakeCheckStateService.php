@@ -10,13 +10,9 @@ namespace Tests\Fake\Service;
 
 
 use App\Model\Entity\CheckState;
-use App\Model\Entity\Member;
 use App\Model\Entity\Wallet;
 use App\Model\Enum\ItemType;
-use App\Model\Exception\BadParameterException;
-use App\Model\Exception\NotFoundException;
 use App\Model\Service\ICheckStateService;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Tests\Exception\FirstDeleteForeignException;
 
 class FakeCheckStateService implements ICheckStateService
@@ -26,6 +22,10 @@ class FakeCheckStateService implements ICheckStateService
 	/** @var CheckState */
 	protected $cs2;
 
+    /**
+     * FakeCheckStateService constructor.
+     * @throws \App\Model\Exception\BadParameterException
+     */
 	public function __construct() {
 		$wallet = new Wallet();
 		$wallet->setId(1);
@@ -44,65 +44,40 @@ class FakeCheckStateService implements ICheckStateService
 		$this->cs2->setWallet($wallet);
 	}
 
-	/**
-	 * @param Wallet $wallet
-	 * @return CheckState[]
-	 * @throws NotFoundException
-	 */
-	public function getWalletCheckStates(Wallet $wallet) {
+    /** @inheritdoc */
+    public function getWalletCheckStates(Wallet $wallet): array {
 		return [
 			$this->cs1,
 			$this->cs2,
 		];
 	}
 
-	/**
-	 * @param Wallet $wallet
-	 * @param string $type
-	 * @return CheckState
-	 * @throws NotFoundException
-	 */
-	public function getWalletCheckState(Wallet $wallet, $type = ItemType::CARD) {
+    /** @inheritdoc */
+    public function getWalletCheckState(Wallet $wallet, string $type = ItemType::CARD): CheckState {
 		if ($type == ItemType::CARD)
 			return $this->cs1;
 		else
 			return $this->cs2;
 	}
 
-	/**
-	 * @param int $id
-	 * @return CheckState
-	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 */
-	public function getCheckState($id) {
+    /** @inheritdoc */
+    public function getCheckState(int $id): CheckState {
 		if ($id % 2)
 			return $this->cs1;
 		else
 			return $this->cs2;
 	}
 
-	/**
-	 * @param Wallet $wallet
-	 * @param string $type
-	 * @return CheckState
-	 * @throws BadRequestHttpException
-	 */
-	public function createCheckState(Wallet $wallet, $type = ItemType::CARD) {
+    /** @inheritdoc */
+    public function createCheckState(Wallet $wallet, string $type = ItemType::CARD): CheckState {
 		if ($type == ItemType::CARD)
 			return $this->cs1;
 		else
 			return $this->cs2;
 	}
 
-	/**
-	 * @param Wallet $wallet
-	 * @param string $type
-	 * @param double $value
-	 * @return CheckState
-	 * @throws NotFoundException
-	 */
-	public function updateCheckState(Wallet $wallet, $type, $value) {
+    /** @inheritdoc */
+    public function updateCheckState(Wallet $wallet, string $type, float $value): CheckState {
 		if ($type == ItemType::CARD)
 			$c = $this->cs1;
 		else
@@ -112,28 +87,21 @@ class FakeCheckStateService implements ICheckStateService
 		return $c;
 	}
 
-	/**
-	 * @param int $id
-	 * @return int
-	 * @throws FirstDeleteForeignException
-	 */
-	public function deleteCheckState($id) {
+    /**
+     * @throws FirstDeleteForeignException
+     * @inheritdoc
+     */
+    public function deleteCheckState(int $id) {
 		throw new FirstDeleteForeignException();
 	}
 
-	/**
-	 * @param CheckState $checkState
-	 * @return array
-	 */
-	public function format(CheckState $checkState) {
+    /** @inheritdoc */
+    public function format(CheckState $checkState): array {
 		return [];
 	}
 
-	/**
-	 * @param CheckState[] $checkStates
-	 * @return array
-	 */
-	public function formatEntities($checkStates) {
+	/** @inheritdoc */
+	public function formatEntities(array $checkStates): array {
 		return [];
 	}
 }

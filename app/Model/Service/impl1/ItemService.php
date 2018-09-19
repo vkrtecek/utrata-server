@@ -72,6 +72,8 @@ class ItemService implements IItemService
 
 	/** @inheritdoc */
 	public function getWalletItems(int $walletId, Member $member, ?ItemFilter $filter = NULL): array {
+	    if ($walletId < 1)
+	        throw new BadRequestException('Exception.BadParameter.SmallerThan1', 'Identifier smaller than 1');
 		//test if member is owner
 		$this->walletService->getWallet($walletId, $member);
 

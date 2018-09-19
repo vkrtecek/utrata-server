@@ -13,9 +13,10 @@ use App\Model\Entity\Item;
 use App\Model\Entity\Member;
 use App\Model\Enum\ItemType;
 use App\Model\Exception\AuthenticationException;
+use App\Model\Exception\BadRequestException;
 use App\Model\Exception\NotFoundException;
+use App\Model\Filter\ItemFilter;
 use App\Model\Service\ItemService;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Tests\Fake\Dao\FakeItemDAO;
 use Tests\Fake\Service\FakeCurrencyService;
 use Tests\Fake\Service\FakeItemService;
@@ -30,11 +31,19 @@ class ItemTest extends TestCase
 	/** @var ItemService */
 	private $itemService;
 
+	/** @var ItemFilter */
+	private $itemFilter;
+
 	/** @var Member */
 	private $member;
 	/** @var Member */
 	private $member2;
 
+    /**
+     * @throws AuthenticationException
+     * @throws NotFoundException
+     * @throws \App\Model\Exception\BadParameterException
+     */
 	protected function setUp() {
 		parent::setUp();
 		$this->itemService = new ItemService(
@@ -47,19 +56,30 @@ class ItemTest extends TestCase
 		);
 		$this->member = (new FakeMemberService())->getMember('vojta');
 		$this->member2 = (new FakeMemberService())->getMember('jožka');
+
+		$this->itemFilter = ItemFilter::create([])->setOrderHow(ItemFilter::ORDER_DESCENDANT)->setOrderBy('price');
 	}
 
+    /**
+     * @throws AuthenticationException
+     * @throws NotFoundException
+     * @throws \App\Model\Exception\BadParameterException
+     */
 	public function testGetWalletItems() {
-		$items = $this->itemService->getWalletItems(1, $this->member, NULL, NULL, NULL, NULL, NULL, 'price', 'DESC', NULL);
+		$items = $this->itemService->getWalletItems(1, $this->member, $this->itemFilter);
 
 		$this->assertEquals(3, count($items));
 		foreach ($items as $item)
 			$this->assertTrue($item instanceof Item);
 
-		$this->expectException(BadRequestHttpException::class);
-		$this->itemService->getWalletItems(NULL, $this->member, NULL, NULL, NULL, NULL, NULL, 'price', 'DESC', NULL);
+		$this->expectException(BadRequestException::class);
+		$this->itemService->getWalletItems(-1, $this->member, $this->itemFilter);
 	}
 
+    /**
+     * @throws NotFoundException
+     * @throws \App\Model\Exception\BadParameterException
+     */
 	public function testGetItem() {
 		$item = $this->itemService->getItem(1);
 		$this->assertTrue($item instanceof Item);
@@ -68,6 +88,13 @@ class ItemTest extends TestCase
 		$this->itemService->getItem(51);
 	}
 
+    /**
+     * @throws AuthenticationException
+     * @throws NotFoundException
+     * @throws \App\Model\Exception\AlreadyExistException
+     * @throws \App\Model\Exception\BadParameterException
+     * @throws \App\Model\Exception\BadRequestException
+     */
 	public function testCreateItem() {
 		$data = [
 			'name' => 'item',
@@ -75,18 +102,14 @@ class ItemTest extends TestCase
 			'course' => 1,
 			'date' => '2018-01-01 23:59:59',
 			'vyber' => TRUE,
-			'member' => [
-				'login' => 'vojta'
-			],
+			'member' => 'vojta',
 			'currency' => [
 				'code' => 'CZK'
 			],
 			'note' => [
 				'id' => 1
 			],
-			'wallet' => [
-				'id' => 1
-			],
+			'wallet' => 1,
 		];
 		$item = $this->itemService->createItem($this->member, $data);
 		$this->assertTrue($item instanceof Item);
@@ -97,22 +120,38 @@ class ItemTest extends TestCase
 		$this->assertEquals('Výběr', $item->getName());
 
 
-		$this->expectException(BadRequestHttpException::class);
+		$this->expectException(BadRequestException::class);
 		$this->itemService->createItem($this->member, []);
 	}
 
+    /**
+     * @throws AuthenticationException
+     * @throws NotFoundException
+     * @throws \App\Model\Exception\BadParameterException
+     */
 	public function testMemberCannotCheckItem() {
 		$this->expectException(AuthenticationException::class);
 		$this->itemService->checkItem($this->member2, 1);
 	}
 
+    /**
+     * @throws AuthenticationException
+     * @throws NotFoundException
+     * @throws \App\Model\Exception\BadParameterException
+     */
 	public function testCheckAll() {
-		$itemCnt = count($this->itemService->getWalletItems(1, $this->member, NULL, NULL, NULL, NULL, NULL, 'price', 'DESC', NULL));
-		$cnt = $this->itemService->checkAll(1, $this->member, NULL, [], NULL, NULL, 'price', 'DESC', NULL);
+		$itemCnt = count($this->itemService->getWalletItems(1, $this->member, $this->itemFilter));
+		$cnt = $this->itemService->checkAll(1, $this->member, $this->itemFilter);
 
 		$this->assertEquals($itemCnt, $cnt);
 	}
 
+    /**
+     * @throws AuthenticationException
+     * @throws NotFoundException
+     * @throws \App\Model\Exception\BadParameterException
+     * @throws \App\Model\Exception\BadRequestException
+     */
 	public function testUpdateItem() {
 		$data = [
 			'name' => 'name',
@@ -130,6 +169,11 @@ class ItemTest extends TestCase
 		$this->assertEquals(2.5, $item->getCourse());
 	}
 
+    /**
+     * @throws AuthenticationException
+     * @throws NotFoundException
+     * @throws \App\Model\Exception\BadParameterException
+     */
 	public function testFormat() {
 		$member = (new FakeMemberService())->getMember('vojta');
 		$item = (new FakeItemService())->getItem(0);
@@ -146,7 +190,7 @@ class ItemTest extends TestCase
 			'odepsat' => FALSE,
 			'vyber' => FALSE,
 			'income' => FALSE,
-			'note' => NULL,
+			'note' => [],
 			'currency' => [],
 			'member' => 'vojta',
 			'wallet' => 1,
@@ -155,6 +199,11 @@ class ItemTest extends TestCase
 		$this->assertEquals($expected, $formatted);
 	}
 
+    /**
+     * @throws AuthenticationException
+     * @throws NotFoundException
+     * @throws \App\Model\Exception\BadParameterException
+     */
 	public function testGetMonthStatistics() {
 		$statistics = $this->itemService->getMonthStatistics($this->member, 1);
 
@@ -175,9 +224,19 @@ class ItemTest extends TestCase
 			'average' => 0,
 			'min' => [
 				'expense' => 0,
+                'month' => '00',
+                'year' => '0000',
+                'income' => 0,
+                'incomesCnt' => 0,
+                'expensesCnt' => 0,
 			],
 			'max' => [
-				'expense' => 0
+				'expense' => 0,
+                'month' => '00',
+                'year' => '0000',
+                'income' => 0,
+                'incomesCnt' => 0,
+                'expensesCnt' => 0,
 			],
 			'items' => 0,
 			'totalExpense' => 0,

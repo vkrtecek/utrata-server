@@ -13,6 +13,8 @@ use App\Model\Dao\IMemberPurposeDAO;
 use App\Model\Entity\Member;
 use App\Model\Entity\MemberPurpose;
 use App\Model\Entity\Purpose;
+use App\Model\Exception\BadParameterException;
+use App\Model\Exception\NotFoundException;
 use Tests\Fake\Service\FakeMemberService;
 use Tests\Fake\Service\FakePurposeService;
 
@@ -30,6 +32,11 @@ class FakeMemberPurposeDAO implements IMemberPurposeDAO
 	/** @var Purpose */
 	private $purpose3;
 
+    /**
+     * FakeMemberPurposeDAO constructor.
+     * @throws \App\Model\Exception\BadParameterException
+     * @throws \App\Model\Exception\NotFoundException
+     */
 	public function __construct() {
 		$this->member = (new FakeMemberService())->getMember('vojta');
 		$this->member2 = (new FakeMemberService())->getMember('jožka');
@@ -40,43 +47,42 @@ class FakeMemberPurposeDAO implements IMemberPurposeDAO
 	}
 
 	/**
-	 * @param Member $member
-	 * @param Purpose $purpose
-	 * @return MemberPurpose|NULL
-	 */
-	public function find(Member $member, Purpose $purpose) {
+     * @inheritdoc
+     * @throws NotFoundException
+     * @throws BadParameterException
+     */
+	public function find(Member $member, Purpose $purpose): ?MemberPurpose {
+	    if ($purpose == (new FakePurposeService)->getPurpose(1) && $member == (new FakeMemberService)->getMember('vojta'))
+	        return null;
 		$mp = new MemberPurpose();
 		$mp->setMember($member);
 		$mp->setPurpose($purpose);
 		return $mp;
 	}
 
-	/**
-	 * @param Member $member
-	 * @return MemberPurpose[]
-	 */
-	public function findPurposes(Member $member) {
+    /**
+     * @inheritdoc
+     * @throws NotFoundException
+     * @throws BadParameterException
+     */
+    public function findPurposes(Member $member): array {
 		if ($member->getLogin() == 'vojta')
 			return [
 				$this->find($this->member, $this->purpose),
 				$this->find($this->member, $this->purpose2),
 			];
-		return $this->find($this->member2, $this->purpose3);
+		return [ $this->find($this->member2, $this->purpose3) ];
 	}
 
-	/**
-	 * @param Member $member
-	 * @param Purpose $purpose
-	 * @return MemberPurpose
-	 */
-	public function create(Member $member, Purpose $purpose) {
-		return $this->find($member, $purpose);
+    /**
+     * @inheritdoc
+     * @throws NotFoundException
+     * @throws BadParameterException
+     */
+    public function create(Member $member, Purpose $purpose): MemberPurpose {
+		return $this->find($this->member2, $purpose);
 	}
 
-	/**
-	 * @param Member $member
-	 * @param Purpose $purpose
-	 * @return void
-	 */
-	public function delete(Member $member, Purpose $purpose) {}
+    /** @inheritdoc */
+    public function delete(Member $member, Purpose $purpose) {}
 }

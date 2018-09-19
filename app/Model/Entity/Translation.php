@@ -35,9 +35,11 @@ class Translation extends Model
 
 	/**
 	 * @param string $code
+     * @return Translation
 	 */
 	public function setCode($code) {
 		$this->code = $code;
+		return $this;
 	}
 
 	/**
@@ -49,9 +51,11 @@ class Translation extends Model
 
 	/**
 	 * @param string $value
+     * @return Translation
 	 */
 	public function setValue($value) {
 		$this->value = $value;
+        return $this;
 	}
 
 	/**
@@ -65,10 +69,12 @@ class Translation extends Model
 
 	/**
 	 * @param Language $language
+     * @return Translation
 	 */
 	public function setLanguage(Language $language) {
 		$this->LanguageCode = $language->getCode();
 		$this->language = $language;
+        return $this;
 	}
 
 }

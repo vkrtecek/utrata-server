@@ -10,10 +10,8 @@ namespace Tests\Fake\Dao;
 
 
 use App\Model\Dao\IPurposeDAO;
-use App\Model\Entity\Item;
 use App\Model\Entity\Language;
 use App\Model\Entity\Purpose;
-use App\Model\Exception\IntegrityException;
 use Tests\Fake\Service\FakeMemberService;
 
 class FakePurposeDAO implements IPurposeDAO
@@ -25,19 +23,27 @@ class FakePurposeDAO implements IPurposeDAO
 	/** @var Purpose */
 	protected $p3;
 
+    /**
+     * FakePurposeDAO constructor.
+     * @throws \App\Model\Exception\BadParameterException
+     * @throws \App\Model\Exception\NotFoundException
+     */
 	public function __construct() {
 		$p1 = new Purpose();
+		$p1->setId(1);
 		$p1->setCode('jidlo');
 		$p1->setValue('Jídlo');
 		$p1->setBase(TRUE);
 		$p1->setLanguage((new Language())->setCode('CZK'));
 		$p2 = new Purpose();
+        $p2->setId(2);
 		$p2->setCode('transport');
 		$p2->setValue('Transport');
 		$p2->setBase(FALSE);
 		$p2->setLanguage((new Language())->setCode('CZK'));
 		$p2->setCreator((new FakeMemberService())->getMember('vojta'));
 		$p3 = new Purpose();
+        $p3->setId(6);
 		$p3->setCode('food');
 		$p3->setValue('Food');
 		$p3->setBase(TRUE);
@@ -48,35 +54,23 @@ class FakePurposeDAO implements IPurposeDAO
 		$this->p3 = $p3;
 	}
 
-	/**
-	 * @return Purpose[]|NULL
-	 */
-	public function findAll() {
+	/** @inheritdoc */
+	public function findAll(): array {
 		return [ $this->p1, $this->p2, $this->p3 ];
 	}
 
-	/**
-	 * @param int $id
-	 * @return Purpose|NULL
-	 */
-	public function findOne($id) {
+    /** @inheritdoc */
+    public function findOne(int $id): ?Purpose {
 		return $this->findAll()[$id % 3];
 	}
 
-	/**
-	 * @param Purpose $purpose
-	 * @return Item[]|NULL
-	 */
-	public function findItems(Purpose $purpose) {
+    /** @inheritdoc */
+    public function findItems(Purpose $purpose): array {
 		return [];
 	}
 
-	/**
-	 * @param string $key
-	 * @param mixed $val
-	 * @return Purpose[]|NULL
-	 */
-	public function findByColumn($key, $val) {
+    /** @inheritdoc */
+    public function findByColumn(string $key, string $val): array {
 		if ($key == 'LanguageCode') {
 			$ret = [];
 			foreach ($this->findAll() as $purpose)
@@ -91,25 +85,16 @@ class FakePurposeDAO implements IPurposeDAO
 		return $ret;
 	}
 
-	/**
-	 * @param Purpose $purpose
-	 * @return Purpose
-	 */
-	public function create(Purpose $purpose) {
+    /** @inheritdoc */
+    public function create(Purpose $purpose): Purpose {
 		return $purpose;
 	}
 
-	/**
-	 * @param Purpose $purpose
-	 * @return Purpose
-	 */
-	public function update(Purpose $purpose) {
+    /** @inheritdoc */
+    public function update(Purpose $purpose): Purpose {
 		return $purpose;
 	}
 
-	/**
-	 * @param Purpose $purpose
-	 * @throws IntegrityException
-	 */
-	public function delete(Purpose $purpose) {}
+    /** @inheritdoc */
+    public function delete(Purpose $purpose) {}
 }

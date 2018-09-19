@@ -11,13 +11,8 @@ namespace Tests\Fake\Dao;
 
 use App\Model\Dao\IMemberDAO;
 use App\Model\Entity\Currency;
-use App\Model\Entity\Item;
 use App\Model\Entity\Language;
 use App\Model\Entity\Member;
-use App\Model\Entity\MemberPurpose;
-use App\Model\Entity\Purpose;
-use App\Model\Entity\Wallet;
-use App\Model\Exception\IntegrityException;
 use Tests\Fake\Service\FakeItemService;
 use Tests\Fake\Service\FakeMemberPurposeService;
 use Tests\Fake\Service\FakePurposeService;
@@ -51,18 +46,13 @@ class FakeMemberDAO implements IMemberDAO
 			->setCreated((new \DateTime()))->setLanguage($l)->setCurrency($c)->setId(2);
 	}
 
-	/**
-	 * @return Member[]|NULL
-	 */
-	public function findAll() {
+	/** @inheritdoc */
+	public function findAll(): array {
 		return [ $this->member, $this->member2 ];
 	}
 
-	/**
-	 * @param string $login
-	 * @return Member|NULL
-	 */
-	public function findOne($login) {
+    /** @inheritdoc */
+    public function findOne(string $login): ?Member {
 		$logins = [ 'vojta' ];
 		if (in_array($login, $logins)) {
 			$this->member->setLogin($login);
@@ -79,89 +69,78 @@ class FakeMemberDAO implements IMemberDAO
 	}
 
 
-
-	/**
-	 * @param Member $member
-	 * @return MemberPurpose[]
-	 */
-	public function getMemberPurposes(Member $member) {
+    /**
+     * @param Member $member
+     * @return array
+     * @throws \App\Model\Exception\BadParameterException
+     * @throws \App\Model\Exception\NotFoundException
+     */
+    public function getMemberPurposes(Member $member) {
 		return (new FakeMemberPurposeService())->getMemberPurposes($member);
 	}
 
-	/**
-	 * @param Member $member
-	 * @return Purpose[]
-	 */
-	public function getPurposes(Member $member) {
+    /**
+     * @param Member $member
+     * @return array
+     * @throws \App\Model\Exception\BadParameterException
+     * @throws \App\Model\Exception\NotFoundException
+     */
+    public function getPurposes(Member $member) {
 		return (new FakePurposeService())->getUserPurposes($member);
 	}
 
-	/**
-	 * @param Member $member
-	 * @return Wallet[]
-	 */
-	public function getWallets(Member $member) {
+    /**
+     * @param Member $member
+     * @return array
+     * @throws \App\Model\Exception\BadParameterException
+     * @throws \App\Model\Exception\NotFoundException
+     */
+    public function getWallets(Member $member) {
 		return (new FakeWalletService())->getWallets($member->getLogin());
 	}
 
-	/**
-	 * @param Member $member
-	 * @return Item[]
-	 */
-	public function getItems(Member $member) {
-		return (new FakeItemService())->getWalletItems(1, $member, NULL, NULL, NULL, NULL, NULL, 'price', 'DESC', NULL);
+    /**
+     * @param Member $member
+     * @return array
+     * @throws \App\Model\Exception\AuthenticationException
+     * @throws \App\Model\Exception\BadParameterException
+     * @throws \App\Model\Exception\NotFoundException
+     */
+    public function getItems(Member $member) {
+		return (new FakeItemService())->getWalletItems(1, $member, NULL);
 	}
 
-	/**
-	 * @param Member $member
-	 * @return Member
-	 */
-	public function create(Member $member) {
+    /** @inheritdoc */
+    public function create(Member $member): Member {
 		$member->setCreated(new \DateTime());
 		return $member;
 	}
 
-	/**
-	 * @param Member $member
-	 * @return Member
-	 */
-	public function update(Member $member) {
+    /** @inheritdoc */
+    public function update(Member $member): Member {
 		return $member;
 	}
 
-	/**
-	 * @param Member $member
-	 * @return void
-	 * @throws IntegrityException
-	 */
-	public function delete(Member $member) {}
+    /** @inheritdoc */
+    public function delete(Member $member) {}
 
-	/**
-	 * @param $key
-	 * @param $val
-	 * @return Member|NULL
-	 */
-	public function findOneByColumn($key, $val) {
+    /** @inheritdoc */
+    public function findOneByColumn(string $key, string $val): ?Member {
 		if ($key == 'login')
 			return $this->findOne($val);
+		if ($key == 'myMail' && $val == "someFacebook@example.com")
+		    return null;
 
 		return $this->member;
 	}
 
-	/**
-	 * @param string $login
-	 * @return bool
-	 *
-	 */
-	public function uniqueLogin($login) {
-		return TRUE;
+    /** @inheritdoc */
+    public function uniqueLogin($login) {
+		return $login != "";
 	}
 
-	/**
-	 * @param string $mail
-	 * @return bool
-	 */
-	public function uniqueMail($mail) {
-		return TRUE;
+    /** @inheritdoc */
+    public function uniqueMail($mail) {
+		return $mail != "";
 	}
 }

@@ -13,7 +13,6 @@ use App\Model\Dao\IItemDAO;
 use App\Model\Entity\Item;
 use App\Model\Entity\Member;
 use App\Model\Enum\ItemType;
-use App\Model\Exception\IntegrityException;
 use App\Model\Filter\ItemFilter;
 use Tests\Fake\Service\FakeCurrencyService;
 use Tests\Fake\Service\FakeMemberService;
@@ -32,6 +31,12 @@ class FakeItemDAO implements IItemDAO
 	/** @var Member */
 	private $member;
 
+    /**
+     * FakeItemDAO constructor.
+     * @throws \App\Model\Exception\AuthenticationException
+     * @throws \App\Model\Exception\BadParameterException
+     * @throws \App\Model\Exception\NotFoundException
+     */
 	public function __construct() {
 		$this->member = (new FakeMemberService())->getMember('vojta');
 
@@ -95,10 +100,8 @@ class FakeItemDAO implements IItemDAO
 		$this->item3 = $i2;
 	}
 
-	/**
-	 * @return Item[]|NULL
-	 */
-	public function findAll() {
+	/** @inheritdoc */
+	public function findAll(): array {
 		return [
 			$this->item,
 			$this->item2,
@@ -106,73 +109,57 @@ class FakeItemDAO implements IItemDAO
 		];
 	}
 
-	/**
-	 * @param int $id
-	 * @return Item|NULL
-	 */
-	public function findOne($id) {
+    /** @inheritdoc */
+    public function findOne(int $id): ?Item {
 		if ($id > 50) return NULL;
 		return $this->findAll()[$id % 3];
 	}
 
-	/**
-	 * @param string $key
-	 * @param mixed $val
-	 * @return Item[]|NULL
-	 */
-	public function findByColumn($key, $val) {}
+    /** @inheritdoc */
+    public function findByColumn(string $key, string $val): array {
+        return [];
+    }
 
-	/**
-	 * @param ItemFilter $filters
-	 * @return Item[]
-	 */
-	public function findByFilter(ItemFilter $filters) {
+    /** @inheritdoc */
+    public function findByFilter(ItemFilter $filters): array {
 		return $this->findAll();
 	}
 
-	/**
-	 * @param ItemFilter $filter
-	 * @return Item[]
-	 */
-	public function findUsersItemsByNotes(ItemFilter $filter) {}
+    /** @inheritdoc */
+    public function findUsersItemsByNotes(ItemFilter $filter): array {
+        return [];
+    }
 
-	/**
-	 * @param Member $member
-	 * @return Item[]|NULL
-	 */
-	public function findUserItems(Member $member) {}
+    /** @inheritdoc */
+    public function findUserItems(Member $member): array {
+        return [];
+    }
 
-	/**
-	 * @param Member $member
-	 * @return Item
-	 */
-	public function findUserLastItem(Member $member) {}
+    /** @inheritdoc */
+    public function findUserLastItem(Member $member): ?Item {
+        return null;
+    }
 
-	/**
-	 * @param Item $item
-	 * @return Item
-	 */
-	public function create(Item $item) {
+    /** @inheritdoc */
+    public function create(Item $item): Item {
 		return $item;
 	}
 
-	/**
-	 * @param Item $item
-	 * @return Item
-	 */
-	public function update(Item $item) {
+    /** @inheritdoc */
+    public function update(Item $item): Item {
 		return $item;
 	}
 
-	/**
-	 * @param Item $item
-	 * @throws IntegrityException
-	 */
-	public function delete(Item $item) {}
+    /** @inheritdoc */
+    public function delete(Item $item) {}
 
-	/**
-	 * @param Item $item
-	 * @return Item|NULL
-	 */
-	public function checkExistence(Item $item) {}
+    /** @inheritdoc */
+    public function checkExistence(Item $item): ?Item {
+        return null;
+    }
+
+    /** @inheritdoc */
+    public function count(ItemFilter $filter): int {
+        return 0;
+    }
 }

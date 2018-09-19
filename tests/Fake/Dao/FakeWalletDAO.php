@@ -11,10 +11,8 @@ namespace Tests\Fake\Dao;
 
 use App\Model\Dao\IWalletDAO;
 use App\Model\Entity\CheckState;
-use App\Model\Entity\Item;
 use App\Model\Entity\Wallet;
 use App\Model\Enum\ItemType;
-use App\Model\Exception\IntegrityException;
 use Tests\Fake\Service\FakeCheckStateService;
 use Tests\Fake\Service\FakeMemberService;
 
@@ -30,6 +28,11 @@ class FakeWalletDAO implements IWalletDAO
 	/** @var CheckState */
 	protected $cs2;
 
+    /**
+     * FakeWalletDAO constructor.
+     * @throws \App\Model\Exception\BadParameterException
+     * @throws \App\Model\Exception\NotFoundException
+     */
 	public function __construct() {
 		$this->wallet1 = new Wallet();
 		$this->wallet1->setId(1);
@@ -46,78 +49,50 @@ class FakeWalletDAO implements IWalletDAO
 		$this->cs2 = (new FakeCheckStateService())->getWalletCheckState($this->wallet1, ItemType::CASH);
 	}
 
-	/**
-	 * @return Wallet[]|NULL
-	 */
-	public function findAll() {
+    /** @inheritdoc */
+    public function findAll(): array {
 		return [ $this->wallet1, $this->wallet2 ];
 	}
 
-	/**
-	 * @param int $id
-	 * @return Wallet|NULL
-	 */
-	public function findOne($id) {
+    /** @inheritdoc */
+    public function findOne(int $id): ?Wallet {
 		return $this->wallet1;
 	}
 
-	/**
-	 * @param string $key
-	 * @param mixed $val
-	 * @return Wallet[]
-	 */
-	public function findByColumn($key, $val) {
+    /** @inheritdoc */
+    public function findByColumn(string $key, string $val): array {
 		return $this->findAll();
 	}
 
-	/**
-	 * @param string $key
-	 * @param mixed $val
-	 * @return Wallet
-	 */
-	public function findOneByColumn($key, $val) {
+    /** @inheritdoc */
+    public function findOneByColumn(string $key, string $val): ?Wallet {
 		return $this->wallet1;
 	}
 
-	/**
-	 * @param Wallet $wallet
-	 * @return Item[]
-	 */
-	public function getItems(Wallet $wallet) {
+    /** @inheritdoc */
+    public function getItems(Wallet $wallet): array {
 		return [];
 	}
 
-	/**
-	 * @param Wallet $wallet
-	 * @return CheckState[]
-	 */
-	public function getCheckStates(Wallet $wallet) {
+    /** @inheritdoc */
+    public function getCheckStates(Wallet $wallet): array {
 		return [
 			$this->cs1,
 			$this->cs2
 		];
 	}
 
-	/**
-	 * @param Wallet $wallet
-	 * @return Wallet
-	 */
-	public function create(Wallet $wallet) {
+    /** @inheritdoc */
+    public function create(Wallet $wallet): Wallet {
 		return $wallet->setCreated(new \DateTime());
 	}
 
-	/**
-	 * @param Wallet $wallet
-	 * @return Wallet
-	 */
-	public function update(Wallet $wallet) {
+    /** @inheritdoc */
+    public function update(Wallet $wallet): Wallet {
 		return $wallet->setModified(new \DateTime());
 	}
 
-	/**
-	 * @param Wallet $wallet
-	 * @throws IntegrityException
-	 */
+	/** @inheritdoc */
 	public function delete(Wallet $wallet) {}
 
 }

@@ -10,12 +10,7 @@ namespace Tests\Fake\Service;
 
 
 use App\Model\Entity\Language;
-use App\Model\Exception\AlreadyExistException;
-use App\Model\Exception\BadParameterException;
-use App\Model\Exception\IntegrityException;
-use App\Model\Exception\NotFoundException;
 use App\Model\Service\ILanguageService;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class FakeLanguageService implements ILanguageService
 {
@@ -28,72 +23,39 @@ class FakeLanguageService implements ILanguageService
 		$this->language->setName('Česky');
 	}
 
-	/**
-	 * @return Language[]
-	 * @throws NotFoundException
-	 */
-	public function getLanguages() {
+	/** @inheritdoc */
+    public function getLanguages(): array {
 		return [ $this->language ];
 	}
 
-	/**
-	 * @param string $code
-	 * @return Language
-	 * @throws BadParameterException
-	 * @throws NotFoundException
-	 */
-	public function getLanguage($code) {
+    /** @inheritdoc */
+    public function getLanguage(string $code): Language {
 		$this->language->setCode($code);
 		return $this->language;
 	}
 
-	/**
-	 * @param $data
-	 * @return Language
-	 * @throws AlreadyExistException
-	 * @throws BadParameterException
-	 * @throws BadRequestHttpException
-	 */
-	public function createLanguage($data) {
+    /** @inheritdoc */
+    public function createLanguage(array $data): Language {
 		return $this->language;
 	}
 
-	/**
-	 * @param string $code
-	 * @param $data
-	 * @return Language
-	 * @throws BadParameterException
-	 * @throws NotFoundException
-	 * @throws BadRequestHttpException
-	 */
-	public function updateLanguage($code, $data) {
+    /** @inheritdoc */
+    public function updateLanguage(string $code, array $data): Language {
 		return $this->language;
 	}
 
-	/**
-	 * @param string $code
-	 * @return string
-	 * @throws BadParameterException
-	 * @throws NotFoundException
-	 * @throws IntegrityException
-	 */
-	public function deleteLanguage($code) {
+    /** @inheritdoc */
+    public function deleteLanguage(string $code) {
 		return $code;
 	}
 
-	/**
-	 * @param Language $language
-	 * @return array
-	 */
-	public function format(Language $language) {
+    /** @inheritdoc */
+    public function format(Language $language): array {
 		return [];
 	}
 
-	/**
-	 * @param Language[] $languages
-	 * @return array
-	 */
-	public function formatEntites($languages) {
+    /** @inheritdoc */
+    public function formatEntites(array $languages): array {
 		return [];
 	}
 }

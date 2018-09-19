@@ -23,7 +23,7 @@ interface IMemberPurposeService
 	 * @param Purpose $purpose
 	 * @return MemberPurpose
 	 */
-	public function create(Member $member, Purpose $purpose): MemberPurpose;
+	public function create(Member $member, Purpose $purpose): ?MemberPurpose;
 
 	/**
 	 * @param Member $member

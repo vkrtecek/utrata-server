@@ -10,34 +10,21 @@ namespace Tests\Fake\Service;
 
 
 use App\Model\Entity\Member;
-use App\Model\Exception\AlreadyExistException;
-use App\Model\Exception\AuthenticationException;
-use App\Model\Exception\BadParameterException;
-use App\Model\Exception\IntegrityException;
-use App\Model\Exception\NotFoundException;
-use App\Model\Exception\SecurityException;
 use App\Model\Service\IMemberService;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Tests\Fake\Dao\FakeMemberDAO;
 
 class FakeMemberService implements IMemberService
 {
-	/**
-	 * @return Member[]
-	 * @throws NotFoundException
-	 */
-	public function getMembers()
-	{
+    /** @inheritdoc */
+    public function getMembers(): array {
+        return [];
 	}
 
-	/**
-	 * @param string $login
-	 * @return Member
-	 * @throws BadParameterException
-	 * @throws NotFoundException
-	 */
-	public function getMember($login)
-	{
+    /**
+     * @inheritdoc
+     * @throws \App\Model\Exception\BadParameterException
+     */
+    public function getMember(string $login): Member {
 		$member = new Member();
 		if ($login == 'vojta') {
 			$member->setId(1);
@@ -55,114 +42,56 @@ class FakeMemberService implements IMemberService
 		return $member;
 	}
 
-	/**
-	 * @param string $token
-	 * @return Member
-	 * @throws NotFoundException
-	 */
-	public function getByToken($token) {
+    /** @inheritdoc */
+    public function getByToken(string $token): Member {
+        return (new FakeMemberDAO())->findOneByColumn('token', $token);
 	}
 
-	/**
-	 * @param string $column
-	 * @param mixed $login
-	 * @return Member|NULL
-	 * @throws NotFoundException
-	 */
-	public function getMemberByColumn($column, $login) {
+    /** @inheritdoc */
+    public function getMemberByColumn(string $column, string $login): Member {
 		return $this->getMember($login);
 	}
 
-	/**
-	 * @param $data
-	 * @return Member
-	 * @throws AlreadyExistException
-	 * @throws BadRequestHttpException
-	 * @throws BadParameterException
-	 * @throws AlreadyExistException
-	 */
-	public function createMember($data)
-	{
+    /** @inheritdoc */
+    public function createMember(array $data): Member {
+        return (new FakeMemberDAO())->findOne('jožka');
 	}
 
-	/**
-	 * @param string $login
-	 * @param $data
-	 * @return Member
-	 * @throws NotFoundException
-	 * @throws BadRequestHttpException
-	 * @throws BadParameterException
-	 * @throws AlreadyExistException for e-mails
-	 * @throws AuthenticationException
-	 */
-	public function updateMember($login, $data)
-	{
+    /** @inheritdoc */
+    public function updateMember(string $login, array $data): Member {
+        return (new FakeMemberDAO())->findOne('jožka');
 	}
 
-	/**
-	 * @param string $login
-	 * @return string
-	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 * @throws IntegrityException
-	 */
-	public function deleteMember($login)
-	{
+    /** @inheritdoc */
+    public function deleteMember(string $login)	{}
+
+    /** @inheritdoc */
+    public function interactWithFacebook(array $data): Member {
+        return (new FakeMemberDAO())->findOne('jožka');
 	}
 
-	/**
-	 * logs in or creates new account to user
-	 * @param $data
-	 * @return Member
-	 * @throws BadParameterException
-	 * @throws NotFoundException
-	 * @throws BadRequestHttpException
-	 * @throws AlreadyExistException
-	 */
-	public function interactWithFacebook($data)
-	{
+    /** @inheritdoc */
+    public function login(string $login, string $password): Member {
+        return (new FakeMemberDAO())->findOne('jožka');
 	}
 
-	/**
-	 * creates token and returns member in new state
-	 * @param string $login
-	 * @param string $password
-	 * @return Member
-	 * @throws SecurityException
-	 */
-	public function login($login, $password)
-	{
+    /** @inheritdoc */
+    public function loginByFacebook(string $login): Member	{
+        return (new FakeMemberDAO())->findOne('jožka');
 	}
 
-	/**
-	 * @param $login
-	 * @return Member
-	 */
-	public function loginByFacebook($login)
-	{
+    /** @inheritdoc */
+    public function logout(Member $member): Member {
+        return (new FakeMemberDAO())->findOne('jožka');
 	}
 
-	/**
-	 * @param Member $member
-	 * @return Member
-	 */
-	public function logout(Member $member)
-	{
+    /** @inheritdoc */
+    public function format(Member $member): array {
+        return [];
 	}
 
-	/**
-	 * @param Member $member
-	 * @return array
-	 */
-	public function format(Member $member)
-	{
-	}
-
-	/**
-	 * @param Member[] $members
-	 * @return array
-	 */
-	public function formatEntities($members)
-	{
+    /** @inheritdoc */
+    public function formatEntities(array $members): array {
+        return [];
 	}
 }

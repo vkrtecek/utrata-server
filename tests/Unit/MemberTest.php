@@ -26,6 +26,10 @@ class MemberTest extends TestCase
 	/** @var MemberService */
 	private $memberService;
 
+    /**
+     * @throws BadParameterException
+     * @throws NotFoundException
+     */
 	protected function setUp() {
 		parent::setUp();
 		$this->memberService = new MemberService(
@@ -39,7 +43,9 @@ class MemberTest extends TestCase
 	}
 
 
-
+    /**
+     * @throws NotFoundException
+     */
 	public function testGetMember() {
 		$member = $this->memberService->getMember('vojta');
 		$this->assertTrue($member instanceof Member);
@@ -53,20 +59,30 @@ class MemberTest extends TestCase
 		$this->memberService->getMember('asdadad');
 	}
 
+    /**
+     * @throws BadParameterException
+     * @throws NotFoundException
+     */
 	public function testGetByColumnBadColumn() {
 		$this->expectException(BadParameterException::class);
 		$this->memberService->getMemberByColumn('bad column', 'ahoj');
 	}
 
+    /**
+     * @throws BadParameterException
+     * @throws NotFoundException
+     */
 	public function testGetByColumnNoMember() {
 		$this->expectException(NotFoundException::class);
 		$this->memberService->getMemberByColumn('login', 'ahoj');
 	}
 
-	/**
-	 * @depends testGetByColumnBadColumn
-	 * @depends testGetByColumnNoMember
-	 */
+    /**
+     * @throws BadParameterException
+     * @throws NotFoundException
+     * @depends testGetByColumnBadColumn
+     * @depends testGetByColumnNoMember
+     */
 	public function testGetByColumn() {
 		$member = $this->memberService->getMemberByColumn('login', 'vojta');
 		$expectedMember = $this->memberService->getMember('vojta');
@@ -78,9 +94,11 @@ class MemberTest extends TestCase
 		$this->assertEquals('Krteček', $member->getLastName());
 	}
 
-	/**
-	 * @depends testGetByColumn
-	 */
+    /**
+     * @throws BadParameterException
+     * @throws NotFoundException
+     * @depends testGetByColumn
+     */
 	public function testGetByToken() {
 		$token = 'dome token';
 		$member = $this->memberService->getByToken($token);
@@ -89,19 +107,20 @@ class MemberTest extends TestCase
 	}
 
 
-	public function testCreateMember() {}
+//	public function testCreateMember() {}
+//
+//	public function testUpdateMember() {}
+//
+//	public function testLogin() {}
+//
+//	public function testLoginByFacebook() {}
+//
+//	public function testLogout() {}
 
-	public function testUpdateMember() {}
-
-	public function testLogin() {}
-
-	public function testLoginByFacebook() {}
-
-	public function testLogout() {}
-
-	/**
-	 * @depends testGetMember
-	 */
+    /**
+     * @throws NotFoundException
+     * @depends testGetMember
+     */
 	public function testFormat() {
 		$member = $this->memberService->getMember('vojta');
 		$formatted = $this->memberService->format($member);
@@ -119,7 +138,7 @@ class MemberTest extends TestCase
 			'currencyCode' => NULL,
 			'lastLogged' => '2018-03-29 12:07:23',
 			'notes' => [
-				NULL
+				[]
 			],
 			'external' => FALSE,
 		];
@@ -127,11 +146,14 @@ class MemberTest extends TestCase
 	}
 
 
-		/**
-	 * A basic test example.
-	 * @depends testGetMember
-	 * @return void
-	 */
+    /**
+     * @throws BadParameterException
+     * @throws NotFoundException
+     * @throws \App\Model\Exception\AlreadyExistException
+     * @throws \App\Model\Exception\AuthenticationException
+     * @throws \App\Model\Exception\BadRequestException
+     * @depends testGetMember
+     */
 	public function testInteractWithFacebook()
 	{
 		$data = [
@@ -148,7 +170,7 @@ class MemberTest extends TestCase
 			'fname' => 'John',
 			'lname' => 'Doe',
 			'login' => '123456788', //login not exists
-			'email' => 'some@example.com',
+			'email' => 'some@example.com', //change also in FakeMemberDAO
 			'locale' => 'en_EN',
 		];
 		$member = $this->memberService->interactWithFacebook($data);
@@ -161,10 +183,14 @@ class MemberTest extends TestCase
 		$this->assertTrue($member->isFacebook());
 	}
 
-	/**
-	 *
-	 * @depends testGetMember
-	 */
+    /**
+     * @throws BadParameterException
+     * @throws NotFoundException
+     * @throws \App\Model\Exception\AlreadyExistException
+     * @throws \App\Model\Exception\AuthenticationException
+     * @throws \App\Model\Exception\BadRequestException
+     * @depends testGetMember
+     */
 	public function testInteractWithFacebookBadInput()
 	{
 		//bad login
@@ -175,10 +201,14 @@ class MemberTest extends TestCase
 		$this->memberService->interactWithFacebook($data);
 	}
 
-	/**
-	 *
-	 * @depends testGetMember
-	 */
+    /**
+     * @throws BadParameterException
+     * @throws NotFoundException
+     * @throws \App\Model\Exception\AlreadyExistException
+     * @throws \App\Model\Exception\AuthenticationException
+     * @throws \App\Model\Exception\BadRequestException
+     * @depends testGetMember
+     */
 	public function testInteractWithFacebookMissingName() {
 		//missing fname
 		$data = [

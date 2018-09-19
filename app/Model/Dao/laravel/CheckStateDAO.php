@@ -20,7 +20,7 @@ class CheckStateDAO extends AbstractDAO implements ICheckStateDAO
     }
 
     /** @inheritdoc */
-    public function findOne(int $id): CheckState {
+    public function findOne(int $id): ?CheckState {
         return CheckState::find($id);
     }
 

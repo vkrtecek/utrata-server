@@ -11,93 +11,65 @@ namespace Tests\Fake\Service;
 
 use App\Model\Entity\Language;
 use App\Model\Entity\Translation;
-use App\Model\Exception\AlreadyExistException;
-use App\Model\Exception\BadParameterException;
-use App\Model\Exception\IntegrityException;
-use App\Model\Exception\NotFoundException;
 use App\Model\Service\ITranslationService;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class FakeTranslationService implements ITranslationService
 {
-	/**
-	 * @return Translation[]
-	 * @throws NotFoundException
-	 */
-	public function getTranslations() {}
+    /** @var Translation  */
+    protected $translation;
 
-	/**
-	 * @param string $languageCode
-	 * @return Translation[]
-	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 */
-	public function getTranslationsByLanguage($languageCode) {}
+    /**
+     * FakeTranslationService constructor.
+     */
+    public function __construct() {
+        $this->translation = (new Translation)->setCode('Code')->setValue('Toto je překlad');
+    }
 
-	/**
-	 * @param string $code
-	 * @param string $language
-	 * @param string $default
-	 * @return Translation
-	 * @throws BadParameterException
-	 */
-	public function getTranslation($code, $language, $default = '') {}
+    /** @inheritdoc */
+    public function getTranslations(): array {
+        return [];
+    }
 
-	/**
-	 * @param string $code
-	 * @param Language $language
-	 * @param string $default
-	 * @return string
-	 * @throws BadParameterException
-	 */
-	public function getTranslationDefault($code, Language $language, $default = '') {}
+    /** @inheritdoc */
+    public function getTranslationsByLanguage(string $languageCode): array {
+        return [];
+    }
 
-	/**
-	 * @param string $code
-	 * @param string $default
-	 * @return string
-	 */
-	public function get($code, $default = '') {}
+    /** @inheritdoc */
+    public function getTranslation(string $code, string $language, string $default = ''): Translation {
+        return $this->translation;
+    }
 
-	/**
-	 * @param $data
-	 * @return Translation
-	 * @throws AlreadyExistException
-	 * @throws BadRequestHttpException
-	 * @throws NotFoundException
-	 */
-	public function createTranslation($data) {}
+    /** @inheritdoc */
+    public function getTranslationDefault(string $code, Language $language, string $default = ''): string {
+        return $this->translation->getValue();
+    }
 
-	/**
-	 * @param string $code
-	 * @param string $language
-	 * @param $data
-	 * @return Translation
-	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 * @throws BadRequestHttpException
-	 */
-	public function updateTranslation($code, $language, $data) {}
+    /** @inheritdoc */
+    public function get(string $code, string $default = ''): string {
+        return $this->translation->getValue();
+    }
 
-	/**
-	 * @param string $code
-	 * @param string $language
-	 * @return string[]
-	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 * @throws IntegrityException
-	 */
-	public function deleteTranslation($code, $language) {}
+    /** @inheritdoc */
+    public function createTranslation(array $data): Translation {
+        return $this->translation;
+    }
 
-	/**
-	 * @param Translation $translation
-	 * @return array
-	 */
-	public function format(Translation $translation) {}
+    /** @inheritdoc */
+    public function updateTranslation(string $code, string $language, array $data): Translation {
+        return $this->translation;
+    }
 
-	/**
-	 * @param Translation[] $translations
-	 * @return array
-	 */
-	public function formatEntites($translations) {}
+    /** @inheritdoc */
+    public function deleteTranslation(string $code, string $language) {}
+
+    /** @inheritdoc */
+    public function format(Translation $translation): array {
+        return [];
+    }
+
+    /** @inheritdoc */
+    public function formatEntities(array $translations): array {
+        return [];
+    }
 }

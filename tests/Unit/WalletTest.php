@@ -32,6 +32,10 @@ class WalletTest extends TestCase
 	/** @var Member */
 	protected $member2;
 
+    /**
+     * @throws BadParameterException
+     * @throws \App\Model\Exception\NotFoundException
+     */
 	protected function setUp() {
 		parent::setUp();
 		$this->walletService = new WalletService(
@@ -45,6 +49,11 @@ class WalletTest extends TestCase
 		$this->member2 = (new FakeMemberService)->getMember('jožka');
 	}
 
+    /**
+     * @throws AuthenticationException
+     * @throws BadParameterException
+     * @throws \App\Model\Exception\NotFoundException
+     */
 	public function testGetWallet() {
 		$wallet = $this->walletService->getWallet(1, $this->member);
 
@@ -57,6 +66,9 @@ class WalletTest extends TestCase
 		$this->walletService->getWallet('asda', $this->member);
 	}
 
+    /**
+     * @throws BadParameterException
+     */
 	public function testCreateWallet() {
 		$dateDelayInSeconds = 2;
 		$walletName = 'some name';
@@ -67,6 +79,12 @@ class WalletTest extends TestCase
 		$this->assertTrue($wallet->getCreated()->diff(new DateTime())->s < $dateDelayInSeconds);
 	}
 
+    /**
+     * @throws AuthenticationException
+     * @throws BadParameterException
+     * @throws \App\Model\Exception\BadRequestException
+     * @throws \App\Model\Exception\NotFoundException
+     */
 	public function testUpdateWallet() {
 		$dateDelayInSeconds = 2;
 		$newWalletName = 'some name';
@@ -80,6 +98,12 @@ class WalletTest extends TestCase
 		$this->walletService->updateWallet($this->member2, 1, $newWalletName);
 	}
 
+    /**
+     * @throws AuthenticationException
+     * @throws BadParameterException
+     * @throws \App\Model\Exception\NotFoundException
+     * @throws \App\Model\Exception\UnderEntityNotFoundException
+     */
 	public function testFormat() {
 		$wallet = $this->walletService->getWallet(1, $this->member);
 		$formatted = $this->walletService->format($wallet);
@@ -103,6 +127,12 @@ class WalletTest extends TestCase
 		$this->assertEquals($expected, $formatted);
 	}
 
+    /**
+     * @throws AuthenticationException
+     * @throws BadParameterException
+     * @throws \App\Model\Exception\IntegrityException
+     * @throws \App\Model\Exception\NotFoundException
+     */
 	public function testDeleteWallet() {
 		$this->expectException(FirstDeleteForeignException::class);
 		$this->walletService->deleteWallet(1, $this->member);

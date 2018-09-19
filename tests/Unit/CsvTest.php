@@ -21,73 +21,92 @@ use Tests\Fake\Service\FakeCheckStateService;
 use Tests\Fake\Service\FakeCurrencyService;
 use Tests\Fake\Service\FakeItemService;
 use Tests\Fake\Service\FakeLanguageService;
+use Tests\Fake\Service\FakeMemberPurposeService;
 use Tests\Fake\Service\FakeMemberService;
 use Tests\Fake\Service\FakePurposeService;
+use Tests\Fake\Service\FakeTranslationService;
 use Tests\Fake\Service\FakeWalletService;
 use Tests\TestCase;
 
 class CsvTest extends TestCase
 {
-	/** @var CsvService */
-	private $csvService;
+    /** @var CsvService */
+    private $csvService;
 
-	/** @var Member */
-	private $member;
+    /** @var Member */
+    private $member;
 
-	/** @var File */
-	private $file;
+    /** @var File */
+    private $file;
 
-	protected function setUp() {
-		parent::setUp();
-		$this->csvService = new CsvService(
-			new FakeMemberDAO(),
-			new FakePurposeDAO(),
-			new FakeWalletDAO(),
-			new FakeItemDAO(),
-			new FakeCheckStateDAO(),
-			new FakeWalletService(),
-			new FakeCheckStateService(),
-			new FakePurposeService(),
-			new FakeLanguageService(),
-			new FakeCurrencyService(),
-			new FakeMemberService(),
-			new FakeItemService()
-		);
-		$this->member = (new FakeMemberService())->getMember('vojta');
-		$this->setUpFile();
-	}
+    /**
+     * @throws \App\Model\Exception\AuthenticationException
+     * @throws \App\Model\Exception\BadParameterException
+     * @throws \App\Model\Exception\NotFoundException
+     */
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->csvService = new CsvService(
+            new FakeMemberDAO(),
+            new FakePurposeDAO(),
+            new FakeWalletDAO(),
+            new FakeItemDAO(),
+            new FakeCheckStateDAO(),
+            new FakeWalletService(),
+            new FakeCheckStateService(),
+            new FakePurposeService(),
+            new FakeLanguageService(),
+            new FakeCurrencyService(),
+            new FakeMemberService(),
+            new FakeItemService(),
+            new FakeMemberPurposeService(),
+            new FakeTranslationService()
+        );
+        $this->member = (new FakeMemberService())->getMember('vojta');
+        $this->setUpFile();
+    }
 
-	protected function setUpFile(array $lines = NULL) {
-		$expected = new File();
-		$expected->appendLine('Štěpán;Krteček;vojta;;;;;2017-08-26 22:23:38;CZK;1');
-		$expected->appendLine('1');
-		$expected->appendLine(';transport;Transport;;CZK;vojta');
-		$expected->appendLine('2');
-		$expected->appendLine('1;wallet name 1');
-		$expected->appendLine('2;wallet name 2');
-		$expected->appendLine('3');
-		$expected->appendLine('1;some name;some desc;100;1;2016-01-26 21:35:21;2018-03-26 21:35:21;karta;1;0;0;0;;CZK;1');
-		$expected->appendLine('2;another name;another desc;500;2.5;2016-01-26 21:35:21;2018-03-26 21:35:21;hotovost;1;1;0;0;;CZK;1');
-		$expected->appendLine('3;another name;another desc;500;2.5;2016-01-26 21:35:21;2018-03-26 21:35:21;hotovost;1;0;1;0;;CZK;1');
-		$expected->appendLine('4');
-		$expected->appendLine('1;1;karta;2018-03-26 22:23:38;100');
-		$expected->appendLine('2;1;hotovost;2018-03-26 22:23:38;30');
-		$expected->appendLine('1;1;karta;2018-03-26 22:23:38;100');
-		$expected->appendLine('2;1;hotovost;2018-03-26 22:23:38;30');
-		$this->file = $expected;
-	}
+    protected function setUpFile()
+    {
+        $expected = new File();
+        $expected->appendLine('Štěpán;Krteček;vojta;;;;;2017-08-26 22:23:38;CZK;1');
+        $expected->appendLine('1');
+        $expected->appendLine('2;transport;Transport;;CZK;vojta');
+        $expected->appendLine('0');
+//		$expected->appendLine('1;wallet name 1');
+//		$expected->appendLine('2;wallet name 2');
+        $expected->appendLine('0');
+//		$expected->appendLine('1;some name;some desc;100;1;2016-01-26 21:35:21;2018-03-26 21:35:21;karta;1;0;0;0;;CZK;1');
+//		$expected->appendLine('2;another name;another desc;500;2.5;2016-01-26 21:35:21;2018-03-26 21:35:21;hotovost;1;1;0;0;;CZK;1');
+//		$expected->appendLine('3;another name;another desc;500;2.5;2016-01-26 21:35:21;2018-03-26 21:35:21;hotovost;1;0;1;0;;CZK;1');
+        $expected->appendLine('0');
+//		$expected->appendLine('1;1;karta;2018-03-26 22:23:38;100');
+//		$expected->appendLine('2;1;hotovost;2018-03-26 22:23:38;30');
+//		$expected->appendLine('1;1;karta;2018-03-26 22:23:38;100');
+//		$expected->appendLine('2;1;hotovost;2018-03-26 22:23:38;30');
+        $this->file = $expected;
+    }
 
-	public function testGetBackup() {
-		$content = $this->csvService->getBackup($this->member);
+    public function testGetBackup()
+    {
+        $content = $this->csvService->getBackup($this->member);
 
-		$this->assertEquals($this->file->getContent(), $content);
-	}
+        $this->assertEquals($this->file->getContent(), $content);
+    }
 
-	/**
-	 * @depends testGetBackup
-	 */
-	public function testStoreBackup() {
-		$this->setUpFile([]);
-		$this->csvService->storeBackup($this->member, $this->file->getContent());
-	}
+    /**
+     * @throws \App\Model\Exception\BadParameterException
+     * @throws \App\Model\Exception\EOFException
+     * @throws \App\Model\Exception\FileParseException
+     * @throws \App\Model\Exception\NotFoundException
+     * @depends testGetBackup
+     */
+    public function testStoreBackup()
+    {
+        $this->setUpFile();
+        $result = $this->csvService->storeBackup($this->member, $this->file->getContent());
+
+        $this->assertTrue($result);
+    }
 }

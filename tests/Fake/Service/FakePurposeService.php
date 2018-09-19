@@ -11,12 +11,7 @@ namespace Tests\Fake\Service;
 
 use App\Model\Entity\Member;
 use App\Model\Entity\Purpose;
-use App\Model\Exception\AlreadyExistException;
-use App\Model\Exception\BadParameterException;
-use App\Model\Exception\IntegrityException;
-use App\Model\Exception\NotFoundException;
 use App\Model\Service\IPurposeService;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Tests\Fake\Dao\FakePurposeDAO;
 
 class FakePurposeService implements IPurposeService
@@ -24,108 +19,74 @@ class FakePurposeService implements IPurposeService
 	/** @var FakePurposeDAO */
 	protected $purposeDao;
 
-	/**
-	 * FakePurposeService constructor.
-	 */
+	/** @var Purpose */
+	protected $purpose;
+
+    /**
+     * FakePurposeService constructor.
+     * @throws \App\Model\Exception\BadParameterException
+     * @throws \App\Model\Exception\NotFoundException
+     */
 	public function __construct() {
 		$this->purposeDao = new FakePurposeDAO();
+		$this->purpose = (new Purpose)->setValue('Jídlo')->setCode('jidlo')->setBase(true);
 	}
 
-	/**
-	 * @return Purpose[]
-	 * @throws NotFoundException
-	 */
-	public function getPurposes() {}
+    /** @inheritdoc */
+    public function getPurposes(): array {
+        return [];
+    }
 
-	/**
-	 * @param string $code language code
-	 * @return Purpose[]
-	 * @throws NotFoundException
-	 */
-	public function getLanguagePurposes($code) {}
+    /** @inheritdoc */
+    public function getLanguagePurposes(string $code): array {
+        return [];
+    }
 
-	/**
-	 * @param string $languageCode
-	 * @return Purpose[]
-	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 */
-	public function getLanguageBasePurposes($languageCode) {
+    /** @inheritdoc */
+    public function getLanguageBasePurposes(string $languageCode): array {
 		return [];
 	}
 
-	/**
-	 * @param Member $member
-	 * @param string $languageCode
-	 * @return Purpose[]
-	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 */
-	public function getUserLanguagePurposes(Member $member, $languageCode) {}
+    /** @inheritdoc */
+    public function getUserLanguagePurposes(Member $member, string $languageCode): array {
+        return [];
+    }
 
-	/**
-	 * @param Member $member
-	 * @return Purpose[]
-	 * @throws NotFoundException
-	 */
-	public function getUserPurposes(Member $member) {}
+    /** @inheritdoc */
+    public function getUserPurposes(Member $member): array {
+        return [];
+    }
 
-	/**
-	 * @param Member $member
-	 * @return Purpose[]
-	 */
-	public function getPurposesCreatedByUser(Member $member) {}
+    /** @inheritdoc */
+    public function getPurposesCreatedByUser(Member $member): array {
+        return [];
+    }
 
-	/**
-	 * @param int $id
-	 * @return Purpose
-	 * @throws BadParameterException
-	 * @throws NotFoundException
-	 */
-	public function getPurpose($id) {
+    /** @inheritdoc */
+    public function getPurpose(int $id): Purpose {
 		return $this->purposeDao->findOne($id);
 	}
 
-	/**
-	 * @param Member $member
-	 * @param $data
-	 * @return Purpose
-	 * @throws BadRequestHttpException
-	 * @throws AlreadyExistException
-	 */
-	public function createPurpose(Member $member, $data) {}
+    /** @inheritdoc */
+    public function createPurpose(Member $member, array $data): Purpose {
+        return $this->purpose;
+    }
 
-	/**
-	 * @param int $id
-	 * @param $data
-	 * @return Purpose
-	 * @throws NotFoundException
-	 * @throws BadRequestHttpException
-	 * @throws BadParameterException
-	 */
-	public function updatePurpose($id, $data) {}
+    /** @inheritdoc */
+    public function updatePurpose(int $id, array $data): Purpose {
+        return $this->purpose;
+    }
 
-	/**
-	 * @param int $id
-	 * @param Member $member
-	 * @return int
-	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 * @throws IntegrityException
-	 */
-	public function deletePurpose($id, Member $member) {}
+    /** @inheritdoc */
+    public function deletePurpose(int $id, Member $member) {}
 
-	/**
-	 * @param Purpose $purpose
-	 * @param Member $member
-	 * @return array
-	 */
-	public function format(Purpose $purpose, Member $member) {}
+    /** @inheritdoc */
+    public function format(Purpose $purpose, Member $member): array {
+        return [];
+    }
 
-	/**
-	 * @param Purpose[] $purposes
-	 * @param Member $member
-	 * @return array
-	 */
-	public function formatEntities($purposes, Member $member) {}
+    /** @inheritdoc */
+    public function formatEntities(array $purposes, Member $member): array {
+        return [];
+    }
 }

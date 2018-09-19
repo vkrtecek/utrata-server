@@ -23,7 +23,7 @@ interface ICheckStateDAO
      * @param int $id
      * @return CheckState|NULL
      */
-    public function findOne(int $id): CheckState;
+    public function findOne(int $id): ?CheckState;
 
 	/**
 	 * @param string $key

@@ -12,6 +12,7 @@ namespace Tests\Unit;
 use App\Model\Entity\Member;
 use App\Model\Entity\MemberPurpose;
 use App\Model\Entity\Purpose;
+use App\Model\Exception\AuthenticationException;
 use App\Model\Service\MemberPurposeService;
 use Tests\Fake\Dao\FakeItemDAO;
 use Tests\Fake\Dao\FakeMemberPurposeDAO;
@@ -34,6 +35,11 @@ class MemberPurposeTest extends TestCase
 	/** @var Purpose */
 	private $purpose;
 
+    /**
+     * @throws \App\Model\Exception\BadParameterException
+     * @throws \App\Model\Exception\NotFoundException
+     * @throws AuthenticationException
+     */
 	protected function setUp() {
 		parent::setUp();
 		$this->memberPurposeService = new MemberPurposeService(
@@ -47,14 +53,20 @@ class MemberPurposeTest extends TestCase
 		$this->purpose = (new FakePurposeService())->getPurpose(1);
 	}
 
+    /**
+     *
+     */
 	public function testCreate() {
 		$mp = $this->memberPurposeService->create($this->member, $this->purpose);
 
 		$this->assertTrue($mp instanceof MemberPurpose);
-		$this->assertEquals($this->member, $mp->getMember());
+		$this->assertEquals($this->member2, $mp->getMember());
 		$this->assertEquals($this->purpose, $mp->getPurpose());
 	}
 
+    /**
+     *
+     */
 	public function testGetMemberPurposes() {
 		$mps = $this->memberPurposeService->getMemberPurposes($this->member);
 		$this->assertEquals(2, count($mps));

@@ -32,6 +32,10 @@ class PurposeTest extends TestCase
 
 	private $languageCode = 'CZK'; //set in FakePurposeDAO
 
+    /**
+     * @throws \App\Model\Exception\BadParameterException
+     * @throws \App\Model\Exception\NotFoundException
+     */
 	protected function setUp() {
 		parent::setUp();
 		$this->purposeService = new PurposeService(
@@ -43,27 +47,42 @@ class PurposeTest extends TestCase
 		$this->member2 = (new FakeMemberService())->getMember('jožka');
 	}
 
+    /**
+     * @throws \App\Model\Exception\BadParameterException
+     * @throws \App\Model\Exception\NotFoundException
+     */
 	public function testGetLanguagePurposes() {
 		$purposes = $this->purposeService->getLanguagePurposes($this->languageCode);
 
 		$this->assertEquals(2, count($purposes));
-		foreach ($purposes as $purpose)
+		/** @var Purpose $purpose */
+        foreach ($purposes as $purpose)
 			$this->assertEquals($this->languageCode, $purpose->getLanguage()->getCode());
 	}
 
+    /**
+     * @throws \App\Model\Exception\BadParameterException
+     * @throws \App\Model\Exception\NotFoundException
+     */
 	public function testGetLanguageBasePurposes() {
 		$purposes = $this->purposeService->getLanguageBasePurposes($this->languageCode);
 
 		$this->assertEquals(1, count($purposes));
-		foreach ($purposes as $purpose)
+		/** @var Purpose $purpose */
+        foreach ($purposes as $purpose)
 			$this->assertTrue($purpose->isBase());
 	}
 
+    /**
+     * @throws \App\Model\Exception\BadParameterException
+     * @throws \App\Model\Exception\NotFoundException
+     */
 	public function testGetUserLanguagePurposes() {
 		$purposes = $this->purposeService->getUserLanguagePurposes($this->member, $this->languageCode);
 
 		$this->assertEquals(2, count($purposes));
-		foreach ($purposes as $purpose)
+		/** @var Purpose $purpose */
+        foreach ($purposes as $purpose)
 			$this->assertTrue($purpose->isBase() || $purpose->getCreator() == $this->member);
 
 		$purposes = $this->purposeService->getUserLanguagePurposes($this->member2, $this->languageCode);
@@ -73,14 +92,23 @@ class PurposeTest extends TestCase
 			$this->assertTrue($purpose->isBase() || $purpose->getCreator() == $this->member2);
 	}
 
+    /**
+     * @throws \App\Model\Exception\NotFoundException
+     */
 	public function testGetUserPurposes() {
 		$purposes = $this->purposeService->getUserPurposes($this->member);
 
 		$this->assertEquals(1, count($purposes));
-		foreach ($purposes as $purpose)
+		/** @var Purpose $purpose */
+        foreach ($purposes as $purpose)
 			$this->assertTrue($purpose->isBase() || $purpose->getCreator() == $this->member);
 	}
 
+    /**
+     * @throws AlreadyExistException
+     * @throws \App\Model\Exception\BadParameterException
+     * @throws \App\Model\Exception\NotFoundException
+     */
 	public function testCreatePurpose() {
 		$data = [
 			'name' => 'Lížátko',
@@ -101,14 +129,18 @@ class PurposeTest extends TestCase
 		$this->purposeService->createPurpose($this->member, []);
 	}
 
+    /**
+     * @throws \App\Model\Exception\BadParameterException
+     * @throws \App\Model\Exception\NotFoundException
+     */
 	public function testFormat() {
 		$member = (new FakeMemberService())->getMember('vojta');
-		$purpose = $this->purposeService->getPurpose(1);
+		$purpose = $this->purposeService->getPurpose(1); // 1 for transport with id=2
 		$this->assertTrue($purpose instanceof Purpose);
 
 		$formatted = $this->purposeService->format($purpose, $member);
 		$expected = [
-			'id' => NULL,
+			'id' => 2,
 			'code' => 'transport',
 			'value' => 'Transport',
 			'deletable' => TRUE,

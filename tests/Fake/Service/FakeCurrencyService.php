@@ -10,11 +10,7 @@ namespace Tests\Fake\Service;
 
 
 use App\Model\Entity\Currency;
-use App\Model\Exception\BadParameterException;
-use App\Model\Exception\IntegrityException;
-use App\Model\Exception\NotFoundException;
 use App\Model\Service\ICurrencyService;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class FakeCurrencyService implements ICurrencyService
 {
@@ -29,62 +25,33 @@ class FakeCurrencyService implements ICurrencyService
 		$this->c->setName('Česká koruna');
 	}
 
-	/**
-	 * @return Currency[]
-	 * @throws NotFoundException
-	 */
-	public function getCurrencies() {
+    /** @inheritdoc */
+    public function getCurrencies(): array {
 		return [ $this->c ];
 	}
 
-	/**
-	 * @param int $id
-	 * @return Currency
-	 * @throws BadParameterException
-	 * @throws NotFoundException
-	 */
-	public function getCurrency($id) {
+    /** @inheritdoc */
+    public function getCurrency(int $id): Currency {
 		return $this->c;
 	}
 
-	/**
-	 * @param $data
-	 * @return Currency
-	 * @throws BadRequestHttpException
-	 */
-	public function createCurrency($data) {
+    /** @inheritdoc */
+    public function create(array $data): Currency {
 		return $this->c;
 	}
 
-	/**
-	 * @param int $id
-	 * @param $data
-	 * @return Currency
-	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 * @throws BadRequestHttpException
-	 */
-	public function updateCurrency($id, $data) {
+    /** @inheritdoc */
+    public function update(int $id, array $data): Currency {
 		return $this->c;
 	}
 
-	/**
-	 * @param int $id
-	 * @return int
-	 * @throws NotFoundException
-	 * @throws BadParameterException
-	 * @throws IntegrityException
-	 */
-	public function deleteCurrency($id) {
+    /** @inheritdoc */
+    public function deleteCurrency(int $id) {
 		return $id;
 	}
 
-	/**
-	 * @param string $column column in database
-	 * @param mixed $value
-	 * @return Currency
-	 */
-	public function getCurrencyByColumn($column, $value) {
+    /** @inheritdoc */
+    public function getCurrencyByColumn(string $column, string $value): Currency {
 		$this->c = new Currency();
 		$id = $column != 'languageCode' ? 1 : $column == 'CZK' ? 1 : $column == 'USD' ? 2 : 3;
 		$this->c->setId($id);
@@ -93,19 +60,13 @@ class FakeCurrencyService implements ICurrencyService
 		return $this->c;
 	}
 
-	/**
-	 * @param Currency $currency
-	 * @return array
-	 */
-	public function format(Currency $currency) {
+    /** @inheritdoc */
+    public function format(Currency $currency): array {
 		return [];
 	}
 
-	/**
-	 * @param Currency[] $currencies
-	 * @return array
-	 */
-	public function formatEntities($currencies) {
+    /** @inheritdoc */
+    public function formatEntities(array $currencies): array {
 		return [];
 	}
 }
