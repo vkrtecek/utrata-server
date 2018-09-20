@@ -66,15 +66,11 @@ class ItemFilter extends AbstractFilter
             self::$instance = new self;
         parent::create($data);
 
-//        self::$instance->setDateFrom(isset($data['main_time_from']) ? new \DateTime($data['main_time_from']) : self::DEFAULT_DATE_FROM); // todo default date from env()?
-//        self::$instance->setDateTo(isset($data['main_time_to']) ? new \DateTime($data['main_time_to']) : self::DEFAULT_DATE_TO);
-
-
         self::$instance->setState($data['state'] ?? ItemState::UNCHECKED);
         self::$instance->setWalletId($data['walletId'] ?? self::DEFAULT_WALLET_ID);
         self::$instance->setMonth($data['month'] ?? self::DEFAULT_MONTH);
         self::$instance->setNotes($data['notes'] ?? self::DEFAULT_NOTES);
-        self::$instance->setYear($data['year'] ?? self::DEFAULT_YEAR);
+        self::$instance->setYear(!isset($data['year']) || !$data['year'] ? null : self::DEFAULT_YEAR);
 
         switch (self::$instance->getState()) {
             case ItemState::UNCHECKED:

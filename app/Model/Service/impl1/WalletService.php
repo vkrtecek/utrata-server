@@ -115,8 +115,8 @@ class WalletService implements IWalletService
 		$ret['activeItemsCnt'] = $this->getItemsCount($wallet, ItemState::UNCHECKED);
 		$ret['nonActiveItemsCnt'] = $this->getItemsCount($wallet, ItemState::CHECKED);
 		$ret['incomeItemsCnt'] = $this->getItemsCount($wallet, ItemState::INCOMES);
-		$ret['cardRest'] = number_format($this->countRest($wallet, ItemType::CARD), 2, ',', ' ');
-		$ret['cashRest'] = number_format($this->countRest($wallet, ItemType::CASH), 2, ',', ' ');
+		$ret['cardRest'] = $this->countRest($wallet, ItemType::CARD);
+		$ret['cashRest'] = $this->countRest($wallet, ItemType::CASH);
 		$ret['checkState'] = [
 			"card" => $this->checkStateService->format($this->getCheckState($wallet, ItemType::CARD)),
 			"cash" => $this->checkStateService->format($this->getCheckState($wallet, ItemType::CASH))

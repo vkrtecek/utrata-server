@@ -64,6 +64,9 @@ h2 > #walletName {
 .red{
     color:red;
 }
+.violet {
+    color: violet;
+}
 .buttons{
     display: inline-block;
     float: right;
@@ -162,4 +165,14 @@ span#loading_little{
 
 #_price, #_course {
     max-width: 7rem;
+}
+
+.statusBtn {
+    background-color: #eee;
+    padding: 3px;
+}
+
+.statusBtn:hover {
+    color: black;
+    cursor: pointer;
 }

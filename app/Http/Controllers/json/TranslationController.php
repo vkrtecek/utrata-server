@@ -30,7 +30,6 @@ class TranslationController extends AbstractController
      * @throws BadParameterException
 	 */
 	public function gets(Request $request) {
-	    $this->assumeLogged($request);
         $languageCode = $request->get('language');
 	    if (!$languageCode)
 	        return Response::create(['error' => 'Empty language'], Response::HTTP_BAD_REQUEST);
@@ -38,11 +37,9 @@ class TranslationController extends AbstractController
 			$translations = $this->trans->getTranslationsByLanguage($languageCode);
 			$translations = $this->trans->formatEntities($translations);
 		} catch (NotFoundException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
-			return Response::create(['error' => $ex->bind($message)], Response::HTTP_NOT_FOUND);
+			return Response::create(['error' => $ex->bind($ex->getDefault())], Response::HTTP_NOT_FOUND);
 		} catch (BadParameterException $ex) {
-            $message = $this->trans->getTranslation($ex->getMessage(), $this->member->getLanguage()->getCode(), $ex->getDefault())->getValue();
-			return Response::create(['error' => $ex->bind($message)], Response::HTTP_BAD_REQUEST);
+			return Response::create(['error' => $ex->bind($ex->getDefault())], Response::HTTP_BAD_REQUEST);
 		}
 
 		return Response::create($translations, Response::HTTP_OK);
