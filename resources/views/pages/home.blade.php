@@ -56,15 +56,15 @@
                                     <td>{{ $wallet['activeItemsCnt'] }}/{{$wallet['nonActiveItemsCnt'] }} ({{ $wallet['incomeItemsCnt'] }})</td></tr>
                                 <tr>
                                     <td>{{ $trans->get('Wallet.Preview.Card', 'On card: ') }}</td>
-                                    <td class="{{ \App\Http\Controllers\WalletController::getClassForPrice($wallet['cardRest']) }}">{{ $wallet['cardRest'] }} {{ Auth::user()->getCurrency()->getValue() }}</td>
+                                    <td class="{{ \App\Http\Controllers\WalletController::getClassForPrice($wallet['cardRest']) }}">{{ number_format($wallet['cardRest'], 2, ',', ' ') }} {{ Auth::user()->getCurrency()->getValue() }}</td>
                                 </tr>
                                 <tr>
                                     <td>{{ $trans->get('Wallet.Preview.Cash', 'In cash:') }}</td>
-                                    <td class="{{ \App\Http\Controllers\WalletController::getClassForPrice($wallet['cashRest']) }}">{{ $wallet['cashRest'] }} {{ Auth::user()->getCurrency()->getValue() }}</td>
+                                    <td class="{{ \App\Http\Controllers\WalletController::getClassForPrice($wallet['cashRest']) }}">{{ number_format($wallet['cashRest'], 2, ',', ' ') }} {{ Auth::user()->getCurrency()->getValue() }}</td>
                                 </tr>
                                 <tr>
                                     <td>{{ $trans->get('Wallet.Preview.PerMonth', 'This month:') }}</td>
-                                    <td class="{{ \App\Http\Controllers\WalletController::getClassForPrice($wallet['monthExpense']) }}">{{ $wallet['monthExpense'] }} {{ Auth::user()->getCurrency()->getValue() }}</td>
+                                    <td class="{{ \App\Http\Controllers\WalletController::getClassForPrice($wallet['monthExpense']) }}">{{ number_format($wallet['monthExpense'], 2, ',', ' ') }} {{ Auth::user()->getCurrency()->getValue() }}</td>
 
                                 </tr>
                             </table>
