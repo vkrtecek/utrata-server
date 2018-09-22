@@ -114,13 +114,13 @@ class WalletTest extends TestCase
 			'activeItemsCnt' => 0,
 			'nonActiveItemsCnt' => 0,
 			'incomeItemsCnt' => 0,
-			'cardRest' => '0,00',
-			'cashRest' => '0,00',
+			'cardRest' => 0.0,
+			'cashRest' => 0.0,
 			'checkState' => [
 				'card' => [],
 				'cash' => [],
 			],
-			'monthExpense' => 0,
+			'monthExpense' => 0.0,
 			'empty' => TRUE,
 		];
 
